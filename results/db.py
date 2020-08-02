@@ -6,6 +6,8 @@ import logging
 
 
 class db:
+    schema = ""
+
     def __init__(self, db_filename="results.db", skip_db_create=False):
         self.db_filename = db_filename
         self.table_name = "COMPANY"
@@ -36,6 +38,8 @@ class db:
         logging.info(tbl)
         logging.info("Creating db")
         self.conn.execute(tbl)
+        self.table_name = schema["table_name"]
+        self.schema = schema
         logging.info("Created db")
 
     def create_db(self):
@@ -60,13 +64,41 @@ class db:
         logging.info(rows)
         return len(rows) > 0
 
-    def add_entry(self):
+    def add_entry_example(self):
         id = 3
         if not self.check_if_exists(id):
             self.conn.execute(
                 "INSERT INTO COMPANY (ID,NAME,AGE,ADDRESS,SALARY) \
                     VALUES (3, 'Teddy', 23, 'Norway', 20000.00 )"
             )
+            self.conn.commit()
+        else:
+            logging.warning("Entry already exists")
+
+    def add_entry(self, entry):
+        id = 3
+        if not self.check_if_exists(id):
+            fields = "ID, "
+            values = "3, "
+            for field in entry:
+                fields += field + ", "
+                if self.schema["fields"][field][0] in ["TEXT", "DATETIME"]:
+                    values += "'" + str(entry[field]) + "', "
+                else:
+                    values += str(entry[field]) + ", "
+            fields = fields[:-2]
+            values = values[:-2]
+            cmd = (
+                "INSERT INTO "
+                + self.table_name
+                + " ("
+                + fields
+                + ") VALUES ("
+                + values
+                + ")"
+            )
+            logging.info(cmd)
+            self.conn.execute(cmd)
             self.conn.commit()
         else:
             logging.warning("Entry already exists")
@@ -78,6 +110,16 @@ class db:
             print("NAME = ", row[1])
             print("ADDRESS = ", row[2])
             print("SALARY = ", row[3])
+
+    def print_all_schema(self):
+        fields = self.schema["fields"].keys()
+        fields = [*fields]
+        print(fields)
+        all_fields = ", ".join(fields)
+        cursor = self.conn.execute("SELECT " + all_fields + " from " + self.table_name)
+        for row in cursor:
+            for i, field in enumerate(fields):
+                print(field, "=", row[i])
 
     def __del__(self):
         self.conn.close()
