@@ -1,0 +1,7 @@
+dash
+elasticsearch
+numpy
+matplotlib
+pandas
+plotly
+dash-bootstrap-components

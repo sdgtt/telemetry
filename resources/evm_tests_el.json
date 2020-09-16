@@ -29,9 +29,6 @@
             "carrier_frequency": {
                 "type": "integer"
             },
-            "carrier_frequency": {
-                "type": "integer"
-            },
             "evm_db": {
                 "type": "double"
             },
