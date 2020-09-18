@@ -74,8 +74,8 @@ def get_data(device):
             go.Scatter(x=x, y=y, mode="lines+markers", name="Channel " + str(chan))
         )
 
-    fig.update_xaxes(title_text="LO (MHz)", title_font={"size": 20}, title_standoff=25)
-    fig.update_yaxes(title_text="EVM (dB)", title_font={"size": 20}, title_standoff=25)
+    fig.update_xaxes(title_text="Date", title_font={"size": 20}, title_standoff=25)
+    fig.update_yaxes(title_text="Calibration Failure (%)", title_font={"size": 20}, title_standoff=25)
     return fig
 
 
