@@ -7,10 +7,10 @@ from app import app
 
 ################################################################################
 ## Page specific code
-from pages import app1, app2
+from pages import app1, app2, ad9361_tx_quad_cal
 from pages.data import search
 
-pages = ["app1", "app2", "search"]
+pages = ["app1", "app2", "search", "ad9361_tx_quad_cal"]
 
 
 def page_lookup(pathname):

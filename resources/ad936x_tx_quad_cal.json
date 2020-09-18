@@ -1,0 +1,25 @@
+{
+    "settings": {
+        "number_of_shards": 1,
+        "number_of_replicas": 0
+    },
+    "mappings": {
+        "properties": {
+            "test_name": {
+                "type": "text"
+            },
+            "date": {
+              "type": "date"
+            },
+            "device": {
+                "type": "text"
+            },
+            "failed": {
+                "type": "integer"
+            },
+            "iterations": {
+                "type": "integer"
+            }
+        }
+    }
+}
