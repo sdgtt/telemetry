@@ -7,4 +7,4 @@ then
 fi
 
 docker build -t docker-dash .
-docker run -d -p 8050:8050 docker-dash
+docker run -d -restart unless-stopped -p 8050:8050 docker-dash
