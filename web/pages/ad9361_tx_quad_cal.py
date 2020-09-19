@@ -8,6 +8,11 @@ import numpy
 import plotly.graph_objects as go  # or plotly.express as px
 from elasticsearch import Elasticsearch
 
+import sys
+import os
+
+import telemetry
+
 port = 9200
 index_name = "ad936x_tx_quad_cal"
 server = "alpine"
@@ -22,52 +27,10 @@ def get_test_dates():
 
 def get_data(device):
 
-    print(device)
-    # body1 = {"sort": [{"date": {"order": "asc"}}], "query": {"match_all": {}}}
-    # body2 = {"query": {"query_string": {"query": "lte*", "fields": ["test_name"],}}}
-    # body6 = {
-    #     "query": {
-    #         "bool": {
-    #             "must": [
-    #                 {
-    #                     "match": {"channel": "evm_1",},
-    #                     "match": {"device": "device"},
-    #                 },
-    #             ]
-    #         }
-    #     }
-    # }
-
     fig = go.Figure()
-
+    tel = telemetry.searches()
     for chan in range(2):
-        body7 = {
-            "sort": [{"date": {"order": "asc"}}],
-            "query": {
-                "bool": {"must": [{"match": {"channel": str(chan)}}, {"match": {"device": device}}]}
-            }
-        }
-
-        body6 = {
-            "sort": [{"date": {"order": "asc"}}],
-            "query": {
-                "bool": {
-                    "must": [
-                        {"match": {"channel": str(1)}, "match": {"device": device},},
-                    ]
-                }
-            },
-        }
-
-        # body4 = {"sort": [{"date": {"order": "asc"}}],"query": {"match": {"channel": str(chan)}}}
-        res = es.search(index=index_name, size=1000, body=body7,)
-        d = [val["_source"] for val in res["hits"]["hits"]]
-        for k in d:
-            print(k["date"], k["channel"])
-
-        x = [val["_source"]["date"] for val in res["hits"]["hits"]]
-        y = [val["_source"]["failed"] for val in res["hits"]["hits"]]
-        t = [val["_source"]["iterations"] for val in res["hits"]["hits"]]
+        x, y, t = tel.ad9361_tx_quad_cal_test(channel=chan)
 
         y = [y[k] / t[k] for k in range(len(y))]
         fig.add_trace(
@@ -75,7 +38,9 @@ def get_data(device):
         )
 
     fig.update_xaxes(title_text="Date", title_font={"size": 20}, title_standoff=25)
-    fig.update_yaxes(title_text="Calibration Failure (%)", title_font={"size": 20}, title_standoff=25)
+    fig.update_yaxes(
+        title_text="Calibration Failure (%)", title_font={"size": 20}, title_standoff=25
+    )
     return fig
 
 

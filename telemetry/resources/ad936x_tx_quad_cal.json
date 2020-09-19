@@ -19,6 +19,9 @@
             },
             "iterations": {
                 "type": "integer"
+            },
+            "channel": {
+                "type": "integer"
             }
         }
     }

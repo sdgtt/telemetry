@@ -1,9 +1,9 @@
 import os
-import results
+import telemetry
 from random import random
 import datetime
 
-res = results.elastic()
+res = telemetry.elastic()
 # loc = os.path.dirname(__file__)
 # loc = os.path.split(loc)[:-1]
 # loc = os.path.join(loc[0], "resources", "evm_tests_el.json")

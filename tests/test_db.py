@@ -1,6 +1,6 @@
 import pytest
 import os
-import results
+import telemetry
 
 
 @pytest.fixture(autouse=True)
