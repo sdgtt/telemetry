@@ -12,7 +12,7 @@ def run_around_tests():
     res.delete_index()
     yield
     # After test
-    res = telemetry.elastic()
+    res = telemetry.elastic(server="127.0.0.1")
     res.index_name = "dummy"
     res.delete_index()
 
@@ -24,7 +24,7 @@ def test_db_connect():
 
 
 def test_db_create_delete():
-    res = telemetry.elastic()
+    res = telemetry.elastic(server="127.0.0.1")
     loc = os.path.dirname(__file__)
     loc = os.path.split(loc)[:-1]
     loc = os.path.join(loc[0], "telemetry", "resources", "evm_tests_el.json")
@@ -34,7 +34,7 @@ def test_db_create_delete():
 
 
 def test_add_entry():
-    res = telemetry.elastic()
+    res = telemetry.elastic(server="127.0.0.1")
     loc = os.path.dirname(__file__)
     loc = os.path.split(loc)[:-1]
     loc = os.path.join(loc[0], "telemetry", "resources", "evm_tests_el.json")
