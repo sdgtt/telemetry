@@ -18,7 +18,7 @@ def run_around_tests():
 
 
 def test_db_connect():
-    telemetry.elastic()
+    telemetry.elastic(server="127.0.0.1")
     # Should complete without error
     assert True
 
