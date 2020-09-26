@@ -1,0 +1,40 @@
+services:
+  - elasticsearch
+
+#addons:
+#  hostname: alpine
+
+language: python
+python:
+  - 3.8
+  - 3.7
+  - 3.6
+  - 3.5
+
+before_install:
+  - curl https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.8.0-amd64.deb -o elasticsearch.deb
+  - sudo dpkg -i --force-confnew elasticsearch.deb
+  - sudo chown -R elasticsearch:elasticsearch /etc/default/elasticsearch
+  - sudo service elasticsearch restart
+
+install: pip install -r requirements_dev.txt
+
+before_script: sleep 10
+
+script: SERVER="127.0.0.1" python3 -m pytest -v tests
+
+# Assuming you have installed the travis-ci CLI tool, after you
+# create the Github repo and add it to Travis, run the
+# following command to finish PyPI deployment setup:
+# $ travis encrypt --add deploy.password
+deploy:
+  provider: pypi
+  distributions: sdist bdist_wheel
+  user: tfcollins
+  password:
+    secure: PLEASE_REPLACE_ME
+  on:
+    tags: true
+    repo: tfcollins/telemetry
+    python: 3.8
+
