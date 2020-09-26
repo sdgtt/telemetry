@@ -13,7 +13,7 @@ python:
 
 install: pip install -r requirements.txt
 
-script: pytest -v
+script: python3 -m pytest -v tests
 
 # Assuming you have installed the travis-ci CLI tool, after you
 # create the Github repo and add it to Travis, run the
