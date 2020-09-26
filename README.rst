@@ -3,8 +3,8 @@ Telemetry
 =========
 
 
-.. image:: https://img.shields.io/pypi/v/telemetry.svg
-        :target: https://pypi.python.org/pypi/telemetry
+.. image:: https://img.shields.io/pypi/v/sdg-telemetry.svg
+        :target: https://pypi.python.org/pypi/sdg-telemetry
 
 .. image:: https://img.shields.io/travis/tfcollins/telemetry.svg
         :target: https://travis-ci.com/tfcollins/telemetry
