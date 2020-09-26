@@ -1,9 +1,6 @@
 services:
   - elasticsearch
 
-#addons:
-#  hostname: alpine
-
 language: python
 python:
   - 3.8
