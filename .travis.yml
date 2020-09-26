@@ -13,6 +13,8 @@ python:
 
 install: pip install -r requirements.txt
 
+before_script: sleep 10
+
 script: python3 -m pytest -v tests
 
 # Assuming you have installed the travis-ci CLI tool, after you
