@@ -21,7 +21,9 @@ install: pip install -r requirements_dev.txt
 
 before_script: sleep 10
 
-script: SERVER="127.0.0.1" python3 -m pytest -v tests
+script: SERVER="127.0.0.1" python3 -m pytest -v --cov=telemetry tests
+
+after_success: coveralls
 
 # Assuming you have installed the travis-ci CLI tool, after you
 # create the Github repo and add it to Travis, run the
