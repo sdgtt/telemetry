@@ -1,0 +1,32 @@
+services:
+  - elasticsearch
+
+addons:
+  hostname: alpine
+
+language: python
+python:
+  - 3.8
+  - 3.7
+  - 3.6
+  - 3.5
+
+install: pip install -r requirements.txt
+
+script: pytest -v
+
+# Assuming you have installed the travis-ci CLI tool, after you
+# create the Github repo and add it to Travis, run the
+# following command to finish PyPI deployment setup:
+# $ travis encrypt --add deploy.password
+deploy:
+  provider: pypi
+  distributions: sdist bdist_wheel
+  user: tfcollins
+  password:
+    secure: PLEASE_REPLACE_ME
+  on:
+    tags: true
+    repo: tfcollins/telemetry
+    python: 3.8
+

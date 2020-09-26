@@ -8,7 +8,7 @@ import logging
 class db:
     schema = ""
 
-    def __init__(self, db_filename="results.db", skip_db_create=False):
+    def __init__(self, db_filename="telemetry.db", skip_db_create=False):
         self.db_filename = db_filename
         self.table_name = "COMPANY"
         if not path.exists(self.db_filename):

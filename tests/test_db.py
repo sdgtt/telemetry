@@ -6,34 +6,34 @@ import telemetry
 @pytest.fixture(autouse=True)
 def run_around_tests():
     # Before test
-    if os.path.isfile("results.db"):
-        os.remove("results.db")
+    if os.path.isfile("telemetry.db"):
+        os.remove("telemetry.db")
     yield
     # After test
-    if os.path.isfile("results.db"):
-        os.remove("results.db")
+    if os.path.isfile("telemetry.db"):
+        os.remove("telemetry.db")
 
 
 def test_db_create():
-    res = results.db()
-    assert os.path.isfile("results.db")
+    res = telemetry.db()
+    assert os.path.isfile("telemetry.db")
 
 
 def test_import_schema():
-    res = results.db(skip_db_create=True)
+    res = telemetry.db(skip_db_create=True)
     loc = os.path.dirname(__file__)
     loc = os.path.split(loc)[:-1]
-    loc = os.path.join(loc[0], "resources", "evm_tests.json")
+    loc = os.path.join(loc[0], "telemetry", "resources", "evm_tests.json")
     s = res.import_schema(loc)
     res.create_db_from_schema(s)
-    assert os.path.isfile("results.db")
+    assert os.path.isfile("telemetry.db")
 
 
 def test_add_entry():
-    res = results.db(skip_db_create=True)
+    res = telemetry.db(skip_db_create=True)
     loc = os.path.dirname(__file__)
     loc = os.path.split(loc)[:-1]
-    loc = os.path.join(loc[0], "resources", "evm_tests.json")
+    loc = os.path.join(loc[0], "telemetry", "resources", "evm_tests.json")
     s = res.import_schema(loc)
     res.create_db_from_schema(s)
     # Add entry
