@@ -11,6 +11,12 @@ python:
   - 3.6
   - 3.5
 
+before_install:
+  - curl https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.8.0-amd64.deb -o elasticsearch.deb
+  - sudo dpkg -i --force-confnew elasticsearch.deb
+  - sudo chown -R elasticsearch:elasticsearch /etc/default/elasticsearch
+  - sudo service elasticsearch restart
+
 install: pip install -r requirements.txt
 
 before_script: sleep 10
