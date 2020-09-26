@@ -13,6 +13,8 @@ Telemetry
         :target: https://telemetry.readthedocs.io/en/latest/?badge=latest
         :alt: Documentation Status
 
+.. image:: https://coveralls.io/repos/github/tfcollins/telemetry/badge.svg?branch=next
+        :target: https://coveralls.io/github/tfcollins/telemetry?branch=next
 
 .. image:: https://pyup.io/repos/github/tfcollins/telemetry/shield.svg
      :target: https://pyup.io/repos/github/tfcollins/telemetry/
