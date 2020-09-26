@@ -7,7 +7,7 @@ import time
 @pytest.fixture(autouse=True)
 def run_around_tests():
     # Before test
-    res = telemetry.elastic()
+    res = telemetry.elastic(server="127.0.0.1")
     res.index_name = "dummy"
     res.delete_index()
     yield
