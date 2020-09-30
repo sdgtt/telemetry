@@ -16,14 +16,10 @@ class searches:
 
     def ad9361_tx_quad_cal_test(self, test_name=None, device=None, channel=None):
         """ Query AD9361 tx quad cal test data to elasticsearch """
-        if not self.use_test_index:
-            index = "ad936x_tx_quad_cal"
-        else:
-            index = "dummy"
+        index = "ad936x_tx_quad_cal" if not self.use_test_index else "dummy"
         s = []
         if test_name:
             s.append({"match": {"test_name": test_name}})
-        if test_name:
             s.append({"match": {"device": device}})
         if channel:
             s.append({"match": {"channel": str(channel)}})

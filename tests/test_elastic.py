@@ -3,10 +3,7 @@ import os
 import telemetry
 import time
 
-if "SERVER" in os.environ:
-    server = os.environ.get("SERVER")
-else:
-    server = "alpine"
+server = os.environ.get("SERVER") if "SERVER" in os.environ else "alpine"
 
 
 @pytest.fixture(autouse=True)
