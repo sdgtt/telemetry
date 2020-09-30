@@ -20,6 +20,7 @@ class searches:
         s = []
         if test_name:
             s.append({"match": {"test_name": test_name}})
+        if device:
             s.append({"match": {"device": device}})
         if channel:
             s.append({"match": {"channel": str(channel)}})
