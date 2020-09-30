@@ -80,12 +80,11 @@ def generate_table(dataframe, search_term):
     for i in np.arange(dataframe.shape[0]):
         row = []
         for col in dataframe.columns:
+            value = dataframe.iloc[i][col]
             if col == "_source.title":
-                value = dataframe.iloc[i][col]
                 text = text_style(value, search_term)
                 row.append(html.Td(text))
             else:
-                value = dataframe.iloc[i][col]
                 row.append(html.Td(value))
         rows.append(html.Tr(row))
 

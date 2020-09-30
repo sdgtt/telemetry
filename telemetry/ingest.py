@@ -34,10 +34,7 @@ class ingest:
             "channel": channel,
         }
         # Setup index if necessary
-        if not self.use_test_index:
-            self.db.index_name = "ad936x_tx_quad_cal"
-        else:
-            self.db.index_name = "dummy"
+        self.db.index_name = "dummy" if self.use_test_index else "ad936x_tx_quad_cal"
         s = self.db.import_schema(self._get_schema("ad936x_tx_quad_cal.json"))
         self.db.create_db_from_schema(s)
         # Add entry
@@ -71,10 +68,7 @@ class ingest:
             "iteration": iteration,
         }
         # Setup index if necessary
-        if not self.use_test_index:
-            self.db.index_name = "lte_evm"
-        else:
-            self.db.index_name = "dummy"
+        self.db.index_name = "lte_evm" if not self.use_test_index else "dummy"
         s = self.db.import_schema(self._get_schema("evm_tests_el.json"))
         self.db.create_db_from_schema(s)
         # Add entry
