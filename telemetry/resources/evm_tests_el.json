@@ -1,0 +1,40 @@
+{
+    "settings": {
+        "number_of_shards": 1,
+        "number_of_replicas": 0
+    },
+    "mappings": {
+        "properties": {
+            "test_name": {
+                "type": "text"
+            },
+            "date": {
+              "type": "date"
+            },
+            "standard": {
+                "type": "text"
+            },
+            "tx_device": {
+                "type": "text"
+            },
+            "rx_device": {
+                "type": "text"
+            },
+            "tx_sample_rate": {
+                "type": "integer"
+            },
+            "rx_sample_rate": {
+                "type": "integer"
+            },
+            "carrier_frequency": {
+                "type": "integer"
+            },
+            "evm_db": {
+                "type": "double"
+            },
+            "iteration": {
+                "type": "integer"
+            }
+        }
+    }
+}

@@ -1,0 +1,17 @@
+{
+  "table_name": "EVM_TESTS",
+  "fields": {
+    "ID": ["INT","PRIMARY","KEY","NOT NULL"],
+    "NAME": ["TEXT", "NOT NULL"],
+    "DATE": ["DATETIME","NOT NULL"],
+    "TX_DEVICE": ["TEXT", "NOT NULL"],
+    "RX_DEVICE": ["TEXT", "NOT NULL"],
+    "CARRIER_FREQUENCY": ["INTEGER", "NOT NULL"],
+    "RX_SAMPLE_RATE": ["INTEGER", "NOT NULL"],
+    "TX_SAMPLE_RATE": ["INTEGER", "NOT NULL"],
+    "STANDARD": ["TEXT"],
+    "EVM_MEAN": ["REAL", "NOT NULL"],
+    "EVM_STD": ["REAL", "NOT NULL"],
+    "ITERATIONS_AT_CARRIER": ["INTEGER", "NOT NULL"]
+  }
+}
