@@ -1,6 +1,7 @@
 import telemetry
 import datetime
 import os
+import csv
 
 
 class ingest:
@@ -13,6 +14,34 @@ class ingest:
     def _get_schema(self, name):
         loc = os.path.dirname(__file__)
         return os.path.join(loc, "resources", name)
+
+    def _translate_hdl_resource_fields(self,fieldss):
+        out = []
+        for field in fieldss:
+            fields = field.replace("(%)","_percent")
+            fields = fields.replace("(#)","_count")
+            fields = fields.replace("/","_")
+            fields = fields.replace(" ","_")
+            fields = fields.replace("(Avg)","avg")
+            fields = fields.replace(">","gt")
+            fields = fields.replace("-","_")
+            fields = fields.replace("+","_")
+            fields = fields.replace(".","p")
+            fields = fields.replace("*","")
+            fields = fields.replace("(Cell)","_cell")
+            fields = fields.replace("(Pblock)","_pblock")
+            fields = fields.replace("__","_")
+            # Dupe so if long spaces show up they get squashed
+            fields = fields.replace("__","_")
+            fields = fields.replace("__","_")
+            fields = fields.replace("__","_")
+            out.append(fields)
+
+        # Check
+        s = self.db.import_schema(self._get_schema("hdl_resources.json"))
+        for k in s['mappings']['properties']:
+            if k not in out:
+                raise Exception("Cannot find field {}".format(k))
 
     def log_boot_tests(
         self,
@@ -71,6 +100,26 @@ class ingest:
         # Setup index if necessary
         self.db.index_name = "dummy" if self.use_test_index else "boot_tests"
         s = self.db.import_schema(self._get_schema("boot_tests.json"))
+        self.db.create_db_from_schema(s)
+        # Add entry
+        self.db.add_entry(entry)
+
+    def log_hdl_resources_from_csv(self, filename):
+
+        if not os.path.exists(filename):
+            raise Exception("File does not exist: " + str(filename))
+
+        with open(filename, "r") as csvfile:
+            csvreader = csv.reader(csvfile)
+            fields = next(csvreader)
+            values = next(csvreader)
+        fields = fields[1:]
+        self._translate_hdl_resource_fields(fields)
+        values = values[1:]
+        entry = dict(zip(fields, values))
+        # Setup index if necessary
+        self.db.index_name = "hdl_resources" if not self.use_test_index else "dummy"
+        s = self.db.import_schema(self._get_schema("hdl_resources.json"))
         self.db.create_db_from_schema(s)
         # Add entry
         self.db.add_entry(entry)
