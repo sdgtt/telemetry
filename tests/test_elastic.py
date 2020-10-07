@@ -128,3 +128,17 @@ def test_ingest_lte():
     results = tel.db.search_all()
     tel.db.delete_index()
     assert results["hits"]["total"]["value"] == 1
+
+
+def test_ingest_hdl_resources():
+    loc = os.path.dirname(__file__)
+    loc = os.path.split(loc)[:-1]
+    loc = os.path.join(loc[0], "tests", "resource_utilization.csv")
+
+    tel = telemetry.ingest(server=server)
+    tel.use_test_index = True
+    tel.log_hdl_resources_from_csv(loc)
+    time.sleep(2)
+    results = tel.db.search_all()
+    tel.db.delete_index()
+    assert results["hits"]["total"]["value"] == 1

@@ -1,6 +1,7 @@
 import telemetry
 import datetime
 import os
+import csv
 
 
 class ingest:
@@ -13,6 +14,25 @@ class ingest:
     def _get_schema(self, name):
         loc = os.path.dirname(__file__)
         return os.path.join(loc, "resources", name)
+
+    def log_hdl_resources_from_csv(self, filename):
+
+        if not os.path.exists(filename):
+            raise Exception("File does not exist: " + str(filename))
+
+        with open(filename, "r") as csvfile:
+            csvreader = csv.reader(csvfile)
+            fields = next(csvreader)
+            values = next(csvreader)
+        fields = fields[1:]
+        values = values[1:]
+        entry = dict(zip(fields, values))
+        # Setup index if necessary
+        self.db.index_name = "hdl_resources" if not self.use_test_index else "dummy"
+        s = self.db.import_schema(self._get_schema("hdl_resources.json"))
+        self.db.create_db_from_schema(s)
+        # Add entry
+        self.db.add_entry(entry)
 
     def log_ad9361_tx_quad_cal_test(
         self,
