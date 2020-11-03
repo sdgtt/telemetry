@@ -128,3 +128,29 @@ def test_ingest_lte():
     results = tel.db.search_all()
     tel.db.delete_index()
     assert results["hits"]["total"]["value"] == 1
+
+def test_ingest_github_stats():
+    tel = telemetry.ingest(server=server)
+    tel.use_test_index = True
+    tel.log_ad9361_tx_quad_cal_test("TransceiverToolbox", 1, 2, 3, 4)
+    time.sleep(2)
+    results = tel.db.search_all()
+    tel.db.delete_index()
+    assert results["hits"]["total"]["value"] == 1
+
+
+def test_search_github_stats():
+    tel = telemetry.ingest(server=server)
+    tel.use_test_index = True
+    tel.log_github_stats("TransceiverToolbox", 1, 2, 3, 4)
+    time.sleep(2)
+    tel = telemetry.searches(server=server)
+    tel.use_test_index = True
+    stats = tel.github_stats()
+    tel.db.delete_index()
+    for k in stats:
+        assert k == "TransceiverToolbox"
+    assert stats["TransceiverToolbox"]['views'] == 1
+    assert stats["TransceiverToolbox"]['clones'] == 2
+    assert stats["TransceiverToolbox"]['view_unique'] == 3
+    assert stats["TransceiverToolbox"]['clones_unique'] == 4

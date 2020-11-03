@@ -73,3 +73,29 @@ class ingest:
         self.db.create_db_from_schema(s)
         # Add entry
         self.db.add_entry(entry)
+
+    def log_github_stats(
+        self,
+        repo,
+        views,
+        clones,
+        view_unique,
+        clones_unique,
+        date=datetime.datetime.now(),
+    ):
+        """ Upload github stats to elasticsearch """
+        # Create query
+        entry = {
+            "repo": repo,
+            "date": date,
+            "views": views,
+            "clones": clones,
+            "view_unique": view_unique,
+            "clones_unique": clones_unique,
+        }
+        # Setup index if necessary
+        self.db.index_name = "github_stats" if not self.use_test_index else "dummy"
+        s = self.db.import_schema(self._get_schema("github_stats.json"))
+        self.db.create_db_from_schema(s)
+        # Add entry
+        self.db.add_entry(entry)
