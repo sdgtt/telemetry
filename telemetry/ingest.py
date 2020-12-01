@@ -15,6 +15,33 @@ class ingest:
         loc = os.path.dirname(__file__)
         return os.path.join(loc, "resources", name)
 
+    def _translate_hdl_resource_fields(self,fieldss):
+        out = []
+        for field in fieldss:
+            fields = field.replace("(%)","_percent")
+            fields = fields.replace("(#)","_count")
+            fields = fields.replace("/","_")
+            fields = fields.replace(" ","_")
+            fields = fields.replace("(Avg)","avg")
+            fields = fields.replace(">","gt")
+            fields = fields.replace("-","_")
+            fields = fields.replace("+","")
+            fields = fields.replace(".","p")
+            fields = fields.replace("*","")
+            fields = fields.replace("(Cell)","_cell")
+            fields = fields.replace("(Pblock)","_pblock")
+            fields = fields.replace("__","_")
+            out.append(fields)
+
+        # Check
+        s = self.db.import_schema(self._get_schema("hdl_resources.json"))
+        print(s)
+        for k in s['mappings']['properties']:
+            if k not in out:
+                raise Exception("Cannot find field {}".format(k))
+
+        print(out)
+
     def log_hdl_resources_from_csv(self, filename):
 
         if not os.path.exists(filename):
@@ -25,6 +52,7 @@ class ingest:
             fields = next(csvreader)
             values = next(csvreader)
         fields = fields[1:]
+        self._translate_hdl_resource_fields(fields)
         values = values[1:]
         entry = dict(zip(fields, values))
         # Setup index if necessary
