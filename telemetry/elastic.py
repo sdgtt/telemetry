@@ -19,7 +19,11 @@ class elastic:
         index_name="example_index",
     ):
         self.es = Elasticsearch(
-            [{"host": server, "port": port}], http_auth=(username, password)
+            [{"host": server, "port": port}],
+            http_auth=(username, password),
+            timeout=3,
+            max_retries=2,
+            retry_on_timeout=True,
         )
         if not self.es.ping():
             raise Exception("Elasticsearch server not accessible")

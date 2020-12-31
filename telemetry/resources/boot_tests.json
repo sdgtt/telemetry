@@ -1,0 +1,59 @@
+{
+    "settings": {
+        "number_of_shards": 1,
+        "number_of_replicas": 0
+    },
+    "mappings": {
+        "properties": {
+            "boot_folder_name": {
+                "type": "text"
+            },
+            "hdl_hash": {
+                "type": "text"
+            },
+            "linux_hash": {
+                "type": "text"
+            },
+            "hdl_branch": {
+                "type": "text"
+            },
+            "linux_branch": {
+                "type": "text"
+            },
+
+            "is_hdl_release": {
+                "type": "boolean"
+            },
+            "is_linux_release": {
+                "type": "boolean"
+            },
+            "uboot_reached": {
+                "type": "boolean"
+            },
+            "linux_prompt_reached": {
+                "type": "boolean"
+            },
+            "drivers_enumerated": {
+                "type": "boolean"
+            },
+            "dmesg_warnings_found": {
+                "type": "boolean"
+            },
+            "dmesg_errors_found": {
+                "type": "boolean"
+            },
+            "jenkins_job_date": {
+                "type": "date"
+            },
+            "jenkins_build_number": {
+                "type": "integer"
+            },
+            "jenkins_project_name": {
+                "type": "text"
+            },
+            "jenkins_agent": {
+                "type": "text"
+            }
+        }
+    }
+}

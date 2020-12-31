@@ -14,6 +14,67 @@ class ingest:
         loc = os.path.dirname(__file__)
         return os.path.join(loc, "resources", name)
 
+    def log_boot_tests(
+        self,
+        boot_folder_name,
+        hdl_hash,
+        linux_hash,
+        hdl_branch,
+        linux_branch,
+        is_hdl_release,
+        is_linux_release,
+        uboot_reached,
+        linux_prompt_reached,
+        drivers_enumerated,
+        dmesg_warnings_found,
+        dmesg_errors_found,
+        jenkins_job_date,
+        jenkins_build_number,
+        jenkins_project_name,
+        jenkins_agent,
+    ):
+        """ Upload boot test results to elasticsearch """
+        # Build will produce the following:
+        #   hdl commit hash
+        #   linux commit hash
+        #   hdl release flag
+        #   hdl master flag
+        #   linux release flag
+        #   linux master flag
+        #
+        #   fully booted status
+        #   uboot reached status
+        #   drivers enumerated correctly
+        #
+        #   dmesg warnings found
+        #   dmesg errors found
+
+        # Create query
+        entry = {
+            "boot_folder_name": boot_folder_name,
+            "hdl_hash": hdl_hash,
+            "linux_hash": linux_hash,
+            "hdl_branch": hdl_branch,
+            "linux_branch": linux_branch,
+            "is_hdl_release": is_hdl_release,
+            "is_linux_release": is_linux_release,
+            "uboot_reached": uboot_reached,
+            "linux_prompt_reached": linux_prompt_reached,
+            "drivers_enumerated": drivers_enumerated,
+            "dmesg_warnings_found": dmesg_warnings_found,
+            "dmesg_errors_found": dmesg_errors_found,
+            "jenkins_job_date": jenkins_job_date,
+            "jenkins_build_number": jenkins_build_number,
+            "jenkins_project_name": jenkins_project_name,
+            "jenkins_agent": jenkins_agent,
+        }
+        # Setup index if necessary
+        self.db.index_name = "dummy" if self.use_test_index else "boot_tests"
+        s = self.db.import_schema(self._get_schema("boot_tests.json"))
+        self.db.create_db_from_schema(s)
+        # Add entry
+        self.db.add_entry(entry)
+
     def log_ad9361_tx_quad_cal_test(
         self,
         test_name,
