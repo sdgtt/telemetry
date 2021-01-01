@@ -186,3 +186,39 @@ def test_ingest_boot_tests_stats():
     results = tel.db.search_all()
     tel.db.delete_index()
     assert results["hits"]["total"]["value"] == 1
+
+
+def test_search_boot_tests():
+    tel = telemetry.ingest(server=server)
+    tel.use_test_index = True
+    inputs = {
+        "boot_folder_name": "zynq-adrv9361-z7035-bob",
+        "hdl_hash": "ecd880d44cdd000691283f2edbd31aa52d6ccc3e",
+        "linux_hash": "b0cb7c3bfd1fec02b1671b061112cd2551a9b340",
+        "hdl_branch": "hdl_2019_r2",
+        "linux_branch": "2019_R2",
+        "is_hdl_release": True,
+        "is_linux_release": True,
+        "uboot_reached": True,
+        "linux_prompt_reached": True,
+        "drivers_enumerated": True,
+        "dmesg_warnings_found": False,
+        "dmesg_errors_found": False,
+        "jenkins_job_date": datetime.datetime.now(),  # "Dec 31, 2020 @ 13:47:04.129",
+        "jenkins_build_number": 34,
+        "jenkins_project_name": "pyadi-iio-hw",
+        "jenkins_agent": "master",
+    }
+
+    tel.log_boot_tests(**inputs)
+    time.sleep(2)
+    inputs["boot_folder_name"] = "zynq-adrv9361-z7035-fmc"
+    tel.log_boot_tests(**inputs)
+    time.sleep(2)
+    tel = telemetry.searches(server=server)
+    tel.use_test_index = True
+    res = tel.boot_tests(inputs["boot_folder_name"])
+    tel.db.delete_index()
+    assert len(res) == 2
+    assert "zynq-adrv9361-z7035-fmc" in res.keys()
+    assert "zynq-adrv9361-z7035-bob" in res.keys()
