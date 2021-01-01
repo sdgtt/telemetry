@@ -32,6 +32,9 @@ def log_boot_logs(server, in_args):
         "jenkins_project_name": 0,
         "jenkins_agent": "NA",
     }
+    if len(in_args) == 0:
+        click.echo("Must have non-zero arguments for database entry")
+        sys.exit(1)
     if int(len(in_args) / 2) != len(in_args) / 2:
         click.echo(
             "ERROR: Number of inputs arguments must be even\n"

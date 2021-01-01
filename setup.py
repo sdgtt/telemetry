@@ -40,7 +40,7 @@ setup(
     description="Python module for simplifying collection and display of test data",
     entry_points={
         "console_scripts": [
-            "telemetry=telemetry.cli:main",
+            "telemetry=telemetry.cli:cli",
         ],
     },
     install_requires=requirements,
