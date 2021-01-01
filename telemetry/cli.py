@@ -43,7 +43,12 @@ def log_boot_logs(server, in_args):
         sys.exit(1)
     for i in range(0, len(in_args), 2):
         if in_args[i] in entry:
-            entry[in_args[i]] = in_args[i + 1]
+            if in_args[i + 1].lower() == "true":
+                entry[in_args[i]] = True
+            elif in_args[i + 1].lower() == "false":
+                entry[in_args[i]] = False
+            else:
+                entry[in_args[i]] = in_args[i + 1]
         else:
             click.echo("ERROR: " + in_args[i] + " not a valid entry")
             sys.exit(1)
