@@ -123,7 +123,20 @@ def test_ingest_lte():
     tel = telemetry.ingest(server=server)
     tel.use_test_index = True
     tel.log_lte_evm_test(
-        "test2", "lte20_tm3.1", "pluto", "pluto", 30720000, 30720000, 1000000000, 0.1, 1
+        "AD9361",
+        -10,
+        "slow_attack",
+        1e9,
+        "TM 3.1",
+        "5 MHz",
+        0.1,
+        0.2,
+        0.3,
+        0.4,
+        0.5,
+        0.6,
+        0.7,
+        0.8,
     )
     time.sleep(2)
     results = tel.db.search_all()
@@ -186,7 +199,7 @@ def test_ingest_boot_tests_stats():
     results = tel.db.search_all()
     tel.db.delete_index()
     assert results["hits"]["total"]["value"] == 1
-    
+
 
 def test_ingest_hdl_resources():
     loc = os.path.dirname(__file__)
