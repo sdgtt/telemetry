@@ -5,35 +5,50 @@
     },
     "mappings": {
         "properties": {
-            "test_name": {
-                "type": "text"
-            },
             "date": {
               "type": "date"
             },
-            "standard": {
+            "class_name": {
                 "type": "text"
             },
-            "tx_device": {
-                "type": "text"
-            },
-            "rx_device": {
-                "type": "text"
-            },
-            "tx_sample_rate": {
-                "type": "integer"
-            },
-            "rx_sample_rate": {
-                "type": "integer"
-            },
-            "carrier_frequency": {
-                "type": "integer"
-            },
-            "evm_db": {
+            "tx_attn": {
                 "type": "double"
             },
-            "iteration": {
+            "rx_gain_control_mode": {
+                "type": "text"
+            },
+            "lo_freq": {
                 "type": "integer"
+            },
+            "tmn": {
+                "type": "text"
+            },
+            "bw": {
+                "type": "text"
+            },
+            "evm_pbch": {
+                "type": "double"
+            },
+            "evm_pcfich": {
+                "type": "double"
+            },
+            "evm_phich": {
+                "type": "double"
+            },
+            "evm_pdcch": {
+                "type": "double"
+            },
+            "evm_rs": {
+                "type": "double"
+            },
+            "evm_sss": {
+                "type": "double"
+            },
+            "evm_pss": {
+                "type": "double"
+            },
+            "evm_pdsch": {
+                "type": "double"
             }
         }
     }
