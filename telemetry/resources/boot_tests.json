@@ -6,7 +6,7 @@
     "mappings": {
         "properties": {
             "boot_folder_name": {
-                "type": "text"
+                "type": "keyword"
             },
             "hdl_hash": {
                 "type": "text"
@@ -14,17 +14,25 @@
             "linux_hash": {
                 "type": "text"
             },
-            "hdl_branch": {
+            "boot_partition_hash": {
                 "type": "text"
+            },
+            "hdl_branch": {
+                "type": "keyword"
             },
             "linux_branch": {
-                "type": "text"
+                "type": "keyword"
             },
-
+            "boot_partition_branch": {
+                "type": "keyword"
+            },
             "is_hdl_release": {
                 "type": "boolean"
             },
             "is_linux_release": {
+                "type": "boolean"
+            },
+            "is_boot_partition_release": {
                 "type": "boolean"
             },
             "uboot_reached": {
@@ -49,10 +57,10 @@
                 "type": "integer"
             },
             "jenkins_project_name": {
-                "type": "text"
+                "type": "keyword"
             },
             "jenkins_agent": {
-                "type": "text"
+                "type": "keyword"
             }
         }
     }
