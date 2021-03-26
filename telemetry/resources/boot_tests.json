@@ -42,13 +42,13 @@
                 "type": "boolean"
             },
             "drivers_enumerated": {
-                "type": "boolean"
+                "type": "integer"
             },
             "dmesg_warnings_found": {
-                "type": "boolean"
+                "type": "integer"
             },
             "dmesg_errors_found": {
-                "type": "boolean"
+                "type": "integer"
             },
             "jenkins_job_date": {
                 "type": "date"
