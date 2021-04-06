@@ -64,6 +64,12 @@
             },
             "source_adjacency_matrix": {
                 "type": "keyword"
+            },
+            "pytest_errors": {
+                "type": "integer"
+            },
+            "pytest_failures": {
+                "type": "integer"
             }
         }
     }

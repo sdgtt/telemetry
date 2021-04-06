@@ -64,6 +64,8 @@ class ingest:
         jenkins_build_number,
         jenkins_project_name,
         jenkins_agent,
+        pytest_errors,
+        pytest_failures
     ):
         """ Upload boot test results to elasticsearch """
         # Build will produce the following:
@@ -107,7 +109,9 @@ class ingest:
             "jenkins_build_number": jenkins_build_number,
             "jenkins_project_name": jenkins_project_name,
             "jenkins_agent": jenkins_agent,
-            "source_adjacency_matrix" : self.get_adjacency_matrix(**args)
+            "source_adjacency_matrix" : self.get_adjacency_matrix(**args),
+            "pytest_errors": pytest_errors,
+            "pytest_failures": pytest_failures
         }
         # Setup index if necessary
         self.db.index_name = "dummy" if self.use_test_index else "boot_tests"

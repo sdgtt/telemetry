@@ -46,6 +46,8 @@ def log_boot_logs(server, in_args):
         "jenkins_build_number": 0,
         "jenkins_project_name": 0,
         "jenkins_agent": "NA",
+        "pytest_errors": 0,
+        "pytest_failures": 0
     }
     if len(in_args) == 0:
         click.echo("Must have non-zero arguments for database entry")
