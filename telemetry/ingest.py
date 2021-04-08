@@ -152,7 +152,7 @@ class ingest:
 
     def log_lte_evm_test(
         self,
-        class_name,
+        device_name,
         tx_attn,
         rx_gain_control_mode,
         lo_freq,
@@ -171,7 +171,7 @@ class ingest:
         """ Upload LTE EVM tests to elasticsearch """
         # Create query
         entry = {
-            "class_name": class_name,
+            "device_name": device_name,
             "date": date,
             "tx_attn": tx_attn,
             "rx_gain_control_mode": rx_gain_control_mode,
