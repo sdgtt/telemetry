@@ -13,7 +13,7 @@ function log_lte_evm_test(results, date, server, test)
 
 
     for i = 1:numel(results)
-        class_name = results(i).Details.ClassName;
+        device_name = results(i).Details.DeviceName;
         tx_attn = results(i).Details.TxAttn;
         rx_gain_control_mode = results(i).Details.RxGainControlMode;
         lo_freq = results(i).Details.LOFreq;
@@ -33,6 +33,6 @@ function log_lte_evm_test(results, date, server, test)
 
     tel = py.telemetry.ingest(pyargs("server",server));
     tel.use_test_index = test;
-    tel.log_lte_evm_test(class_name, tx_attn, rx_gain_control_mode, lo_freq, ...
+    tel.log_lte_evm_test(device_name, tx_attn, rx_gain_control_mode, lo_freq, ...
         tmn, bw, evm_pbch, evm_pcfich, evm_phich, evm_pdcch, evm_rs, ...
         evm_sss, evm_pss, evm_pdsch, date);
