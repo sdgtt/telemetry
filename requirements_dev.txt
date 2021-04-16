@@ -12,10 +12,11 @@ pytest==4.6.5
 pytest-runner==5.1
 pytest-cov
 coveralls
-dash
 elasticsearch
-numpy
-matplotlib
-pandas
-plotly
-dash-bootstrap-components
+## Web dependencies
+#dash
+#numpy
+#matplotlib
+#pandas
+#plotly
+#dash-bootstrap-components
