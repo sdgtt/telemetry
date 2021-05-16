@@ -129,3 +129,39 @@ class searches:
             }
             for i in range(len(dates))
         }
+
+    def github_release_stats(self, repo=None, tag=None, date=None):
+        """ Query github release stats from elasticsearch """
+        index = "github_release_stats" if not self.use_test_index else "dummy"
+        s = []
+        if repo:
+            s.append({"match": {"repo": repo}})
+        if tag:
+            s.append({"match": {"tag": tag}})
+        if date:
+            s.append({"match": {"date": date}})
+        # Create query
+        if s:
+            query = {
+                "sort": [{"date": {"order": "asc"}}],
+                "query": {"bool": {"must": s}},
+            }
+        else:
+            query = {"sort": [{"date": {"order": "asc"}}], "query": {"match_all": {}}}
+        res = self.db.es.search(index=index, size=1000, body=query)
+
+        dates = [val["_source"]["date"] for val in res["hits"]["hits"]]
+        repo = [val["_source"]["repo"] for val in res["hits"]["hits"]]
+        downloads = [val["_source"]["downloads"] for val in res["hits"]["hits"]]
+        tag = [val["_source"]["tag"] for val in res["hits"]["hits"]]
+        release_date = [val["_source"]["release_date"] for val in res["hits"]["hits"]]
+
+        return {
+            repo[i]: {
+                "date": dates[i],
+                "downloads": downloads[i],
+                "tag": tag[i],
+                "release_date": release_date[i],
+            }
+            for i in range(len(dates))
+        }

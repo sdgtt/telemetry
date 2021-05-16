@@ -15,31 +15,31 @@ class ingest:
         loc = os.path.dirname(__file__)
         return os.path.join(loc, "resources", name)
 
-    def _translate_hdl_resource_fields(self,fieldss):
+    def _translate_hdl_resource_fields(self, fieldss):
         out = []
         for field in fieldss:
-            fields = field.replace("(%)","_percent")
-            fields = fields.replace("(#)","_count")
-            fields = fields.replace("/","_")
-            fields = fields.replace(" ","_")
-            fields = fields.replace("(Avg)","avg")
-            fields = fields.replace(">","gt")
-            fields = fields.replace("-","_")
-            fields = fields.replace("+","_")
-            fields = fields.replace(".","p")
-            fields = fields.replace("*","")
-            fields = fields.replace("(Cell)","_cell")
-            fields = fields.replace("(Pblock)","_pblock")
-            fields = fields.replace("__","_")
+            fields = field.replace("(%)", "_percent")
+            fields = fields.replace("(#)", "_count")
+            fields = fields.replace("/", "_")
+            fields = fields.replace(" ", "_")
+            fields = fields.replace("(Avg)", "avg")
+            fields = fields.replace(">", "gt")
+            fields = fields.replace("-", "_")
+            fields = fields.replace("+", "_")
+            fields = fields.replace(".", "p")
+            fields = fields.replace("*", "")
+            fields = fields.replace("(Cell)", "_cell")
+            fields = fields.replace("(Pblock)", "_pblock")
+            fields = fields.replace("__", "_")
             # Dupe so if long spaces show up they get squashed
-            fields = fields.replace("__","_")
-            fields = fields.replace("__","_")
-            fields = fields.replace("__","_")
+            fields = fields.replace("__", "_")
+            fields = fields.replace("__", "_")
+            fields = fields.replace("__", "_")
             out.append(fields)
 
         # Check
         s = self.db.import_schema(self._get_schema("hdl_resources.json"))
-        for k in s['mappings']['properties']:
+        for k in s["mappings"]["properties"]:
             if k not in out:
                 raise Exception("Cannot find field {}".format(k))
 
@@ -216,6 +216,32 @@ class ingest:
         # Setup index if necessary
         self.db.index_name = "github_stats" if not self.use_test_index else "dummy"
         s = self.db.import_schema(self._get_schema("github_stats.json"))
+        self.db.create_db_from_schema(s)
+        # Add entry
+        self.db.add_entry(entry)
+
+    def log_github_release_stats(
+        self,
+        repo,
+        tag,
+        downloads,
+        release_date,
+        date=datetime.datetime.now(),
+    ):
+        """ Upload github release stats to elasticsearch """
+        # Create query
+        entry = {
+            "repo": repo,
+            "date": date,
+            "downloads": downloads,
+            "tag": tag,
+            "release_date": release_date,
+        }
+        # Setup index if necessary
+        self.db.index_name = (
+            "github_release_stats" if not self.use_test_index else "dummy"
+        )
+        s = self.db.import_schema(self._get_schema("github_release_stats.json"))
         self.db.create_db_from_schema(s)
         # Add entry
         self.db.add_entry(entry)

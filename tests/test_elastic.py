@@ -171,6 +171,39 @@ def test_search_github_stats():
     assert stats["TransceiverToolbox"]["clones_unique"] == 4
 
 
+def test_log_github_release_stats():
+    tel = telemetry.ingest(server=server)
+    tel.use_test_index = True
+    rd = datetime.datetime.now()
+    tel.log_github_release_stats("TransceiverToolbox", "v19.2.1", 1024, rd)
+    time.sleep(2)
+    results = tel.db.search_all()
+    tel.db.delete_index()
+    assert results["hits"]["total"]["value"] == 1
+
+
+def test_search_github_release_stats():
+    tel = telemetry.ingest(server=server)
+    tel.use_test_index = True
+    rd = datetime.datetime.now()
+    tel.log_github_release_stats("TransceiverToolbox", "v19.2.1", 1024, rd)
+    time.sleep(2)
+    tel = telemetry.searches(server=server)
+    tel.use_test_index = True
+    stats = tel.github_release_stats()
+    tel.db.delete_index()
+
+    s = datetime.datetime.strptime(
+        stats["TransceiverToolbox"]["release_date"], "%Y-%m-%dT%H:%M:%S.%f"
+    )
+
+    for k in stats:
+        assert k == "TransceiverToolbox"
+    assert stats["TransceiverToolbox"]["tag"] == "v19.2.1"
+    assert stats["TransceiverToolbox"]["downloads"] == 1024
+    assert s == rd
+
+
 def test_ingest_boot_tests_stats():
     tel = telemetry.ingest(server=server)
     tel.use_test_index = True
