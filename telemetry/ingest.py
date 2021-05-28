@@ -5,9 +5,10 @@ import csv
 
 
 class ingest:
-    use_test_index = False
+    # use_test_index = False
 
     def __init__(self, mode="elastic", server="alpine"):
+        self.use_test_index = False
         if mode == "elastic":
             self.db = telemetry.elastic(server=server)
 

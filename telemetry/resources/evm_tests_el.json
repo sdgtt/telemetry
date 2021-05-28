@@ -9,22 +9,22 @@
               "type": "date"
             },
             "device_name": {
-                "type": "text"
+                "type": "keyword"
             },
             "tx_attn": {
                 "type": "double"
             },
             "rx_gain_control_mode": {
-                "type": "text"
+                "type": "keyword"
             },
             "lo_freq": {
-                "type": "integer"
+                "type": "float"
             },
             "tmn": {
-                "type": "text"
+                "type": "keyword"
             },
             "bw": {
-                "type": "text"
+                "type": "keyword"
             },
             "evm_pbch": {
                 "type": "double"
