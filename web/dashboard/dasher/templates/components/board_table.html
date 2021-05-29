@@ -1,0 +1,35 @@
+<table class="table">
+  <thead>
+    <tr>
+      {% for item in boards[0] %}
+      <th scope="col">{{item}}</th>
+      {% endfor %}
+    </tr>
+  </thead>
+  <tbody>
+    {% for board in boards %}
+    <tr>
+      {% for k,v in board.items() %}
+        {% if k== "Status" %}
+          {% if v=="Pass" %}
+            <td><span>&#9989;</span></td>
+          {% else %}
+            <td><span>&#10060;</span></td>
+          {% endif %}
+        {% elif k== "Board" %}
+          {% set a = 'board/'+v %}
+          <td><a href={{a}}>{{v}}</a></td>
+        {% elif k== "Online" %}
+          {% if v %}
+          <td>Yes</td>
+          {% else %}
+          <td></td>
+          {% endif %}
+        {% else %}
+          <td>{{v}}</td>
+        {% endif %}
+      {% endfor %}
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
