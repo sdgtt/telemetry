@@ -58,6 +58,7 @@ class ingest:
         uboot_reached,
         linux_prompt_reached,
         drivers_enumerated,
+        drivers_missing,
         dmesg_warnings_found,
         dmesg_errors_found,
         jenkins_job_date,
@@ -65,7 +66,11 @@ class ingest:
         jenkins_project_name,
         jenkins_agent,
         pytest_errors,
-        pytest_failures
+        pytest_failures,
+        pytest_skipped,
+        pytest_tests,
+        last_failing_stage,
+        last_failing_stage_failure
     ):
         """ Upload boot test results to elasticsearch """
         # Build will produce the following:
@@ -103,6 +108,7 @@ class ingest:
             "uboot_reached": uboot_reached,
             "linux_prompt_reached": linux_prompt_reached,
             "drivers_enumerated": drivers_enumerated,
+            "drivers_missing": drivers_missing,
             "dmesg_warnings_found": dmesg_warnings_found,
             "dmesg_errors_found": dmesg_errors_found,
             "jenkins_job_date": jenkins_job_date,
@@ -111,7 +117,11 @@ class ingest:
             "jenkins_agent": jenkins_agent,
             "source_adjacency_matrix" : self.get_adjacency_matrix(**args),
             "pytest_errors": pytest_errors,
-            "pytest_failures": pytest_failures
+            "pytest_failures": pytest_failures,
+            "pytest_skipped": pytest_skipped,
+            "pytest_tests": pytest_tests,
+            "last_failing_stage": last_failing_stage,
+            "last_failing_stage_failure": last_failing_stage_failure
         }
         # Setup index if necessary
         self.db.index_name = "dummy" if self.use_test_index else "boot_tests"

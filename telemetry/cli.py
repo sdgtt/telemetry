@@ -40,6 +40,7 @@ def log_boot_logs(server, in_args):
         "uboot_reached": False,
         "linux_prompt_reached": False,
         "drivers_enumerated": 0,
+        "drivers_missing": 0,
         "dmesg_warnings_found": 0,
         "dmesg_errors_found": 0,
         "jenkins_job_date": datetime.datetime.now(),
@@ -47,7 +48,11 @@ def log_boot_logs(server, in_args):
         "jenkins_project_name": 0,
         "jenkins_agent": "NA",
         "pytest_errors": 0,
-        "pytest_failures": 0
+        "pytest_failures": 0,
+        "pytest_skipped": 0,
+        "pytest_tests": 0,
+        "last_failing_stage" : "NA",
+        "last_failing_stage_failure": "NA"
     }
     if len(in_args) == 0:
         click.echo("Must have non-zero arguments for database entry")

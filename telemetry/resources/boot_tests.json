@@ -44,6 +44,9 @@
             "drivers_enumerated": {
                 "type": "integer"
             },
+            "drivers_missing": {
+                "type": "integer"
+            },
             "dmesg_warnings_found": {
                 "type": "integer"
             },
@@ -70,6 +73,18 @@
             },
             "pytest_failures": {
                 "type": "integer"
+            },
+            "pytest_skipped": {
+                "type": "integer"
+            },
+            "pytest_tests": {
+                "type": "integer"
+            },
+            "last_failing_stage": {
+                "type": "keyword"
+            },
+            "last_failing_stage_failure": {
+                "type": "text"
             }
         }
     }
