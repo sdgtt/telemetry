@@ -1,5 +1,7 @@
 from flask import Flask, render_template
 from pages import allboards as ab
+from models import boards as b
+from models import boot_tests as bt
 # from junit2htmlreport import parser
 
 app = Flask(__name__)
@@ -19,15 +21,17 @@ def hello_world():
 
 @app.route("/boards")
 def allboards():
-    boards_ref = ab.get_board_list()
+    #retrieve boards from elastic server
+    boards_ref = b.Boards().boards
     headers = ["Board", "Status"]
     boards = [
         {
-            "Online": "zynqmp" in board,
-            "Board": board,
-            "Status": "Pass",
-            "HDL Commit": "791c6250 (5/6/2021)",
-            "Linux Commit": "791caa50 (5/8/2021)",
+            "Online": board.is_online,
+            "Board": board.board_name,
+            "Status": board.boot_test_result,
+            "Jenkins Project Name": board.jenkins_project_name,
+            "HDL Commit": board.hdl_hash,
+            "Linux Commit": board.linux_hash
         }
         for board in boards_ref
     ]
@@ -36,22 +40,29 @@ def allboards():
 
 @app.route("/board/<board_name>")
 def board(board_name):
-    boards_ref = ab.get_board_list()
+    boot_tests = bt.BoardBootTests(board_name).boot_tests
     boards = [
         {
-            "u-boot Reached": "True",
-            "Linux Booted": "True",
+            "Tested branch": test.source_adjacency_matrix,
+            "u-boot Reached": test.uboot_reached,
+            "Linux Booted": test.linux_prompt_reached,
             "Linux Tests": {"pass": 10, "fail": 0},
             "pyadi Tests": {"pass": 10, "fail": 0},
-            "Status": "Pass",
-            "HDL Commit": "791c6250 (5/6/2021)",
-            "Linux Commit": "791caa50 (5/8/2021)",
-            "Jenkins Job": "123",
+            "Status": test.boot_test_result,
+            "HDL Commit": test.hdl_hash,
+            "Linux Commit": test.linux_hash,
+            "Jenkins Project Name": test.jenkins_project_name,
+            "Jenkins Build Number": test.jenkins_build_number,
+            "Jenkins Job Date:": test.jenkins_job_date
         }
-        for board in boards_ref
+        for test in boot_tests
     ]
     return render_template("board.html", board_name=board_name, boards=boards)
 
+
+@app.route("/kibana/<visualization>")
+def kibana(visualization):
+    return render_template("kibana.html", visualization=visualization)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0")
