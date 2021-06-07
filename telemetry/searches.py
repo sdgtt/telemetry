@@ -24,15 +24,15 @@ class searches:
         # Create query
         if s:
             query = {
-                "sort": [{"jenkins_job_date": {"order": "asc"}}],
+                "sort": [{"jenkins_job_date": {"order": "desc"}}],
                 "query": {"bool": {"must": s}},
             }
         else:
             query = {
-                "sort": [{"jenkins_job_date": {"order": "asc"}}],
+                "sort": [{"jenkins_job_date": {"order": "desc"}}],
                 "query": {"match_all": {}},
             }
-        res = self.db.es.search(index=index, size=1000, body=query)
+        res = self.db.es.search(index=index, size=10000, body=query)
 
         # fields = [
         #     "boot_folder_name",
