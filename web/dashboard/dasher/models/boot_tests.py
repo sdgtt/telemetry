@@ -42,39 +42,79 @@ class BootTest:
         ]
 
         if self.raw_boot_test_result:
-            for f,v in self.raw_boot_test_result.items():
-                setattr(self, f, v)
+            for f in fields:
+                if f in self.raw_boot_test_result.keys():
+                    setattr(self, f, self.raw_boot_test_result[f])
+                else:
+                    if f in ["drivers_enumerated", 
+                            "drivers_missing", 
+                            "dmesg_warnings_found", 
+                            "dmesg_errors_found",
+                            "pytest_errors",
+                            "pytest_failures",
+                            "pytest_skipped",
+                            "pytest_tests"]:
+                        setattr(self, f, "0")
+                    else:
+                        setattr(self, f, "NA")
         else:
             for f in fields:
                 setattr(self, f, None)
 
-        self.boot_test_result = self.__is_pass() #Pass/Fail
+        self.boot_test_result, self.boot_test_failure = self.__is_pass()
 
     def __is_pass(self):
         # TODO: needs further detailed implementation
         # to represent correctly the actual status of the board
         if self.raw_boot_test_result:
-            if self.linux_prompt_reached and\
-               self.dmesg_errors_found == '0' and\
-               self.pytest_errors == '0' and\
-               self.pytest_failures == '0':
-                return 'Pass'   
-            else:
-                return 'Fail'
-        return None
+            result = 'Pass'
+            failure = []
+            # if self.linux_prompt_reached and\
+            #    self.dmesg_errors_found == '0' and\
+            #    self.pytest_errors == '0' and\
+            #    self.pytest_failures == '0':
+            #     return 'Pass' 
+            if not self.pytest_failures == '0':
+                result = 'Fail'
+                failure.append('pytest failure {}'.format(self.pytest_failures))
+            if not self.pytest_errors == '0':
+                result = 'Fail'
+                failure.append('pytest errors {}'.format(self.pytest_errors))
+            if not self.drivers_missing == '0':
+                result = 'Fail'
+                failure.append('linux drivers missing {}'.format(self.drivers_missing))
+            if not self.dmesg_errors_found == '0':
+                result = 'Fail'
+                failure.append('linux dmesg errors {}'.format(self.dmesg_errors_found))
+            if not self.linux_prompt_reached:
+                result = 'Fail'
+                failure = []
+                failure.append('Linux prompt not reached')
+            if not self.uboot_reached:
+                result = 'Fail'
+                failure = []
+                failure.append('u-boot not reached')
+            if not self.last_failing_stage_failure == 'NA':
+                result = 'Fail'
+                failure = []
+                failure.append(self.last_failing_stage_failure)
+
+            return result,failure
+
+        return None,None
 
     def display(self):
         return self.__dict__
 
 class BoardBootTests:
-    def __init__(self, boot_folder_name):
+    def __init__(self, boot_folder_name, jenkins_project_name=None):
 
         if not boot_folder_name:
             raise ValueError('boot_folder_name must not be null or empty')
         
         db_res = telemetry.searches(mode=MODE, server=ELASTIC_SERVER)
         # create boards object from raw db_res
-        self._boot_tests = [ BootTest(res_dict) for res_dict in db_res.boot_tests(boot_folder_name)[boot_folder_name] ]
+        self._boot_tests = [ BootTest(res_dict) for res_dict in db_res.boot_tests(boot_folder_name, jenkins_project_name)[boot_folder_name] ]
 
     @property
     def boot_tests(self):

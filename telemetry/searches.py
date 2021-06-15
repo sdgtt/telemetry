@@ -15,12 +15,15 @@ class searches:
         loc = os.path.dirname(__file__)
         return os.path.join(loc, "resources", name)
 
-    def boot_tests(self, boot_folder_name=None):
+    def boot_tests(self, boot_folder_name=None, jenkins_project_name=None):
         """ Query boot test results from elasticsearch """
         index = "boot_tests" if not self.use_test_index else "dummy"
         s = []
         if boot_folder_name:
             s.append({"match": {"boot_folder_name": boot_folder_name}})
+
+        if jenkins_project_name:
+            s.append({"match": {"jenkins_project_name": jenkins_project_name}})
         # Create query
         if s:
             query = {
