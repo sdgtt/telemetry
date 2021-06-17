@@ -41,12 +41,11 @@ class BootTest:
             "last_failing_stage_failure"
         ]
 
-        if self.raw_boot_test_result:
-            for f in fields:
+        for f in fields:
+            if self.raw_boot_test_result:
                 if f in self.raw_boot_test_result.keys():
                     setattr(self, f, self.raw_boot_test_result[f])
-                else:
-                    if f in ["drivers_enumerated", 
+                elif f in ["drivers_enumerated", 
                             "drivers_missing", 
                             "dmesg_warnings_found", 
                             "dmesg_errors_found",
@@ -54,11 +53,10 @@ class BootTest:
                             "pytest_failures",
                             "pytest_skipped",
                             "pytest_tests"]:
-                        setattr(self, f, "0")
-                    else:
-                        setattr(self, f, "NA")
-        else:
-            for f in fields:
+                    setattr(self, f, "0")
+                else:
+                    setattr(self, f, "NA")
+            else:
                 setattr(self, f, None)
 
         self.boot_test_result, self.boot_test_failure = self.__is_pass()
@@ -66,42 +64,37 @@ class BootTest:
     def __is_pass(self):
         # TODO: needs further detailed implementation
         # to represent correctly the actual status of the board
-        if self.raw_boot_test_result:
-            result = 'Pass'
-            failure = []
+        if not self.raw_boot_test_result:
+            return None,None
+        result = 'Pass'
+        failure = []
             # if self.linux_prompt_reached and\
             #    self.dmesg_errors_found == '0' and\
             #    self.pytest_errors == '0' and\
             #    self.pytest_failures == '0':
             #     return 'Pass' 
-            if not self.pytest_failures == '0':
-                result = 'Fail'
-                failure.append('pytest failure {}'.format(self.pytest_failures))
-            if not self.pytest_errors == '0':
-                result = 'Fail'
-                failure.append('pytest errors {}'.format(self.pytest_errors))
-            if not self.drivers_missing == '0':
-                result = 'Fail'
-                failure.append('linux drivers missing {}'.format(self.drivers_missing))
-            if not self.dmesg_errors_found == '0':
-                result = 'Fail'
-                failure.append('linux dmesg errors {}'.format(self.dmesg_errors_found))
-            if not self.linux_prompt_reached:
-                result = 'Fail'
-                failure = []
-                failure.append('Linux prompt not reached')
-            if not self.uboot_reached:
-                result = 'Fail'
-                failure = []
-                failure.append('u-boot not reached')
-            if not self.last_failing_stage_failure == 'NA':
-                result = 'Fail'
-                failure = []
-                failure.append(self.last_failing_stage_failure)
-
-            return result,failure
-
-        return None,None
+        if self.pytest_failures != '0':
+            result = 'Fail'
+            failure.append('pytest failure {}'.format(self.pytest_failures))
+        if self.pytest_errors != '0':
+            result = 'Fail'
+            failure.append('pytest errors {}'.format(self.pytest_errors))
+        if self.drivers_missing != '0':
+            result = 'Fail'
+            failure.append('linux drivers missing {}'.format(self.drivers_missing))
+        if self.dmesg_errors_found != '0':
+            result = 'Fail'
+            failure.append('linux dmesg errors {}'.format(self.dmesg_errors_found))
+        if not self.linux_prompt_reached:
+            result = 'Fail'
+            failure = ['Linux prompt not reached']
+        if not self.uboot_reached:
+            result = 'Fail'
+            failure = ['u-boot not reached']
+        if self.last_failing_stage_failure != 'NA':
+            result = 'Fail'
+            failure = [self.last_failing_stage_failure]
+        return result,failure
 
     def display(self):
         return self.__dict__
