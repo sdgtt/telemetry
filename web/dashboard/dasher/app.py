@@ -40,7 +40,15 @@ def allboards():
         }
         for board in boards_ref
     ]
-    return render_template("allboards.html", headers=headers, boards=boards)
+
+    summary = {
+        "Total Boards": len(boards),
+        "Passing" : len([ board for board in boards if board['Status'] == "Pass"]),
+        "Online" : len([ board for board in boards if board['Online'] == True]),
+    }
+    summary.update({"Passing Percent":100*summary['Passing']/summary['Total Boards']})
+    summary.update({"Online Percent":100*summary['Online']/summary['Total Boards']})
+    return render_template("allboards.html", headers=headers, boards=boards, summary=summary)
 
 
 @app.route("/board/<board_name>")
