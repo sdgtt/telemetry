@@ -17,10 +17,15 @@
             {% else %}
               <td><span>&#10060;</span></td>
             {% endif %}
-          {% elif k in ["Linux Tests","pyadi Tests"] %}
-            <td>
-              Passed <span class="badge rounded-pill bg-success">{{v.pass}}</span>
-              Failed <span class="badge rounded-pill bg-danger">{{v.fail}}</span>
+          {% elif k in ["Linux Tests"] %}
+            <td style="font-size: small">
+              dmesg errors <br><span class="badge rounded-pill bg-danger">{{v.dmesg_errors}}</span><br>
+              missing drivers <br><span class="badge rounded-pill bg-danger">{{v.drivers_missing}}</span>
+            </td>
+            {% elif k in ["pyadi Tests"] %}
+            <td style="font-size: small">
+              pass <br><span class="badge rounded-pill bg-success">{{v.pass}}</span><br>
+              fail <br><span class="badge rounded-pill bg-danger">{{v.fail}}</span>
             </td>
           {% else %}
             <td>{{v}}</td>

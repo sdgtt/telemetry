@@ -15,24 +15,27 @@ class searches:
         loc = os.path.dirname(__file__)
         return os.path.join(loc, "resources", name)
 
-    def boot_tests(self, boot_folder_name=None):
+    def boot_tests(self, boot_folder_name=None, jenkins_project_name=None):
         """ Query boot test results from elasticsearch """
         index = "boot_tests" if not self.use_test_index else "dummy"
         s = []
         if boot_folder_name:
             s.append({"match": {"boot_folder_name": boot_folder_name}})
+
+        if jenkins_project_name:
+            s.append({"match": {"jenkins_project_name": jenkins_project_name}})
         # Create query
         if s:
             query = {
-                "sort": [{"jenkins_job_date": {"order": "asc"}}],
+                "sort": [{"jenkins_job_date": {"order": "desc"}}],
                 "query": {"bool": {"must": s}},
             }
         else:
             query = {
-                "sort": [{"jenkins_job_date": {"order": "asc"}}],
+                "sort": [{"jenkins_job_date": {"order": "desc"}}],
                 "query": {"match_all": {}},
             }
-        res = self.db.es.search(index=index, size=1000, body=query)
+        res = self.db.es.search(index=index, size=10000, body=query)
 
         # fields = [
         #     "boot_folder_name",
