@@ -1,4 +1,4 @@
-function log_lte_evm_test(results, date, server, test)
+function log_lte_test(results, date, server, test)
 
     if nargin < 2
         % '2020-09-16T19:22:31.999032'
@@ -11,7 +11,8 @@ function log_lte_evm_test(results, date, server, test)
         test = false;
     end
 
-
+    tel = py.telemetry.ingest(pyargs("server",server)); disp(properties(tel));
+    % tel.use_test_index = test;
     for i = 1:numel(results)
         device_name = results(i).Details.DeviceName;
         tx_attn = results(i).Details.TxAttn;
@@ -28,11 +29,7 @@ function log_lte_evm_test(results, date, server, test)
         evm_pss = results(i).Details.evmPSS;
         evm_pdsch = results(i).Details.evmPDSCH;
 
+        tel.log_lte_evm_test(device_name, tx_attn, rx_gain_control_mode, lo_freq, ...
+            tmn, bw, evm_pbch, evm_pcfich, evm_phich, evm_pdcch, evm_rs, ...
+            evm_sss, evm_pss, evm_pdsch, date);
     end
-    
-
-    tel = py.telemetry.ingest(pyargs("server",server));
-    tel.use_test_index = test;
-    tel.log_lte_evm_test(device_name, tx_attn, rx_gain_control_mode, lo_freq, ...
-        tmn, bw, evm_pbch, evm_pcfich, evm_phich, evm_pdcch, evm_rs, ...
-        evm_sss, evm_pss, evm_pdsch, date);
