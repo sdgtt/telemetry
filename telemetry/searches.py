@@ -55,6 +55,7 @@ class searches:
         #     "jenkins_build_number",
         #     "jenkins_project_name",
         #     "jenkins_agent",
+        #     "jenkins_trigger",
         #     "source_adjacency_matrix",
         #     "pytest_errors",
         #     "pytest_failures",

@@ -65,6 +65,9 @@
             "jenkins_agent": {
                 "type": "keyword"
             },
+            "jenkins_trigger": {
+                "type": "keyword"
+            },
             "source_adjacency_matrix": {
                 "type": "keyword"
             },

@@ -47,6 +47,7 @@ def log_boot_logs(server, in_args):
         "jenkins_build_number": 0,
         "jenkins_project_name": 0,
         "jenkins_agent": "NA",
+        "jenkins_trigger": "NA",
         "pytest_errors": 0,
         "pytest_failures": 0,
         "pytest_skipped": 0,

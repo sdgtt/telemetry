@@ -225,6 +225,7 @@ def test_ingest_boot_tests_stats():
         "jenkins_build_number": 34,
         "jenkins_project_name": "pyadi-iio-hw",
         "jenkins_agent": "master",
+        "jenkins_trigger": "manual"
     }
 
     tel.log_boot_tests(**inputs)
@@ -268,6 +269,7 @@ def test_search_boot_tests():
         "jenkins_build_number": 34,
         "jenkins_project_name": "pyadi-iio-hw",
         "jenkins_agent": "master",
+        "jenkins_trigger": "manual"
     }
 
     tel.log_boot_tests(**inputs)
