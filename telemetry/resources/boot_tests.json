@@ -6,7 +6,7 @@
     "mappings": {
         "properties": {
             "boot_folder_name": {
-                "type": "text"
+                "type": "keyword"
             },
             "hdl_hash": {
                 "type": "text"
@@ -14,17 +14,25 @@
             "linux_hash": {
                 "type": "text"
             },
-            "hdl_branch": {
+            "boot_partition_hash": {
                 "type": "text"
+            },
+            "hdl_branch": {
+                "type": "keyword"
             },
             "linux_branch": {
-                "type": "text"
+                "type": "keyword"
             },
-
+            "boot_partition_branch": {
+                "type": "keyword"
+            },
             "is_hdl_release": {
                 "type": "boolean"
             },
             "is_linux_release": {
+                "type": "boolean"
+            },
+            "is_boot_partition_release": {
                 "type": "boolean"
             },
             "uboot_reached": {
@@ -34,13 +42,16 @@
                 "type": "boolean"
             },
             "drivers_enumerated": {
-                "type": "boolean"
+                "type": "integer"
+            },
+            "drivers_missing": {
+                "type": "integer"
             },
             "dmesg_warnings_found": {
-                "type": "boolean"
+                "type": "integer"
             },
             "dmesg_errors_found": {
-                "type": "boolean"
+                "type": "integer"
             },
             "jenkins_job_date": {
                 "type": "date"
@@ -49,9 +60,33 @@
                 "type": "integer"
             },
             "jenkins_project_name": {
-                "type": "text"
+                "type": "keyword"
             },
             "jenkins_agent": {
+                "type": "keyword"
+            },
+            "jenkins_trigger": {
+                "type": "keyword"
+            },
+            "source_adjacency_matrix": {
+                "type": "keyword"
+            },
+            "pytest_errors": {
+                "type": "integer"
+            },
+            "pytest_failures": {
+                "type": "integer"
+            },
+            "pytest_skipped": {
+                "type": "integer"
+            },
+            "pytest_tests": {
+                "type": "integer"
+            },
+            "last_failing_stage": {
+                "type": "keyword"
+            },
+            "last_failing_stage_failure": {
                 "type": "text"
             }
         }

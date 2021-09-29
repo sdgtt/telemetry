@@ -48,19 +48,30 @@ class ingest:
         boot_folder_name,
         hdl_hash,
         linux_hash,
+        boot_partition_hash,
         hdl_branch,
         linux_branch,
+        boot_partition_branch,
         is_hdl_release,
         is_linux_release,
+        is_boot_partition_release,
         uboot_reached,
         linux_prompt_reached,
         drivers_enumerated,
+        drivers_missing,
         dmesg_warnings_found,
         dmesg_errors_found,
         jenkins_job_date,
         jenkins_build_number,
         jenkins_project_name,
         jenkins_agent,
+        jenkins_trigger,
+        pytest_errors,
+        pytest_failures,
+        pytest_skipped,
+        pytest_tests,
+        last_failing_stage,
+        last_failing_stage_failure
     ):
         """ Upload boot test results to elasticsearch """
         # Build will produce the following:
@@ -77,25 +88,42 @@ class ingest:
         #
         #   dmesg warnings found
         #   dmesg errors found
+        args = {
+            "hdl_branch" : hdl_branch,
+            "linux_branch": linux_branch,
+            "boot_partition_branch": boot_partition_branch
+        }
 
         # Create query
         entry = {
             "boot_folder_name": boot_folder_name,
             "hdl_hash": hdl_hash,
             "linux_hash": linux_hash,
+            "boot_partition_hash": boot_partition_hash,
             "hdl_branch": hdl_branch,
             "linux_branch": linux_branch,
+            "boot_partition_branch": boot_partition_branch,
             "is_hdl_release": is_hdl_release,
             "is_linux_release": is_linux_release,
+            "is_boot_partition_release": is_boot_partition_release,
             "uboot_reached": uboot_reached,
             "linux_prompt_reached": linux_prompt_reached,
             "drivers_enumerated": drivers_enumerated,
+            "drivers_missing": drivers_missing,
             "dmesg_warnings_found": dmesg_warnings_found,
             "dmesg_errors_found": dmesg_errors_found,
             "jenkins_job_date": jenkins_job_date,
             "jenkins_build_number": jenkins_build_number,
             "jenkins_project_name": jenkins_project_name,
             "jenkins_agent": jenkins_agent,
+            "jenkins_trigger": jenkins_trigger,
+            "source_adjacency_matrix" : self.get_adjacency_matrix(**args),
+            "pytest_errors": pytest_errors,
+            "pytest_failures": pytest_failures,
+            "pytest_skipped": pytest_skipped,
+            "pytest_tests": pytest_tests,
+            "last_failing_stage": last_failing_stage,
+            "last_failing_stage_failure": last_failing_stage_failure
         }
         # Setup index if necessary
         self.db.index_name = "dummy" if self.use_test_index else "boot_tests"
@@ -245,3 +273,17 @@ class ingest:
         self.db.create_db_from_schema(s)
         # Add entry
         self.db.add_entry(entry)
+
+    def get_adjacency_matrix(
+        self,
+        hdl_branch,
+        linux_branch,
+        boot_partition_branch
+    ):
+        """ Returns Source combination matrix for elastic adjacency_matrix """
+        matrix = ''
+        if not boot_partition_branch == "NA":
+            matrix = "boot_partition_{}".format(boot_partition_branch)
+        else:
+            matrix = "hdl_{}_linux_{}".format(hdl_branch, linux_branch)
+        return matrix
