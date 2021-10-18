@@ -225,7 +225,7 @@ def test_ingest_boot_tests_stats():
         "jenkins_build_number": 34,
         "jenkins_project_name": "pyadi-iio-hw",
         "jenkins_agent": "master",
-        "jenkins_trigger": "manual"
+        "jenkins_trigger": "manual",
     }
 
     tel.log_boot_tests(**inputs)
@@ -269,7 +269,7 @@ def test_search_boot_tests():
         "jenkins_build_number": 34,
         "jenkins_project_name": "pyadi-iio-hw",
         "jenkins_agent": "master",
-        "jenkins_trigger": "manual"
+        "jenkins_trigger": "manual",
     }
 
     tel.log_boot_tests(**inputs)
@@ -284,3 +284,41 @@ def test_search_boot_tests():
     assert len(res) == 2
     assert "zynq-adrv9361-z7035-fmc" in res.keys()
     assert "zynq-adrv9361-z7035-bob" in res.keys()
+
+
+def test_ingest_analog_measurements():
+    tel = telemetry.ingest(server=server)
+    tel.use_test_index = True
+    config = """iio:device1: adrv9002-phy
+                9 channels found:
+                        voltage0:  (output)
+                        16 channel-specific attributes found:
+                                attr  0: atten_control_mode value: spi
+                                attr  1: atten_control_mode_available value: bypass spi pin
+                                attr  2: close_loop_gain_tracking_en value: 0
+                                attr  3: en value: 1
+                                attr  4: ensm_mode value: rf_enabled
+                                attr  5: ensm_mode_available value: calibrated primed rf_enabled
+                                attr  6: hardwaregain value: 0.000000 dB
+                                attr  7: lo_leakage_tracking_en value: 0
+                                attr  8: loopback_delay_tracking_en value: 0
+                                attr  9: nco_frequency value: 0
+                                attr 10: pa_correction_tracking_en value: 0
+                                attr 11: port_en_mode value: spi"""
+    entry = {
+        "device_name": "adrv9002",
+        "date": datetime.datetime.now(),
+        "device_config": config,
+        "sfdr": 65.23,
+        "snr": 132,
+        "nsd": 44.5,
+        "sinad": 33.1,
+        "thd": 123.4,
+    }
+
+    tel.log_analog_measurements(**entry)
+
+    time.sleep(2)
+    results = tel.db.search_all()
+    tel.db.delete_index()
+    assert results["hits"]["total"]["value"] == 1

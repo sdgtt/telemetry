@@ -71,9 +71,9 @@ class ingest:
         pytest_skipped,
         pytest_tests,
         last_failing_stage,
-        last_failing_stage_failure
+        last_failing_stage_failure,
     ):
-        """ Upload boot test results to elasticsearch """
+        """Upload boot test results to elasticsearch"""
         # Build will produce the following:
         #   hdl commit hash
         #   linux commit hash
@@ -89,9 +89,9 @@ class ingest:
         #   dmesg warnings found
         #   dmesg errors found
         args = {
-            "hdl_branch" : hdl_branch,
+            "hdl_branch": hdl_branch,
             "linux_branch": linux_branch,
-            "boot_partition_branch": boot_partition_branch
+            "boot_partition_branch": boot_partition_branch,
         }
 
         # Create query
@@ -117,13 +117,13 @@ class ingest:
             "jenkins_project_name": jenkins_project_name,
             "jenkins_agent": jenkins_agent,
             "jenkins_trigger": jenkins_trigger,
-            "source_adjacency_matrix" : self.get_adjacency_matrix(**args),
+            "source_adjacency_matrix": self.get_adjacency_matrix(**args),
             "pytest_errors": pytest_errors,
             "pytest_failures": pytest_failures,
             "pytest_skipped": pytest_skipped,
             "pytest_tests": pytest_tests,
             "last_failing_stage": last_failing_stage,
-            "last_failing_stage_failure": last_failing_stage_failure
+            "last_failing_stage_failure": last_failing_stage_failure,
         }
         # Setup index if necessary
         self.db.index_name = "dummy" if self.use_test_index else "boot_tests"
@@ -161,7 +161,7 @@ class ingest:
         channel,
         date=datetime.datetime.now(),
     ):
-        """ Upload AD9361 tx quad cal test data to elasticsearch """
+        """Upload AD9361 tx quad cal test data to elasticsearch"""
         # Create query
         entry = {
             "test_name": test_name,
@@ -196,7 +196,7 @@ class ingest:
         evm_pdsch,
         date=datetime.datetime.now(),
     ):
-        """ Upload LTE EVM tests to elasticsearch """
+        """Upload LTE EVM tests to elasticsearch"""
         # Create query
         entry = {
             "device_name": device_name,
@@ -222,6 +222,36 @@ class ingest:
         # Add entry
         self.db.add_entry(entry)
 
+    def log_analog_measurements(
+        self,
+        device_name,
+        device_config: str,
+        sfdr: float = None,
+        snr: float = None,
+        nsd: float = None,
+        sinad: float = None,
+        thd: float = None,
+        date=datetime.datetime.now(),
+    ):
+        """Upload analog performance tests"""
+        # Create query
+        entry = {
+            "device_name": device_name,
+            "date": date,
+            "device_config": device_config,
+            "sfdr": sfdr,
+            "snr": snr,
+            "nsd": nsd,
+            "sinad": sinad,
+            "thd": thd,
+        }
+        # Setup index if necessary
+        self.db.index_name = "analog_perf" if not self.use_test_index else "dummy"
+        s = self.db.import_schema(self._get_schema("analog_perf.json"))
+        self.db.create_db_from_schema(s)
+        # Add entry
+        self.db.add_entry(entry)
+
     def log_github_stats(
         self,
         repo,
@@ -231,7 +261,7 @@ class ingest:
         clones_unique,
         date=datetime.datetime.now(),
     ):
-        """ Upload github stats to elasticsearch """
+        """Upload github stats to elasticsearch"""
         # Create query
         entry = {
             "repo": repo,
@@ -256,7 +286,7 @@ class ingest:
         release_date,
         date=datetime.datetime.now(),
     ):
-        """ Upload github release stats to elasticsearch """
+        """Upload github release stats to elasticsearch"""
         # Create query
         entry = {
             "repo": repo,
@@ -274,14 +304,9 @@ class ingest:
         # Add entry
         self.db.add_entry(entry)
 
-    def get_adjacency_matrix(
-        self,
-        hdl_branch,
-        linux_branch,
-        boot_partition_branch
-    ):
-        """ Returns Source combination matrix for elastic adjacency_matrix """
-        matrix = ''
+    def get_adjacency_matrix(self, hdl_branch, linux_branch, boot_partition_branch):
+        """Returns Source combination matrix for elastic adjacency_matrix"""
+        matrix = ""
         if not boot_partition_branch == "NA":
             matrix = "boot_partition_{}".format(boot_partition_branch)
         else:
