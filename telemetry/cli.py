@@ -52,6 +52,10 @@ def log_boot_logs(server, in_args):
         "pytest_failures": 0,
         "pytest_skipped": 0,
         "pytest_tests": 0,
+        "matlab_errors": 0,
+        "matlab_failures": 0,
+        "matlab_skipped": 0,
+        "matlab_tests": 0,
         "last_failing_stage" : "NA",
         "last_failing_stage_failure": "NA"
     }

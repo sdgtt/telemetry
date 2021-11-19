@@ -83,6 +83,18 @@
             "pytest_tests": {
                 "type": "integer"
             },
+            "matlab_errors": {
+                "type": "integer"
+            },
+            "matlab_failures": {
+                "type": "integer"
+            },
+            "matlab_skipped": {
+                "type": "integer"
+            },
+            "matlab_tests": {
+                "type": "integer"
+            },
             "last_failing_stage": {
                 "type": "keyword"
             },
