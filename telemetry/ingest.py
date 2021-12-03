@@ -70,6 +70,10 @@ class ingest:
         pytest_failures,
         pytest_skipped,
         pytest_tests,
+        matlab_errors,
+        matlab_failures,
+        matlab_skipped,
+        matlab_tests,
         last_failing_stage,
         last_failing_stage_failure
     ):
@@ -122,6 +126,10 @@ class ingest:
             "pytest_failures": pytest_failures,
             "pytest_skipped": pytest_skipped,
             "pytest_tests": pytest_tests,
+            "matlab_errors": matlab_errors,
+            "matlab_failures": matlab_failures,
+            "matlab_skipped": matlab_skipped,
+            "matlab_tests": matlab_tests,
             "last_failing_stage": last_failing_stage,
             "last_failing_stage_failure": last_failing_stage_failure
         }
