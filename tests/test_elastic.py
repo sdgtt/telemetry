@@ -307,7 +307,7 @@ def test_search_boot_tests():
     time.sleep(2)
     tel = telemetry.searches(server=server)
     tel.use_test_index = True
-    res = tel.boot_tests(inputs["boot_folder_name"])
+    res = tel.boot_tests()
     tel.db.delete_index()
     assert len(res) == 2
     assert "zynq-adrv9361-z7035-fmc" in res.keys()
