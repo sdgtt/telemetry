@@ -17,9 +17,10 @@ class elastic:
         username="elastic",
         password="changeme",
         index_name="example_index",
+        scheme="http"
     ):
         self.es = Elasticsearch(
-            [{"host": server, "port": port}],
+            [{"host": server, "port": port, "scheme":scheme}],
             http_auth=(username, password),
             timeout=3,
             max_retries=2,

@@ -212,20 +212,34 @@ def test_ingest_boot_tests_stats():
         "boot_folder_name": "zynq-adrv9361-z7035-bob",
         "hdl_hash": "ecd880d44cdd000691283f2edbd31aa52d6ccc3e",
         "linux_hash": "b0cb7c3bfd1fec02b1671b061112cd2551a9b340",
+        "boot_partition_hash": "decb7c3bfd1fec02b1671b061112cd2551a9b3ac",
         "hdl_branch": "hdl_2019_r2",
         "linux_branch": "2019_R2",
+        "boot_partition_branch": "NA",
         "is_hdl_release": True,
         "is_linux_release": True,
+        "is_boot_partition_release": True,
         "uboot_reached": True,
         "linux_prompt_reached": True,
-        "drivers_enumerated": True,
-        "dmesg_warnings_found": False,
-        "dmesg_errors_found": False,
+        "drivers_enumerated": 10,
+        "drivers_missing": 5,
+        "pytest_errors": 5,
+        "pytest_failures": 5,
+        "pytest_skipped": 5,
+        "pytest_tests": 5,
+        "matlab_errors": 5,
+        "matlab_failures": 6,
+        "matlab_skipped": 7,
+        "matlab_tests": 8,
+        "dmesg_warnings_found": 0,
+        "dmesg_errors_found": 0,
         "jenkins_job_date": datetime.datetime.now(),  # "Dec 31, 2020 @ 13:47:04.129",
         "jenkins_build_number": 34,
         "jenkins_project_name": "pyadi-iio-hw",
         "jenkins_agent": "master",
-        "jenkins_trigger": "manual"
+        "jenkins_trigger": "manual",
+        "last_failing_stage": "NA",
+        "last_failing_stage_failure": "NA"
     }
 
     tel.log_boot_tests(**inputs)
@@ -256,20 +270,34 @@ def test_search_boot_tests():
         "boot_folder_name": "zynq-adrv9361-z7035-bob",
         "hdl_hash": "ecd880d44cdd000691283f2edbd31aa52d6ccc3e",
         "linux_hash": "b0cb7c3bfd1fec02b1671b061112cd2551a9b340",
+        "boot_partition_hash": "decb7c3bfd1fec02b1671b061112cd2551a9b3ac",
         "hdl_branch": "hdl_2019_r2",
         "linux_branch": "2019_R2",
+        "boot_partition_branch": "NA",
         "is_hdl_release": True,
         "is_linux_release": True,
+        "is_boot_partition_release": True,
         "uboot_reached": True,
         "linux_prompt_reached": True,
-        "drivers_enumerated": True,
-        "dmesg_warnings_found": False,
-        "dmesg_errors_found": False,
+        "drivers_enumerated": 10,
+        "drivers_missing": 5,
+        "pytest_errors": 5,
+        "pytest_failures": 5,
+        "pytest_skipped": 5,
+        "pytest_tests": 5,
+        "matlab_errors": 5,
+        "matlab_failures": 6,
+        "matlab_skipped": 7,
+        "matlab_tests": 8,
+        "dmesg_warnings_found": 0,
+        "dmesg_errors_found": 0,
         "jenkins_job_date": datetime.datetime.now(),  # "Dec 31, 2020 @ 13:47:04.129",
         "jenkins_build_number": 34,
         "jenkins_project_name": "pyadi-iio-hw",
         "jenkins_agent": "master",
-        "jenkins_trigger": "manual"
+        "jenkins_trigger": "manual",
+        "last_failing_stage": "NA",
+        "last_failing_stage_failure": "NA"
     }
 
     tel.log_boot_tests(**inputs)
@@ -279,7 +307,7 @@ def test_search_boot_tests():
     time.sleep(2)
     tel = telemetry.searches(server=server)
     tel.use_test_index = True
-    res = tel.boot_tests(inputs["boot_folder_name"])
+    res = tel.boot_tests()
     tel.db.delete_index()
     assert len(res) == 2
     assert "zynq-adrv9361-z7035-fmc" in res.keys()
