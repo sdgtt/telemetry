@@ -15,6 +15,19 @@ class searches:
         loc = os.path.dirname(__file__)
         return os.path.join(loc, "resources", name)
 
+    def artifacts(self):
+        """ Query artifacts data from elasticsearch """
+        # Returns a list of artifact information sorted by asc achive_date
+        index = "boot_tests" if not self.use_test_index else "dummy"
+
+        query = {
+                "sort": [{"archive_date": {"order": "desc"}}],
+                "query": {"match_all": {}},
+            }
+        res = self.db.es.search(index=index, size=1000, body=query)
+        artifacts_data = [data["_source"] for data in res["hits"]["hits"]]
+        return artifacts_data
+
     def boot_tests(self, boot_folder_name=None):
         """ Query boot test results from elasticsearch """
         index = "boot_tests" if not self.use_test_index else "dummy"

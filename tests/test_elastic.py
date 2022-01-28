@@ -312,3 +312,59 @@ def test_search_boot_tests():
     assert len(res) == 2
     assert "zynq-adrv9361-z7035-fmc" in res.keys()
     assert "zynq-adrv9361-z7035-bob" in res.keys()
+
+def test_ingest_log_artifacts():
+    tel = telemetry.ingest(server=server)
+    tel.use_test_index = True
+
+    inputs = {
+        "url": "http://SERVER/jenkins/job/HW_tests/job/HW_test_multiconfig/690/artifact/dmesg_zynq-adrv9361-z7035-fmc_err.log",
+        "server": "http://SERVER/jenkins",
+        "job": "HW_tests/HW_test_multiconfig",
+        "job_no": 690,
+        "job_date": None,
+        "job_build_parameters": "NA",
+        "file_name": "dmesg_zynq-adrv9361-z7035-fmc_err.log",
+        "target_board": "zynq-adrv9361-z7035-fmc",
+        "artifact_info_type": "dmesg_error",
+        "payload_raw": "[    3.820072] systemd[1]: Failed to look up module alias 'autofs4': Function not implemented",
+        "payload_ts": "3.820072",
+        "payload": "systemd[1]: Failed to look up module alias 'autofs4': Function not implemented"
+    }
+
+    tel.log_artifacts(**inputs)
+    time.sleep(2)
+    results = tel.db.search_all()
+    tel.db.delete_index()
+    assert results["hits"]["total"]["value"] == 1
+
+def test_search_artifacts():
+    tel = telemetry.ingest(server=server)
+    tel.use_test_index = True
+    inputs = {
+        "url": "http://SERVER/jenkins/job/HW_tests/job/HW_test_multiconfig/690/artifact/dmesg_zynq-adrv9361-z7035-fmc_err.log",
+        "server": "http://SERVER/jenkins",
+        "job": "HW_tests/HW_test_multiconfig",
+        "job_no": 690,
+        "job_date": None,
+        "job_build_parameters": "NA",
+        "file_name": "dmesg_zynq-adrv9361-z7035-fmc_err.log",
+        "target_board": "zynq-adrv9361-z7035-fmc",
+        "artifact_info_type": "dmesg_error",
+        "payload_raw": "[    3.820072] systemd[1]: Failed to look up module alias 'autofs4': Function not implemented",
+        "payload_ts": "3.820072",
+        "payload": "systemd[1]: Failed to look up module alias 'autofs4': Function not implemented"
+    }
+
+    tel.log_artifacts(**inputs)
+    time.sleep(2)
+    inputs["file_name"] = "zynq-adrv9361-z7035-fmc_enumerated_devs.log"
+    tel.log_artifacts(**inputs)
+    time.sleep(2)
+    tel = telemetry.searches(server=server)
+    tel.use_test_index = True
+    res = tel.artifacts()
+    tel.db.delete_index()
+    assert len(res) == 2
+    assert "zynq-adrv9361-z7035-fmc_enumerated_devs.log" in res[0]['file_name']
+    assert "dmesg_zynq-adrv9361-z7035-fmc_err.log" in res[1]['file_name']
