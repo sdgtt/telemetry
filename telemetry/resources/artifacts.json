@@ -1,0 +1,49 @@
+{
+    "settings": {
+        "number_of_shards": 1,
+        "number_of_replicas": 0
+    },
+    "mappings": {
+        "properties": {
+            "archive_date": {
+                "type": "date"
+            },
+            "url": {
+                "type": "text"
+            },
+            "server": {
+                "type": "text"
+            },
+            "job": {
+                "type": "keyword"
+            },
+            "job_no": {
+                "type": "integer"
+            },
+            "job_date": {
+                "type": "date"
+            },
+            "job_build_parameters": {
+                "type": "keyword"
+            },
+            "file_name": {
+                "type": "keyword"
+            },
+            "target_board": {
+                "type": "keyword"
+            },
+            "artifact_info_type": {
+                "type": "keyword"
+            },
+            "payload_raw": {
+                "type": "text"
+            },
+            "payload_ts": {
+                "type": "text"
+            },
+            "payload": {
+                "type": "text"
+            }
+        }
+    }
+}

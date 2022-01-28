@@ -25,6 +25,47 @@ def log_hdl_resources_from_csv(server, filename):
 @click.command()
 @click.option("--server", default="picard", help="Address of Elasticsearch server")
 @click.argument("in_args", nargs=-1)
+def log_artifacts(server, in_args):
+    entry = {
+        "url": "NA",
+        "server": "NA",
+        "job": "NA",
+        "job_no": 0,
+        "job_date": None,
+        "job_build_parameters": "NA",
+        "file_name": "NA",
+        "target_board": "NA",
+        "artifact_info_type": "NA",
+        "payload_raw": "NA",
+        "payload_ts": "NA",
+        "payload": "NA"
+    }
+    if len(in_args) == 0:
+        click.echo("Must have non-zero arguments for database entry")
+        sys.exit(1)
+    if int(len(in_args) / 2) != len(in_args) / 2:
+        click.echo(
+            "ERROR: Number of inputs arguments must be even\n"
+            + "       and in the form of: entry1<space>value1<space>entry2<space>value2"
+        )
+        sys.exit(1)
+    for i in range(0, len(in_args), 2):
+        if in_args[i] in entry:
+            if in_args[i + 1].lower() == "true":
+                entry[in_args[i]] = True
+            elif in_args[i + 1].lower() == "false":
+                entry[in_args[i]] = False
+            else:
+                entry[in_args[i]] = in_args[i + 1]
+        else:
+            click.echo("ERROR: " + in_args[i] + " not a valid entry")
+            sys.exit(1)
+    tel = telemetry.ingest(server=server)
+    tel.log_artifacts(**entry)
+
+@click.command()
+@click.option("--server", default="picard", help="Address of Elasticsearch server")
+@click.argument("in_args", nargs=-1)
 def log_boot_logs(server, in_args):
     entry = {
         "boot_folder_name": "NA",
@@ -93,6 +134,7 @@ def main(args=None):
 
 cli.add_command(log_boot_logs)
 cli.add_command(log_hdl_resources_from_csv)
+cli.add_command(log_artifacts)
 cli.add_command(main)
 
 if __name__ == "__main__":

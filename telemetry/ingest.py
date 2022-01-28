@@ -140,6 +140,46 @@ class ingest:
         # Add entry
         self.db.add_entry(entry)
 
+    def log_artifacts(
+        self,
+        url,
+        server,
+        job,
+        job_no,
+        job_date,
+        job_build_parameters,
+        file_name,
+        target_board,
+        artifact_info_type,
+        payload_raw,
+        payload_ts,
+        payload
+    ):
+        """ Upload artifacts data to elasticsearch """
+
+        # Create query
+        entry = {
+            "archive_date": datetime.datetime.now(),
+            "url": url,
+            "server": server,
+            "job": job,
+            "job_no": job_no,
+            "job_date": datetime.datetime.now() if not job_date else job_date,
+            "job_build_parameters": job_build_parameters,
+            "file_name": file_name,
+            "target_board": target_board,
+            "artifact_info_type": artifact_info_type,
+            "payload_raw": payload_raw,
+            "payload_ts": payload_ts,
+            "payload": payload
+        }
+        # Setup index if necessary
+        self.db.index_name = "dummy" if self.use_test_index else "artifacts"
+        s = self.db.import_schema(self._get_schema("artifacts.json"))
+        self.db.create_db_from_schema(s)
+        # Add entry
+        self.db.add_entry(entry)
+
     def log_hdl_resources_from_csv(self, filename):
 
         if not os.path.exists(filename):
