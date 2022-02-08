@@ -43,7 +43,7 @@ class elastic:
     def create_db_from_schema(self, schema):
         log.info(schema)
         log.info("Creating db")
-        if not self.es.indices.exists(self.index_name):
+        if not self.es.indices.exists(index=self.index_name):
             # self.es.indices.create(index=self.index_name, ignore=400, body=settings)
             self.es.indices.create(index=self.index_name, body=schema)
             log.info("Index created")
@@ -51,7 +51,7 @@ class elastic:
             log.info("Index exists")
 
     def add_entry(self, entry):
-        if not self.es.indices.exists(self.index_name):
+        if not self.es.indices.exists(index=self.index_name):
             raise Exception("Index does not exist")
         outcome = self.es.index(index=self.index_name, body=entry)
         log.info(outcome)
@@ -62,7 +62,7 @@ class elastic:
 
     def delete_index(self):
         """ Delete database index (table) """
-        if self.es.indices.exists(self.index_name):
+        if self.es.indices.exists(index=self.index_name):
             ret = self.es.indices.delete(index=self.index_name)
             assert ret["acknowledged"], "Index deletion failed"
         else:
