@@ -13,6 +13,8 @@ pytest-runner==5.1
 pytest-cov
 coveralls
 elasticsearch
+bs4==0.0.1
+tqdm==4.62.3
 ## Web dependencies
 #dash
 #numpy

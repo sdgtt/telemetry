@@ -4,7 +4,6 @@ import click
 import datetime
 import telemetry
 
-
 @click.group()
 def cli():
     pass
@@ -62,6 +61,23 @@ def log_artifacts(server, in_args):
             sys.exit(1)
     tel = telemetry.ingest(server=server)
     tel.log_artifacts(**entry)
+
+@click.command()
+@click.option("--jenkins-server", required=True, help="Address of Jenkins server")
+@click.option("--es-server", required=True, help="Address of Elasticsearch server")
+@click.option("--job-name", default="HW_tests/HW_test_multiconfig", help="Name of Jenkins job")
+@click.option("--job", multiple=True, help="Job(s)/build(s) to process")
+def grab_and_log_artifacts(jenkins_server, es_server, job_name, job):
+    if not len(job) > 0:
+        click.echo("Atleast 1 Job/Build (--job) is needed.")
+        sys.exit(1)
+    g = telemetry.gargantua(
+        jenkins_server,
+        es_server,
+        job_name,
+        job
+    )
+    g.log_artifacts()
 
 @click.command()
 @click.option("--server", default="picard", help="Address of Elasticsearch server")
@@ -135,6 +151,7 @@ def main(args=None):
 cli.add_command(log_boot_logs)
 cli.add_command(log_hdl_resources_from_csv)
 cli.add_command(log_artifacts)
+cli.add_command(grab_and_log_artifacts)
 cli.add_command(main)
 
 if __name__ == "__main__":
