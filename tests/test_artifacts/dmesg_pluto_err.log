@@ -1,0 +1,8 @@
+<4>L2C: platform modifies aux control register: 0x72360000 -> 0x72760000
+<4>L2C: DT/platform modifies aux control register: 0x72360000 -> 0x72760000
+<4>hw perfevents: no interrupt-affinity property for /pmu@f8891000, guessing.
+<4>spi-nor spi1.0: found n25q256ax1, expected n25q256a
+<4>chipidea-usb2 e0002000.usb: e0002000.usb supply vbus not found, using dummy regulator
+<4>platform regulatory.0: Direct firmware load for regulatory.db failed with error -2
+<4>using random self ethernet address
+<4>using random host ethernet address

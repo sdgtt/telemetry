@@ -48,7 +48,7 @@ setup(
     license="BSD license",
     long_description=readme + "\n\n" + history,
     include_package_data=True,
-    package_data={"telemetry": ["resources/*.json"]},
+    package_data={"telemetry": ["resources/*.json", "tests/test_artifacts/*"]},
     keywords="telemetry",
     name="telemetry",
     packages=find_packages(include=["telemetry", "telemetry.*"]),
