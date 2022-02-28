@@ -30,7 +30,7 @@ jobs:
       with:
         stack-version: 7.6.0
     - name: Run tests
-      run: SERVER="127.0.0.1" python3 -m pytest -v --cov=telemetry tests
+      run: SERVER="es1" python3 -m pytest -v --cov=telemetry tests
 
     - name: Report coverage
       env:
