@@ -7,6 +7,7 @@ import os
 import re
 import requests
 import traceback
+from junitparser import JUnitXml, Skipped, Error, Failure
 
 # Temporary directory to contain downloaded file
 FILE_DIR = 'event_horizon'
@@ -18,7 +19,8 @@ def get_parser(url):
         '^.*dmesg_.+err\.log': DmesgError,
         '^.*dmesg_.+warn\.log': DmesgWarning,
         '^.*enumerated_devs\.log': EnumeratedDevs,
-        '^.*missing_devs\.log': MissingDevs
+        '^.*missing_devs\.log': MissingDevs,
+        '^.*pyadi-iio.*\.xml': [PytestFailure, PytestSkipped, PytestError]
     }
 
     # find parser
@@ -197,3 +199,120 @@ class MissingDevs(Parser):
     
     def __init__(self, url):
         super(MissingDevs, self).__init__(url)
+
+class PytestFailure(Parser):
+    def __init__(self, url):
+        super(PytestFailure, self).__init__(url)
+        
+    def get_file_info(self):
+        '''returns file name, file info, target_board, artifact_info_type'''
+        if self.multilevel:
+            url = urlparse(self.url)
+            url_path = url.path.split('/')
+            file_name = url_path[-1]
+            # file_info = url_path[-3] + "_tests"
+            file_info = "pytest_failure"
+            target_board = file_name.replace('_','-')
+            target_board = remove_suffix(target_board,"-reports.xml")
+            artifact_info_type=file_info
+            return (file_name, file_info, target_board, artifact_info_type)
+        else:
+            raise Exception("Does not support non multilevel yet!")
+        
+    def get_payload_raw(self):
+        payload = []
+        file_path = os.path.join(FILE_DIR, self.file_name)
+        try:
+            if not os.path.exists(FILE_DIR):
+                os.mkdir(FILE_DIR)
+            grabber(self.url, file_path)
+            # Parser
+            xml = JUnitXml.fromfile(file_path)
+            for suite in xml:
+                for case in suite:
+                    if case.result and type(case.result[0]) is Failure:
+                        payload.append(case.name)
+        except Exception as ex:
+            traceback.print_exc()
+            print("Error Parsing File!")
+        finally:
+            os.remove(file_path)
+        return payload
+    
+class PytestSkipped(Parser):
+    def __init__(self, url):
+        super(PytestSkipped, self).__init__(url)
+        
+    def get_file_info(self):
+        '''returns file name, file info, target_board, artifact_info_type'''
+        if self.multilevel:
+            url = urlparse(self.url)
+            url_path = url.path.split('/')
+            file_name = url_path[-1]
+            # file_info = url_path[-3] + "_tests"
+            file_info = "pytest_skipped"
+            target_board = file_name.replace('_','-')
+            target_board = remove_suffix(target_board,"-reports.xml")
+            artifact_info_type=file_info
+            return (file_name, file_info, target_board, artifact_info_type)
+        else:
+            raise Exception("Does not support non multilevel yet!")
+        
+    def get_payload_raw(self):
+        payload = []
+        file_path = os.path.join(FILE_DIR, self.file_name)
+        try:
+            if not os.path.exists(FILE_DIR):
+                os.mkdir(FILE_DIR)
+            grabber(self.url, file_path)
+            # Parser
+            xml = JUnitXml.fromfile(file_path)
+            for suite in xml:
+                for case in suite:
+                    if case.result and type(case.result[0]) is Skipped:
+                        payload.append(case.name)
+        except Exception as ex:
+            traceback.print_exc()
+            print("Error Parsing File!")
+        finally:
+            os.remove(file_path)
+        return payload
+
+class PytestError(Parser):
+    def __init__(self, url):
+        super(PytestError, self).__init__(url)
+        
+    def get_file_info(self):
+        '''returns file name, file info, target_board, artifact_info_type'''
+        if self.multilevel:
+            url = urlparse(self.url)
+            url_path = url.path.split('/')
+            file_name = url_path[-1]
+            # file_info = url_path[-3] + "_tests"
+            file_info = "pytest_error"
+            target_board = file_name.replace('_','-')
+            target_board = remove_suffix(target_board,"-reports.xml")
+            artifact_info_type=file_info
+            return (file_name, file_info, target_board, artifact_info_type)
+        else:
+            raise Exception("Does not support non multilevel yet!")
+        
+    def get_payload_raw(self):
+        payload = []
+        file_path = os.path.join(FILE_DIR, self.file_name)
+        try:
+            if not os.path.exists(FILE_DIR):
+                os.mkdir(FILE_DIR)
+            grabber(self.url, file_path)
+            # Parser
+            xml = JUnitXml.fromfile(file_path)
+            for suite in xml:
+                for case in suite:
+                    if case.result and type(case.result[0]) is Error:
+                        payload.append(case.name)
+        except Exception as ex:
+            traceback.print_exc()
+            print("Error Parsing File!")
+        finally:
+            os.remove(file_path)
+        return payload
