@@ -16,6 +16,7 @@ elasticsearch==7.16.0
 bs4==0.0.1
 tqdm==4.62.3
 pymongo[srv]
+junitparser==2.4.2
 ## Web dependencies
 #dash
 #numpy
