@@ -12,7 +12,7 @@ with open("HISTORY.rst") as history_file:
 
 requirements = [
     "Click>=7.0",
-    "elasticsearch",
+    "elasticsearch==7.16.0",
 ]
 
 setup_requirements = [
