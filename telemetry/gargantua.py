@@ -68,7 +68,13 @@ class Gargantua:
         for job, files in target_map.items():
             for f in files:
                 try:
-                    artifacts.append(Artifact(job + '/' + f))
+                    # get parser
+                    parser = telemetry.parser.get_parser(job + '/' + f)
+                    if isinstance(parser, list):
+                        for _parser in parser:
+                            artifacts.append(Artifact(_parser))
+                    else:
+                        artifacts.append(Artifact(parser))
                 except Exception as ex:
                     str(ex)
                     print("Cannot create Artifact object")
@@ -98,10 +104,10 @@ class Artifact:
         "payload"
     ]
 
-    def __init__(self,url):
+    def __init__(self,parser):
         # get parser object based on url
         try:
-            self.parser = telemetry.parser.get_parser(url)
+            self.parser = parser
             for attrib in self.attributes:
                 if hasattr(self.parser, attrib):
                     setattr(self, attrib, getattr(self.parser, attrib))
