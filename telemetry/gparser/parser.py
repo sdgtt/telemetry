@@ -24,7 +24,11 @@ def get_parser(url):
     # find parser
     for sk, parser in parsers.items():
         if re.match(sk, url):
-            return parser(url)  
+            if isinstance(parser, list):
+                return [p(url) for p in parser]
+            else:
+                return parser(url)
+
     raise Exception("Cannot find Parser for {}".format(url))
 
 def retry_session(retries=3, backoff_factor=0.3, 
