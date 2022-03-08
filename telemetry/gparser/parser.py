@@ -238,6 +238,19 @@ class PytestFailure(Parser):
         finally:
             os.remove(file_path)
         return payload
+
+    def get_payload_parsed(self):
+        payload = []
+        payload_split = {"procedure":[], "param":[]}
+        for payload in self.payload_raw:
+            procedure_param = payload.split("[")
+            payload_split["procedure"].append(procedure_param[0])
+            if len(procedure_param) == 2:
+                payload_split["param"].append(procedure_param[1][:-1])
+            else:
+                payload_split["param"].append("NA")
+        payload = payload_split["procedure"]
+        return payload
     
 class PytestSkipped(Parser):
     def __init__(self, url):
@@ -277,6 +290,19 @@ class PytestSkipped(Parser):
         finally:
             os.remove(file_path)
         return payload
+    
+    def get_payload_parsed(self):
+        payload = []
+        payload_split = {"procedure":[], "param":[]}
+        for payload in self.payload_raw:
+            procedure_param = payload.split("[")
+            payload_split["procedure"].append(procedure_param[0])
+            if len(procedure_param) == 2:
+                payload_split["param"].append(procedure_param[1][:-1])
+            else:
+                payload_split["param"].append("NA")
+        payload = payload_split["procedure"]
+        return payload
 
 class PytestError(Parser):
     def __init__(self, url):
@@ -315,4 +341,17 @@ class PytestError(Parser):
             print("Error Parsing File!")
         finally:
             os.remove(file_path)
+        return payload
+    
+    def get_payload_parsed(self):
+        payload = []
+        payload_split = {"procedure":[], "param":[]}
+        for payload in self.payload_raw:
+            procedure_param = payload.split("[")
+            payload_split["procedure"].append(procedure_param[0])
+            if len(procedure_param) == 2:
+                payload_split["param"].append(procedure_param[1][:-1])
+            else:
+                payload_split["param"].append("NA")
+        payload = payload_split["procedure"]
         return payload
