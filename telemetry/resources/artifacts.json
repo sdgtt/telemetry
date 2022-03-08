@@ -43,6 +43,9 @@
             },
             "payload": {
                 "type": "text"
+            },
+            "payload_param": {
+                "type": "text"
             }
         }
     }

@@ -59,7 +59,8 @@ def log_artifacts(server, in_args):
         "artifact_info_type": "NA",
         "payload_raw": "NA",
         "payload_ts": "NA",
-        "payload": "NA"
+        "payload": "NA",
+        "payload_param": "NA"
     }
     if len(in_args) == 0:
         click.echo("Must have non-zero arguments for database entry")

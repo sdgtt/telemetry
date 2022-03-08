@@ -329,7 +329,8 @@ def test_ingest_log_artifacts():
         "artifact_info_type": "dmesg_error",
         "payload_raw": "[    3.820072] systemd[1]: Failed to look up module alias 'autofs4': Function not implemented",
         "payload_ts": "3.820072",
-        "payload": "systemd[1]: Failed to look up module alias 'autofs4': Function not implemented"
+        "payload": "systemd[1]: Failed to look up module alias 'autofs4': Function not implemented",
+        "payload_param": "False-0-adi.adrv9002"
     }
 
     tel.log_artifacts(**inputs)
@@ -353,7 +354,8 @@ def test_search_artifacts():
         "artifact_info_type": "dmesg_error",
         "payload_raw": "[    3.820072] systemd[1]: Failed to look up module alias 'autofs4': Function not implemented",
         "payload_ts": "3.820072",
-        "payload": "systemd[1]: Failed to look up module alias 'autofs4': Function not implemented"
+        "payload": "systemd[1]: Failed to look up module alias 'autofs4': Function not implemented",
+        "payload_param": "False-0-adi.adrv9002"
     }
 
     tel.log_artifacts(**inputs)

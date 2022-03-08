@@ -153,7 +153,8 @@ class ingest:
         artifact_info_type,
         payload_raw,
         payload_ts,
-        payload
+        payload,
+        payload_param
     ):
         """ Upload artifacts data to elasticsearch """
 
@@ -171,7 +172,8 @@ class ingest:
             "artifact_info_type": artifact_info_type,
             "payload_raw": payload_raw,
             "payload_ts": payload_ts,
-            "payload": payload
+            "payload": payload,
+            "payload_param": payload_param
         }
         # Setup index if necessary
         self.db.index_name = "dummy" if self.use_test_index else "artifacts"
