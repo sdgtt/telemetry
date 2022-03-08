@@ -84,6 +84,7 @@ class Parser:
         self.artifact_info_type = None
         self.payload_raw = []
         self.payload = []
+        self.payload_param = []
         self.initialize()
 
     def initialize(self):
@@ -101,7 +102,10 @@ class Parser:
         self.target_board = file_info[2]
         self.artifact_info_type=file_info[3]
         self.payload_raw=self.get_payload_raw()
-        self.payload=self.get_payload_parsed()
+        payload_parsed=self.get_payload_parsed()
+        self.payload=payload_parsed[0]
+        if len(payload_parsed) == 2:
+            self.payload_param=payload_parsed[1]
 
     def show_info(self):
         return self.__dict__
@@ -250,7 +254,8 @@ class PytestFailure(Parser):
             else:
                 payload_split["param"].append("NA")
         payload = payload_split["procedure"]
-        return payload
+        payload_param = payload_split["param"]
+        return (payload, payload_param)
     
 class PytestSkipped(Parser):
     def __init__(self, url):
@@ -302,7 +307,8 @@ class PytestSkipped(Parser):
             else:
                 payload_split["param"].append("NA")
         payload = payload_split["procedure"]
-        return payload
+        payload_param = payload_split["param"]
+        return (payload, payload_param)
 
 class PytestError(Parser):
     def __init__(self, url):
@@ -354,4 +360,5 @@ class PytestError(Parser):
             else:
                 payload_split["param"].append("NA")
         payload = payload_split["procedure"]
-        return payload
+        payload_param = payload_split["param"]
+        return (payload, payload_param)
