@@ -101,7 +101,8 @@ class Artifact:
         "target_board",
         "artifact_info_type",
         "payload_raw",
-        "payload"
+        "payload",
+        "payload_param"
     ]
 
     def __init__(self,parser):
@@ -135,6 +136,7 @@ class Artifact:
                     if len(self.payload[i]) == 2 else self.payload[i]})
                 entry.update({"payload_ts": self.payload[i][0] \
                     if len(self.payload[i]) == 2 else "NA"})
+                entry.update({"payload_param": self.payload_param[i]})
                 entry.update({"payload_raw": p})
                 print("Saving entry to Elastic {}".format(entry))
                 t.log_artifacts(**entry)
