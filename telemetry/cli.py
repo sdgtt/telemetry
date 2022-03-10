@@ -3,10 +3,32 @@ import sys
 import click
 import datetime
 import telemetry
+import os
+
 
 @click.group()
 def cli():
     pass
+
+
+@click.command()
+@click.option(
+    "--tdir",
+    default="/test/logs/unprocessed",
+    help="Path to directory of unprocessed test logs",
+)
+@click.option("--server", default=None, help="Address of mongo server")
+@click.option("--username", default=None, help="Username for mongo server")
+@click.option("--password", default=None, help="Password for mongo server")
+@click.option("--dbname", default=None, help="Target collection for mongo server")
+def prod_synchrona_upload(tdir, server, username, password, dbname):
+    """Upload unprocessed test logs to mongo for synchrona."""
+    sync = telemetry.prod.SynchronaLog(server, username, password, dbname)
+    sync.default_unprocessed_log_dir = tdir
+    sync.default_processed_log_dir = os.path.join(tdir, "processed")
+    if not os.path.isdir(sync.default_processed_log_dir):
+        os.mkdir(sync.default_processed_log_dir)
+    sync() # go go
 
 
 @click.command()
@@ -148,6 +170,7 @@ def main(args=None):
     return 0
 
 
+cli.add_command(prod_synchrona)
 cli.add_command(log_boot_logs)
 cli.add_command(log_hdl_resources_from_csv)
 cli.add_command(log_artifacts)
