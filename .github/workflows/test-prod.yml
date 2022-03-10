@@ -1,0 +1,36 @@
+name: Test Production Imports
+
+on: [push, pull_request]
+
+env:
+  DBSERVER: localhost
+  DBUSERNAME: admin
+  DBPASSWORD: password
+  DBNAME: synchrona_test
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements_dev.txt
+
+    - name: Start MongoDB
+      uses: supercharge/mongodb-github-action@1.7.0
+      with:
+        mongodb-version: '5.0'
+        mongodb-username: ${{ env.DBUSERNAME }}
+        mongodb-password: ${{ env.DBPASSWORD }}
+        mongodb-db: sdg
+
+    - name: Run tests
+      run: python3 -m pytest -v --cov=telemetry tests/test_prod.py

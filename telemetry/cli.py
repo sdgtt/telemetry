@@ -170,7 +170,7 @@ def main(args=None):
     return 0
 
 
-cli.add_command(prod_synchrona)
+cli.add_command(prod_synchrona_upload)
 cli.add_command(log_boot_logs)
 cli.add_command(log_hdl_resources_from_csv)
 cli.add_command(log_artifacts)

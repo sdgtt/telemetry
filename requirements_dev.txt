@@ -15,7 +15,7 @@ coveralls
 elasticsearch==7.16.0
 bs4==0.0.1
 tqdm==4.62.3
-pymongo
+pymongo[srv]
 ## Web dependencies
 #dash
 #numpy
