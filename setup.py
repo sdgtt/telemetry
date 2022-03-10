@@ -13,6 +13,7 @@ with open("HISTORY.rst") as history_file:
 requirements = [
     "Click>=7.0",
     "elasticsearch==7.16.0",
+    "pymongo[src]",
 ]
 
 setup_requirements = [

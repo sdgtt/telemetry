@@ -5,6 +5,8 @@ from telemetry.searches import searches
 from telemetry.gargantua import Gargantua as gargantua
 from telemetry.gparser import parser
 
+import telemetry.prod as prod
+
 """Telemetry: Test Data Aggregator"""
 
 __author__ = """Travis F. Collins"""
