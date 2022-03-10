@@ -26,11 +26,18 @@ class ProductionLog(metaclass=ABCMeta):
         if not dbname:
             dbname = os.getenv("DBNAME")
 
-        print(server, username, password, dbname)
+        cmd = f"mongodb+srv://{username}:{password}@{server}/{dbname}?retryWrites=true&w=majority"
 
-        self.client = pymongo.MongoClient(
-            f"mongodb+srv://{username}:{password}@{server}/{dbname}?retryWrites=true&w=majority"
-        )
+        try:
+            self.client = pymongo.MongoClient(cmd)
+        except Exception as e1:
+            try:
+                cmd = cmd.replace("mongodb+srv://", "mongodb://")
+                self.client = pymongo.MongoClient(cmd)
+            except Exception as e2:
+                print(e1, e2)
+                raise Exception("Unable to connect to MongoDB")
+
         db = self.client["sdg"]
         self.collection = db[dbname]
 
