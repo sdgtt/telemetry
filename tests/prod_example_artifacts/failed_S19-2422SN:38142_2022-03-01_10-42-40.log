@@ -1,0 +1,25 @@
+System clock synchronized: yes
+[sudo] password for analog: 
+TEST_CLK_OUTPUTS
+* Failed to apply overlay '1_rpi-ad9545-hmc7044' (kernel)
+Disabling all outputs
+TEST_CLK_OUTPUTS_01
+[ 2022-03-01T12:38:39+02:00 ] -- TEST_CLK_OUTPUTS_01 - TEST OUTPUT CHANNEL 01 - P. Make sure cable is connected!
+Press Enter when ready
+10000000
+[ 2022-03-01T12:38:47+02:00 ] -- TEST_CLK_OUTPUTS_01 - [0;32m[1mOK[0m
+----------------------------------------------------
+TEST_CLK_OUTPUTS_02
+[ 2022-03-01T12:38:47+02:00 ] -- TEST_CLK_OUTPUTS_02 - TEST OUTPUT CHANNEL 01 - N. Make sure cable is connected!
+Press Enter when ready
+0
+[ 2022-03-01T12:38:58+02:00 ] -- TEST_CLK_OUTPUTS_02 - [0;31m[1mTEST FAILED[0m - Do you want to repeat test?[Y/n]n
+[ 2022-03-01T12:39:04+02:00 ] -- TEST_CLK_OUTPUTS_02 - Do you want to close the test?[Y/n]
+[1;31m
+███████╗ █████╗ ██╗██╗     ███████╗██████╗ 
+██╔════╝██╔══██╗██║██║     ██╔════╝██╔══██╗
+█████╗  ███████║██║██║     █████╗  ██║  ██║
+██╔══╝  ██╔══██║██║██║     ██╔══╝  ██║  ██║
+██║     ██║  ██║██║███████╗███████╗██████╔╝
+╚═╝     ╚═╝  ╚═╝╚═╝╚══════╝╚══════╝╚═════╝ 
+                                           [m

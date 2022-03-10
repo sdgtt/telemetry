@@ -22,8 +22,12 @@ def test_prod_synchrona_example_import():
     artifact_dir = os.path.join(pwd, "prod_example_artifacts")
     sync = telemetry.prod.SynchronaLog()
     sync.default_unprocessed_log_dir = artifact_dir
+    sync.default_processed_log_dir = os.path.join(artifact_dir, "processed")
+    if not os.path.isdir(sync.default_processed_log_dir):
+        os.mkdir(sync.default_processed_log_dir)
     # Do import
     sync()
     # Check
     logs = sync.get_all_logs()
-    assert len(logs) == 11
+    logsd = [dict(log) for log in logs]
+    assert len(logsd) == 11

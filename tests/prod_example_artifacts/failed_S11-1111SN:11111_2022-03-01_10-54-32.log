@@ -1,0 +1,173 @@
+System clock synchronized: yes
+[sudo] password for analog: 
+TEST_CLK_OUTPUTS
+* Failed to apply overlay '1_rpi-ad9545-hmc7044' (kernel)
+Disabling all outputs
+TEST_CLK_OUTPUTS_01
+[ 2022-03-01T12:50:30+02:00 ] -- TEST_CLK_OUTPUTS_01 - TEST OUTPUT CHANNEL 01 - P. Make sure cable is connected!
+Press Enter when ready
+10000000
+[ 2022-03-01T12:50:35+02:00 ] -- TEST_CLK_OUTPUTS_01 - [0;32m[1mOK[0m
+----------------------------------------------------
+TEST_CLK_OUTPUTS_02
+[ 2022-03-01T12:50:35+02:00 ] -- TEST_CLK_OUTPUTS_02 - TEST OUTPUT CHANNEL 01 - N. Make sure cable is connected!
+Press Enter when ready
+10000000
+[ 2022-03-01T12:50:47+02:00 ] -- TEST_CLK_OUTPUTS_02 - [0;32m[1mOK[0m
+----------------------------------------------------
+TEST_CLK_OUTPUTS_03
+[ 2022-03-01T12:50:47+02:00 ] -- TEST_CLK_OUTPUTS_03 - TEST OUTPUT CHANNEL 02 - P. Make sure cable is connected!
+Press Enter when ready
+10000000
+[ 2022-03-01T12:51:01+02:00 ] -- TEST_CLK_OUTPUTS_03 - [0;32m[1mOK[0m
+----------------------------------------------------
+TEST_CLK_OUTPUTS_04
+[ 2022-03-01T12:51:01+02:00 ] -- TEST_CLK_OUTPUTS_04 - TEST OUTPUT CHANNEL 02 - N. Make sure cable is connected!
+Press Enter when ready
+10000000
+[ 2022-03-01T13:15:18+02:00 ] -- TEST_CLK_OUTPUTS_04 - [0;32m[1mOK[0m
+----------------------------------------------------
+TEST_CLK_OUTPUTS_03
+[ 2022-03-01T13:15:18+02:00 ] -- TEST_CLK_OUTPUTS_03 - TEST OUTPUT CHANNEL 03 - P. Make sure cable is connected!
+Press Enter when ready
+10000000
+[ 2022-03-01T13:15:46+02:00 ] -- TEST_CLK_OUTPUTS_03 - [0;32m[1mOK[0m
+----------------------------------------------------
+TEST_CLK_OUTPUTS_03
+[ 2022-03-01T13:15:46+02:00 ] -- TEST_CLK_OUTPUTS_03 - TEST OUTPUT CHANNEL 03 - N. Make sure cable is connected!
+Press Enter when ready
+10000000
+[ 2022-03-01T13:15:53+02:00 ] -- TEST_CLK_OUTPUTS_03 - [0;32m[1mOK[0m
+----------------------------------------------------
+TEST_CLK_OUTPUTS_04
+[ 2022-03-01T13:15:53+02:00 ] -- TEST_CLK_OUTPUTS_04 - TEST OUTPUT CHANNEL 04 - P. Make sure cable is connected!
+Press Enter when ready
+10000000
+[ 2022-03-01T13:16:08+02:00 ] -- TEST_CLK_OUTPUTS_04 - [0;32m[1mOK[0m
+----------------------------------------------------
+TEST_CLK_OUTPUTS_04
+[ 2022-03-01T13:16:08+02:00 ] -- TEST_CLK_OUTPUTS_04 - TEST OUTPUT CHANNEL 04 - N. Make sure cable is connected!
+Press Enter when ready
+10000000
+[ 2022-03-01T13:16:24+02:00 ] -- TEST_CLK_OUTPUTS_04 - [0;32m[1mOK[0m
+----------------------------------------------------
+TEST_CLK_OUTPUTS_05
+[ 2022-03-01T13:16:24+02:00 ] -- TEST_CLK_OUTPUTS_05 - TEST OUTPUT CHANNEL 05 - P. Make sure cable is connected!
+Press Enter when ready
+10000000
+[ 2022-03-01T13:16:37+02:00 ] -- TEST_CLK_OUTPUTS_05 - [0;32m[1mOK[0m
+----------------------------------------------------
+TEST_CLK_OUTPUTS_05
+[ 2022-03-01T13:16:37+02:00 ] -- TEST_CLK_OUTPUTS_05 - TEST OUTPUT CHANNEL 05 - N. Make sure cable is connected!
+Press Enter when ready
+10000000
+[ 2022-03-01T13:17:30+02:00 ] -- TEST_CLK_OUTPUTS_05 - [0;32m[1mOK[0m
+----------------------------------------------------
+TEST_CLK_OUTPUTS_06
+[ 2022-03-01T13:17:30+02:00 ] -- TEST_CLK_OUTPUTS_06 - TEST OUTPUT CHANNEL 06 - P. Make sure cable is connected!
+Press Enter when ready
+10000000
+[ 2022-03-01T13:17:39+02:00 ] -- TEST_CLK_OUTPUTS_06 - [0;32m[1mOK[0m
+----------------------------------------------------
+TEST_CLK_OUTPUTS_06
+[ 2022-03-01T13:17:39+02:00 ] -- TEST_CLK_OUTPUTS_06 - TEST OUTPUT CHANNEL 06 - N. Make sure cable is connected!
+Press Enter when ready
+10000000
+[ 2022-03-01T13:17:47+02:00 ] -- TEST_CLK_OUTPUTS_06 - [0;32m[1mOK[0m
+----------------------------------------------------
+TEST_CLK_OUTPUTS_07
+[ 2022-03-01T13:17:47+02:00 ] -- TEST_CLK_OUTPUTS_07 - TEST OUTPUT CHANNEL 07 - P. Make sure cable is connected!
+Press Enter when ready
+10000000
+[ 2022-03-01T13:18:04+02:00 ] -- TEST_CLK_OUTPUTS_07 - [0;32m[1mOK[0m
+----------------------------------------------------
+TEST_CLK_OUTPUTS_07
+[ 2022-03-01T13:18:04+02:00 ] -- TEST_CLK_OUTPUTS_07 - TEST OUTPUT CHANNEL 07 - N. Make sure cable is connected!
+Press Enter when ready
+10000000
+[ 2022-03-01T13:18:12+02:00 ] -- TEST_CLK_OUTPUTS_07 - [0;32m[1mOK[0m
+----------------------------------------------------
+TEST_CLK_OUTPUTS_08
+[ 2022-03-01T13:18:12+02:00 ] -- TEST_CLK_OUTPUTS_08 - TEST OUTPUT CHANNEL 08 - P. Make sure cable is connected!
+Press Enter when ready
+10000000
+[ 2022-03-01T13:18:20+02:00 ] -- TEST_CLK_OUTPUTS_08 - [0;32m[1mOK[0m
+----------------------------------------------------
+TEST_CLK_OUTPUTS_08
+[ 2022-03-01T13:18:20+02:00 ] -- TEST_CLK_OUTPUTS_08 - TEST OUTPUT CHANNEL 08 - N. Make sure cable is connected!
+Press Enter when ready
+0
+[ 2022-03-01T13:18:29+02:00 ] -- TEST_CLK_OUTPUTS_08 - [0;31m[1mTEST FAILED[0m - Do you want to repeat test?[Y/n]
+Press Enter when ready
+10000000
+[ 2022-03-01T13:18:41+02:00 ] -- TEST_CLK_OUTPUTS_08 - [0;32m[1mOK[0m
+----------------------------------------------------
+TEST_CLK_OUTPUTS_09
+[ 2022-03-01T13:18:41+02:00 ] -- TEST_CLK_OUTPUTS_09 - TEST OUTPUT CHANNEL 09 - P. Make sure cable is connected!
+Press Enter when ready
+10000000
+[ 2022-03-01T13:18:48+02:00 ] -- TEST_CLK_OUTPUTS_09 - [0;32m[1mOK[0m
+----------------------------------------------------
+TEST_CLK_OUTPUTS_09
+[ 2022-03-01T13:18:48+02:00 ] -- TEST_CLK_OUTPUTS_09 - TEST OUTPUT CHANNEL 09 - N. Make sure cable is connected!
+Press Enter when ready
+10000000
+[ 2022-03-01T13:18:57+02:00 ] -- TEST_CLK_OUTPUTS_09 - [0;32m[1mOK[0m
+----------------------------------------------------
+TEST_CLK_OUTPUTS_10
+[ 2022-03-01T13:18:57+02:00 ] -- TEST_CLK_OUTPUTS_10 - TEST OUTPUT CHANNEL 10 - P. Make sure cable is connected!
+Press Enter when ready
+0
+[ 2022-03-01T13:19:04+02:00 ] -- TEST_CLK_OUTPUTS_10 - [0;31m[1mTEST FAILED[0m - Do you want to repeat test?[Y/n]
+Press Enter when ready
+10000000
+[ 2022-03-01T13:19:14+02:00 ] -- TEST_CLK_OUTPUTS_10 - [0;32m[1mOK[0m
+----------------------------------------------------
+TEST_CLK_OUTPUTS_10
+[ 2022-03-01T13:19:14+02:00 ] -- TEST_CLK_OUTPUTS_10 - TEST OUTPUT CHANNEL 10 - N. Make sure cable is connected!
+Press Enter when ready
+10000000
+[ 2022-03-01T13:19:21+02:00 ] -- TEST_CLK_OUTPUTS_10 - [0;32m[1mOK[0m
+----------------------------------------------------
+TEST_CLK_OUTPUTS_11
+[ 2022-03-01T13:19:21+02:00 ] -- TEST_CLK_OUTPUTS_11 - TEST OUTPUT CHANNEL 11 - P. Make sure cable is connected!
+Press Enter when ready
+Traceback (most recent call last):
+  File "/home/analog/synch/m2k-frequency-estimator.py", line 143, in <module>
+    main()
+  File "/home/analog/synch/m2k-frequency-estimator.py", line 119, in main
+    samps_diff_crossings = sum / (len(zero_indices) - 1)
+ZeroDivisionError: division by zero
+
+[ 2022-03-01T13:19:27+02:00 ] -- TEST_CLK_OUTPUTS_11 - [0;31m[1mTEST FAILED[0m - Do you want to repeat test?[Y/n]n
+[ 2022-03-01T13:19:29+02:00 ] -- TEST_CLK_OUTPUTS_11 - Do you want to close the test?[Y/n]n
+[ 2022-03-01T13:19:30+02:00 ] -- TEST_CLK_OUTPUTS_11 - [0;31m[1mFAIL[0m
+----------------------------------------------------
+TEST_CLK_OUTPUTS_11
+[ 2022-03-01T13:19:30+02:00 ] -- TEST_CLK_OUTPUTS_11 - TEST OUTPUT CHANNEL 11 - N. Make sure cable is connected!
+Press Enter when ready
+0
+[ 2022-03-01T13:19:34+02:00 ] -- TEST_CLK_OUTPUTS_11 - [0;31m[1mTEST FAILED[0m - Do you want to repeat test?[Y/n]n
+[ 2022-03-01T13:19:37+02:00 ] -- TEST_CLK_OUTPUTS_11 - Do you want to close the test?[Y/n]n
+[ 2022-03-01T13:19:37+02:00 ] -- TEST_CLK_OUTPUTS_11 - [0;31m[1mFAIL[0m
+----------------------------------------------------
+TEST_CLK_OUTPUTS_12
+[ 2022-03-01T13:19:37+02:00 ] -- TEST_CLK_OUTPUTS_12 - TEST OUTPUT CHANNEL 12 - P. Make sure cable is connected!
+Press Enter when ready
+Traceback (most recent call last):
+  File "/home/analog/synch/m2k-frequency-estimator.py", line 143, in <module>
+    main()
+  File "/home/analog/synch/m2k-frequency-estimator.py", line 121, in main
+    freq = 1 / timespan_crossings
+ZeroDivisionError: float division by zero
+
+[ 2022-03-01T13:19:41+02:00 ] -- TEST_CLK_OUTPUTS_12 - [0;31m[1mTEST FAILED[0m - Do you want to repeat test?[Y/n]n
+[ 2022-03-01T13:19:45+02:00 ] -- TEST_CLK_OUTPUTS_12 - Do you want to close the test?[Y/n]
+[1;31m
+███████╗ █████╗ ██╗██╗     ███████╗██████╗ 
+██╔════╝██╔══██╗██║██║     ██╔════╝██╔══██╗
+█████╗  ███████║██║██║     █████╗  ██║  ██║
+██╔══╝  ██╔══██║██║██║     ██╔══╝  ██║  ██║
+██║     ██║  ██║██║███████╗███████╗██████╔╝
+╚═╝     ╚═╝  ╚═╝╚═╝╚══════╝╚══════╝╚═════╝ 
+                                           [m
