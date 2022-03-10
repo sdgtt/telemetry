@@ -1,0 +1,35 @@
+System clock synchronized: yes
+[sudo] password for analog: 
+TEST_CLK_OUTPUTS
+Disabling all outputs
+/home/analog/synch/clk_disable.sh: line 55: /sys/kernel/debug/iio/iio:device0/direct_reg_access: No such file or directory
+/home/analog/synch/clk_disable.sh: line 56: /sys/kernel/debug/iio/iio:device0/direct_reg_access: No such file or directory
+/home/analog/synch/clk_disable.sh: line 57: /sys/kernel/debug/iio/iio:device0/direct_reg_access: No such file or directory
+/home/analog/synch/clk_disable.sh: line 58: /sys/kernel/debug/iio/iio:device0/direct_reg_access: No such file or directory
+/home/analog/synch/clk_disable.sh: line 59: /sys/kernel/debug/iio/iio:device0/direct_reg_access: No such file or directory
+/home/analog/synch/clk_disable.sh: line 60: /sys/kernel/debug/iio/iio:device0/direct_reg_access: No such file or directory
+/home/analog/synch/clk_disable.sh: line 61: /sys/kernel/debug/iio/iio:device0/direct_reg_access: No such file or directory
+/home/analog/synch/clk_disable.sh: line 62: /sys/kernel/debug/iio/iio:device0/direct_reg_access: No such file or directory
+/home/analog/synch/clk_disable.sh: line 63: /sys/kernel/debug/iio/iio:device0/direct_reg_access: No such file or directory
+/home/analog/synch/clk_disable.sh: line 64: /sys/kernel/debug/iio/iio:device0/direct_reg_access: No such file or directory
+/home/analog/synch/clk_disable.sh: line 65: /sys/kernel/debug/iio/iio:device0/direct_reg_access: No such file or directory
+/home/analog/synch/clk_disable.sh: line 66: /sys/kernel/debug/iio/iio:device0/direct_reg_access: No such file or directory
+/home/analog/synch/clk_disable.sh: line 67: /sys/kernel/debug/iio/iio:device0/direct_reg_access: No such file or directory
+/home/analog/synch/clk_disable.sh: line 68: /sys/kernel/debug/iio/iio:device0/direct_reg_access: No such file or directory
+TEST_CLK_OUTPUTS_01
+[ 2022-03-01T13:52:00+02:00 ] -- TEST_CLK_OUTPUTS_01 - TEST OUTPUT CHANNEL 01 - P. Make sure cable is connected!
+Press Enter when ready
+/home/analog/synch/clk_disable.sh: line 37: /sys/kernel/debug/iio/iio:device0/direct_reg_access: No such file or directory
+/home/analog/synch/clk_disable.sh: line 41: /sys/kernel/debug/iio/iio:device0/direct_reg_access: No such file or directory
+450958
+/home/analog/synch/clk_disable.sh: line 44: /sys/kernel/debug/iio/iio:device0/direct_reg_access: No such file or directory
+[ 2022-03-01T13:52:23+02:00 ] -- TEST_CLK_OUTPUTS_01 - [0;31m[1mTEST FAILED[0m - Do you want to repeat test?[Y/n]m n
+[ 2022-03-01T13:52:27+02:00 ] -- TEST_CLK_OUTPUTS_01 - Do you want to close the test?[Y/n]
+[1;31m
+███████╗ █████╗ ██╗██╗     ███████╗██████╗ 
+██╔════╝██╔══██╗██║██║     ██╔════╝██╔══██╗
+█████╗  ███████║██║██║     █████╗  ██║  ██║
+██╔══╝  ██╔══██║██║██║     ██╔══╝  ██║  ██║
+██║     ██║  ██║██║███████╗███████╗██████╔╝
+╚═╝     ╚═╝  ╚═╝╚═╝╚══════╝╚══════╝╚═════╝ 
+                                           [m

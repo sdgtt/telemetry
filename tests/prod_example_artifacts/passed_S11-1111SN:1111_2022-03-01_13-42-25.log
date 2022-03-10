@@ -1,0 +1,130 @@
+System clock synchronized: yes
+[sudo] password for analog: 
+
+Testing Back Pannel
+TEST_CLOCK_IN_01
+[ 2022-03-01T15:08:23+02:00 ] -- TEST_CLOCK_IN_01 - Test input REF_IN. Please make sure cable is connected!
+Press Enter when ready
+* No overlays loaded
+[ 2022-03-01T15:08:44+02:00 ] -- TEST_CLOCK_IN_01 - [0;31m[1mTEST FAILED[0m - Do you want to repeat test?[Y/n]
+Press Enter when ready
+ERROR: Unable to claim interface 1:3:5: Device or resource busy (16)
+Traceback (most recent call last):
+  File "/home/analog/synch/m2k-signal_generator.py", line 127, in <module>
+    aout = ctx.getAnalogOut()
+AttributeError: 'NoneType' object has no attribute 'getAnalogOut'
+[ 2022-03-01T15:08:51+02:00 ] -- TEST_CLOCK_IN_01 - [0;31m[1mTEST FAILED[0m - Do you want to repeat test?[Y/n]
+Press Enter when ready
+[ 2022-03-01T15:09:02+02:00 ] -- TEST_CLOCK_IN_01 - [0;31m[1mTEST FAILED[0m - Do you want to repeat test?[Y/n]
+Press Enter when ready
+[ 2022-03-01T15:09:17+02:00 ] -- TEST_CLOCK_IN_01 - [0;31m[1mTEST FAILED[0m - Do you want to repeat test?[Y/n]
+Press Enter when ready
+[ 2022-03-01T15:09:31+02:00 ] -- TEST_CLOCK_IN_01 - [0;31m[1mTEST FAILED[0m - Do you want to repeat test?[Y/n]
+Press Enter when ready
+PLL status: Locked
+Lock Status:	PLL1 & PLL2 Locked
+Using:	CLKIN2 @ 10000000 Hz
+[ 2022-03-01T15:09:44+02:00 ] -- TEST_CLOCK_IN_01 - [0;32m[1mOK[0m
+----------------------------------------------------------------------------------
+TEST_CLOCK_IN_02
+[ 2022-03-01T15:09:44+02:00 ] -- TEST_CLOCK_IN_02 - Test input PPS. Please make sure cable is connected!
+Press Enter when ready
+Rebind done
+Reference: Valid
+Lock Status:	PLL1 & PLL2 Locked
+Using:	CLKIN2 @ 10000000 Hz
+[ 2022-03-01T15:10:16+02:00 ] -- TEST_CLOCK_IN_02 - [0;32m[1mOK[0m
+----------------------------------------------------------------------------------
+TEST_CLOCK_IN_03
+[ 2022-03-01T15:10:16+02:00 ] -- TEST_CLOCK_IN_03 - Test input CH2. Please connect cables from M2K BNC Adapter Board to CH2 inputs
+Press Enter when ready
+--- PLL1 ---
+Status:	Locked
+Using:	CLKIN1 @ 10000000 Hz
+PFD:	10000 kHz
+--- PLL2 ---
+Status:	Locked (Unsynchronized)
+Frequency:	2600000000 Hz (Autocal cap bank value: 6)
+SYSREF Status:	Invalid
+SYNC Status:	Unsynchronized
+Lock Status:	PLL1 & PLL2 Locked
+Using:	CLKIN1 @ 10000000 Hz
+[ 2022-03-01T15:10:34+02:00 ] -- TEST_CLOCK_IN_03 - [0;32m[1mOK[0m
+----------------------------------------------------------------------------------
+TEST_CLOCK_IN_04
+[ 2022-03-01T15:10:34+02:00 ] -- TEST_CLOCK_IN_04 - Test input CH3. Please connect cables from M2K BNC Adapter Board to both CH3 inputs
+Press Enter when ready
+--- PLL1 ---
+Status:	Locked
+Using:	CLKIN0 @ 10000000 Hz
+PFD:	10000 kHz
+--- PLL2 ---
+Status:	Locked (Unsynchronized)
+Frequency:	2600000000 Hz (Autocal cap bank value: 6)
+SYSREF Status:	Invalid
+SYNC Status:	Unsynchronized
+Lock Status:	PLL1 & PLL2 Locked
+Using:	CLKIN0 @ 10000000 Hz
+[ 2022-03-01T15:10:58+02:00 ] -- TEST_CLOCK_IN_04 - [0;32m[1mOK[0m
+----------------------------------------------------------------------------------
+
+TEST_ADT7422_01
+[ 2022-03-01T15:10:58+02:00 ] -- TEST_ADT7422_01 - Checking for adt7422
+adt7422
+[ 2022-03-01T15:10:59+02:00 ] -- TEST_ADT7422_01 - [0;32m[1mOK[0m
+----------------------------------------------------------------------------------
+TEST_ADT7422_02
+[ 2022-03-01T15:10:59+02:00 ] -- TEST_ADT7422_02 - Checking for temperature
+56906
+[ 2022-03-01T15:11:00+02:00 ] -- TEST_ADT7422_02 - [0;32m[1mOK[0m
+----------------------------------------------------------------------------------
+read 524288 bytes from /home/analog/synch/pieeprom-2021-07-06.bin
+changing serial number to S11-1111SN:1111
+changing date to Tue Mar  1 13:11:00 2022
+wrote 220 bytes to /home/analog/synch/pieeprom-2021-07-06.bin
+*** INSTALLING /home/analog/synch/pieeprom-2021-07-06.bin  ***
+
+   CURRENT: Tue Jul  6 10:44:53 UTC 2021 (1625568293)
+    UPDATE: Tue Jul  6 10:44:53 UTC 2021 (1625568293)
+    BOOTFS: /boot
+
+EEPROM updates pending. Please reboot to apply the update.
+To cancel a pending update run "sudo rpi-eeprom-update -r".
+TEST_UART_COMM_01
+[ 2022-03-01T13:45:05+00:00 ] -- TEST_UART_COMM_01 - Connect MicroUSB cable to adapter's port. Check if USB-UART is detected
+Press Enter when ready[ 2022-03-01T13:45:32+00:00 ] -- TEST_UART_COMM_01 - [0;32m[1mOK[0m
+----------------------------------------------------------------------------------
+TEST_UART_COMM_02
+[ 2022-03-01T13:45:32+00:00 ] -- TEST_UART_COMM_02 - Check UART communication
+[ 2022-03-01T13:45:32+00:00 ] -- TEST_UART_COMM_02 - [0;32m[1mOK[0m
+----------------------------------------------------------------------------------
+TEST_SPI_COMMUNICATION_01
+[ 2022-03-01T13:45:32+00:00 ] -- TEST_SPI_COMMUNICATION_01 - TEST SPI - Make sure the adapter is connected!
+Press Enter when readyPLL status: Unlocked
+--- PLL2 ---
+[ 2022-03-01T13:45:39+00:00 ] -- TEST_SPI_COMMUNICATION_01 - [0;32m[1mOK[0m
+----------------------------------------------------------------------------------
+TEST_MISC_01
+[ 2022-03-01T13:45:39+00:00 ] -- TEST_MISC_01 - Test LEDs
+[ 2022-03-01T13:45:39+00:00 ] -- TEST_MISC_01 - Are LED STAT1 yellow and LED STAT2 red?[Y/n][ 2022-03-01T13:45:41+00:00 ] -- TEST_MISC_01 - [0;32m[1mOK[0m
+----------------------------------------------------------------------------------
+TEST_MISC_02
+[ 2022-03-01T13:45:41+00:00 ] -- TEST_MISC_02 - Test synchrona fan
+[ 2022-03-01T13:45:41+00:00 ] -- TEST_MISC_02 - Is the fan working?[Y/n][ 2022-03-01T13:45:44+00:00 ] -- TEST_MISC_02 - [0;32m[1mOK[0m
+----------------------------------------------------------------------------------
+TEST_MISC_03
+[ 2022-03-01T13:45:44+00:00 ] -- TEST_MISC_03 - Test poweroff. Synchrona will be turned off now.
+[sudo] password for analog: 
+Connection to analog closed by remote host.
+[ 2022-03-01T13:46:01+00:00 ] -- TEST_MISC_03 - Device should be turned off. Check if fan is off, STAT2 is off and STAT1 has turned red[Y/n][ 2022-03-01T13:46:05+00:00 ] -- TEST_MISC_03 - [0;32m[1mOK[0m
+----------------------------------------------------------------------------------
+[1;32m
+██████╗  █████╗ ███████╗███████╗███████╗██████╗ 
+██╔══██╗██╔══██╗██╔════╝██╔════╝██╔════╝██╔══██╗
+██████╔╝███████║███████╗███████╗█████╗  ██║  ██║
+██╔═══╝ ██╔══██║╚════██║╚════██║██╔══╝  ██║  ██║
+██║     ██║  ██║███████║███████║███████╗██████╔╝
+╚═╝     ╚═╝  ╚═╝╚══════╝╚══════╝╚══════╝╚═════╝ 
+                                                [m
+LABEL FILE = /home/analog/production-tests/synchrona/print/synchrona_back.glabels
+lpr: LabelWriter-450-Turbo: unknown printer

@@ -26,7 +26,7 @@ class ProductionLog(metaclass=ABCMeta):
         if not dbname:
             dbname = os.getenv("DBNAME")
 
-        cmd = f"mongodb+srv://{username}:{password}@{server}/{dbname}?retryWrites=true&w=majority"
+        cmd = f"mongodb+srv://{username}:{password}@{server}/"
 
         try:
             self.client = pymongo.MongoClient(cmd)
