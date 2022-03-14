@@ -16,6 +16,7 @@ requirements = [
     "pymongo[srv]",
     "bs4",
     "tqdm==4.62.3",
+    "requests",
 ]
 
 setup_requirements = [
