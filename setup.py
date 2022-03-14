@@ -14,6 +14,8 @@ requirements = [
     "Click>=7.0",
     "elasticsearch==7.16.0",
     "pymongo[srv]",
+    "bs4",
+    "tqdm==4.62.3",
 ]
 
 setup_requirements = [
