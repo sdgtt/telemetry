@@ -7,6 +7,7 @@ import os
 import re
 import requests
 import traceback
+import junitparser
 from junitparser import JUnitXml, Skipped, Error, Failure
 
 # Temporary directory to contain downloaded file
@@ -204,161 +205,70 @@ class MissingDevs(Parser):
     def __init__(self, url):
         super(MissingDevs, self).__init__(url)
 
-class PytestFailure(Parser):
+class xmlParser(Parser):
+    def __init__(self, url):
+        super(xmlParser, self).__init__(url)
+        
+    def get_file_info(self):
+        '''returns file name, file info, target_board, artifact_info_type'''
+        if self.multilevel:
+            url = urlparse(self.url)
+            url_path = url.path.split('/')
+            file_name = url_path[-1]
+            if isinstance(self, PytestFailure):
+                file_info = "pytest_failure"
+            elif isinstance(self, PytestSkipped):
+                file_info = "pytest_skipped"
+            elif isinstance(self, PytestError):
+                file_info = "pytest_error"
+            target_board = file_name.replace('_','-')
+            target_board = remove_suffix(target_board,"-reports.xml")
+            artifact_info_type=file_info
+            return (file_name, file_info, target_board, artifact_info_type)
+        else:
+            raise Exception("Does not support non multilevel yet!")
+        
+    def get_payload_raw(self):
+        payload = []
+        file_path = os.path.join(FILE_DIR, self.file_name)
+        try:
+            if not os.path.exists(FILE_DIR):
+                os.mkdir(FILE_DIR)
+            grabber(self.url, file_path)
+            # Parser
+            xml = JUnitXml.fromfile(file_path)
+            resultType = getattr(junitparser, self.file_info.split("_")[1].capitalize())
+            for suite in xml:
+                for case in suite:
+                    if case.result and type(case.result[0]) is resultType:
+                        payload.append(case.name)
+        except Exception as ex:
+            traceback.print_exc()
+            print("Error Parsing File!")
+        finally:
+            os.remove(file_path)
+        return payload
+    
+    def get_payload_parsed(self):
+        payload = []
+        payload_split = {"procedure":[], "param":[]}
+        for payload in self.payload_raw:
+            procedure_param = payload.split("[")
+            payload_split["procedure"].append(procedure_param[0])
+            if len(procedure_param) == 2:
+                payload_split["param"].append(procedure_param[1][:-1])
+            else:
+                payload_split["param"].append("NA")
+        payload = payload_split["procedure"]
+        payload_param = payload_split["param"]
+        return (payload, payload_param)
+
+class PytestFailure(xmlParser):
     def __init__(self, url):
         super(PytestFailure, self).__init__(url)
-        
-    def get_file_info(self):
-        '''returns file name, file info, target_board, artifact_info_type'''
-        if self.multilevel:
-            url = urlparse(self.url)
-            url_path = url.path.split('/')
-            file_name = url_path[-1]
-            # file_info = url_path[-3] + "_tests"
-            file_info = "pytest_failure"
-            target_board = file_name.replace('_','-')
-            target_board = remove_suffix(target_board,"-reports.xml")
-            artifact_info_type=file_info
-            return (file_name, file_info, target_board, artifact_info_type)
-        else:
-            raise Exception("Does not support non multilevel yet!")
-        
-    def get_payload_raw(self):
-        payload = []
-        file_path = os.path.join(FILE_DIR, self.file_name)
-        try:
-            if not os.path.exists(FILE_DIR):
-                os.mkdir(FILE_DIR)
-            grabber(self.url, file_path)
-            # Parser
-            xml = JUnitXml.fromfile(file_path)
-            for suite in xml:
-                for case in suite:
-                    if case.result and type(case.result[0]) is Failure:
-                        payload.append(case.name)
-        except Exception as ex:
-            traceback.print_exc()
-            print("Error Parsing File!")
-        finally:
-            os.remove(file_path)
-        return payload
-
-    def get_payload_parsed(self):
-        payload = []
-        payload_split = {"procedure":[], "param":[]}
-        for payload in self.payload_raw:
-            procedure_param = payload.split("[")
-            payload_split["procedure"].append(procedure_param[0])
-            if len(procedure_param) == 2:
-                payload_split["param"].append(procedure_param[1][:-1])
-            else:
-                payload_split["param"].append("NA")
-        payload = payload_split["procedure"]
-        payload_param = payload_split["param"]
-        return (payload, payload_param)
-    
-class PytestSkipped(Parser):
+class PytestSkipped(xmlParser):
     def __init__(self, url):
         super(PytestSkipped, self).__init__(url)
-        
-    def get_file_info(self):
-        '''returns file name, file info, target_board, artifact_info_type'''
-        if self.multilevel:
-            url = urlparse(self.url)
-            url_path = url.path.split('/')
-            file_name = url_path[-1]
-            # file_info = url_path[-3] + "_tests"
-            file_info = "pytest_skipped"
-            target_board = file_name.replace('_','-')
-            target_board = remove_suffix(target_board,"-reports.xml")
-            artifact_info_type=file_info
-            return (file_name, file_info, target_board, artifact_info_type)
-        else:
-            raise Exception("Does not support non multilevel yet!")
-        
-    def get_payload_raw(self):
-        payload = []
-        file_path = os.path.join(FILE_DIR, self.file_name)
-        try:
-            if not os.path.exists(FILE_DIR):
-                os.mkdir(FILE_DIR)
-            grabber(self.url, file_path)
-            # Parser
-            xml = JUnitXml.fromfile(file_path)
-            for suite in xml:
-                for case in suite:
-                    if case.result and type(case.result[0]) is Skipped:
-                        payload.append(case.name)
-        except Exception as ex:
-            traceback.print_exc()
-            print("Error Parsing File!")
-        finally:
-            os.remove(file_path)
-        return payload
-    
-    def get_payload_parsed(self):
-        payload = []
-        payload_split = {"procedure":[], "param":[]}
-        for payload in self.payload_raw:
-            procedure_param = payload.split("[")
-            payload_split["procedure"].append(procedure_param[0])
-            if len(procedure_param) == 2:
-                payload_split["param"].append(procedure_param[1][:-1])
-            else:
-                payload_split["param"].append("NA")
-        payload = payload_split["procedure"]
-        payload_param = payload_split["param"]
-        return (payload, payload_param)
-
-class PytestError(Parser):
+class PytestError(xmlParser):
     def __init__(self, url):
         super(PytestError, self).__init__(url)
-        
-    def get_file_info(self):
-        '''returns file name, file info, target_board, artifact_info_type'''
-        if self.multilevel:
-            url = urlparse(self.url)
-            url_path = url.path.split('/')
-            file_name = url_path[-1]
-            # file_info = url_path[-3] + "_tests"
-            file_info = "pytest_error"
-            target_board = file_name.replace('_','-')
-            target_board = remove_suffix(target_board,"-reports.xml")
-            artifact_info_type=file_info
-            return (file_name, file_info, target_board, artifact_info_type)
-        else:
-            raise Exception("Does not support non multilevel yet!")
-        
-    def get_payload_raw(self):
-        payload = []
-        file_path = os.path.join(FILE_DIR, self.file_name)
-        try:
-            if not os.path.exists(FILE_DIR):
-                os.mkdir(FILE_DIR)
-            grabber(self.url, file_path)
-            # Parser
-            xml = JUnitXml.fromfile(file_path)
-            for suite in xml:
-                for case in suite:
-                    if case.result and type(case.result[0]) is Error:
-                        payload.append(case.name)
-        except Exception as ex:
-            traceback.print_exc()
-            print("Error Parsing File!")
-        finally:
-            os.remove(file_path)
-        return payload
-    
-    def get_payload_parsed(self):
-        payload = []
-        payload_split = {"procedure":[], "param":[]}
-        for payload in self.payload_raw:
-            procedure_param = payload.split("[")
-            payload_split["procedure"].append(procedure_param[0])
-            if len(procedure_param) == 2:
-                payload_split["param"].append(procedure_param[1][:-1])
-            else:
-                payload_split["param"].append("NA")
-        payload = payload_split["procedure"]
-        payload_param = payload_split["param"]
-        return (payload, payload_param)
