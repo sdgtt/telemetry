@@ -250,17 +250,26 @@ class xmlParser(Parser):
         return payload
     
     def get_payload_parsed(self):
-        payload = []
-        payload_split = {"procedure":[], "param":[]}
-        for payload in self.payload_raw:
-            procedure_param = payload.split("[")
-            payload_split["procedure"].append(procedure_param[0])
+        num_payload = len(self.payload_raw)
+        procedure = list(range(num_payload))
+        param = list(range(num_payload))
+        for k, payload_str in enumerate(self.payload_raw):
+            # remove trailing adi.xxxx device name
+            payload_str = re.sub("-adi\.\w*", "", payload_str)
+            # remove multiple dashes
+            payload_str = re.sub("-+", "-", payload_str)
+            procedure_param = payload_str.split("[")
+            procedure[k] = procedure_param[0]
             if len(procedure_param) == 2:
-                payload_split["param"].append(procedure_param[1][:-1])
+                # remove path from profile filename
+                if any(x in procedure[k] for x in ["profile_write", "write_profile"]):
+                    param[k] = re.findall("(\w*\..*)]",procedure_param[1])[0]
+                else:
+                    param[k] = procedure_param[1][:-1]
             else:
-                payload_split["param"].append("NA")
-        payload = payload_split["procedure"]
-        payload_param = payload_split["param"]
+                param[k] = "NA"
+        payload = procedure
+        payload_param = param
         return (payload, payload_param)
 
 class PytestFailure(xmlParser):
