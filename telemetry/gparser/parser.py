@@ -104,9 +104,13 @@ class Parser:
         self.artifact_info_type=file_info[3]
         self.payload_raw=self.get_payload_raw()
         payload_parsed=self.get_payload_parsed()
-        self.payload=payload_parsed[0]
         if len(payload_parsed) == 2:
+            self.payload=payload_parsed[0]
             self.payload_param=payload_parsed[1]
+        else:
+            self.payload=payload_parsed
+            for k in range(len(payload_parsed)):
+                self.payload_param.append("NA") 
 
     def show_info(self):
         return self.__dict__
