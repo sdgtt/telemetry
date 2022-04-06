@@ -104,7 +104,7 @@ class Parser:
         self.artifact_info_type=file_info[3]
         self.payload_raw=self.get_payload_raw()
         payload_parsed=self.get_payload_parsed()
-        if len(payload_parsed) == 2:
+        if isinstance(self, xmlParser):
             self.payload=payload_parsed[0]
             self.payload_param=payload_parsed[1]
         else:
