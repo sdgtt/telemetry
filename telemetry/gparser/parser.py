@@ -29,8 +29,7 @@ def get_parser(url):
         if re.match(sk, url):
             if isinstance(parser, list):
                 return [p(url) for p in parser]
-            else:
-                return parser(url)
+            return parser(url)
 
     raise Exception("Cannot find Parser for {}".format(url))
 
@@ -124,8 +123,8 @@ class Parser:
             # TODO: get job date using jenkins api
             job_date=None
             return (job,job_no,job_date)
-        else:
-            raise Exception("Does not support non multilevel yet!")
+
+        raise Exception("Does not support non multilevel yet!")
 
     def get_file_info(self):
         '''returns file name, file info, target_board, artifact_info_type'''
@@ -137,8 +136,8 @@ class Parser:
             artifact_info_type=file_info[1] + '_' + file_info[2]
             artifact_info_type = remove_suffix(artifact_info_type,".log")
             return (file_name, file_info, target_board, artifact_info_type)
-        else:
-            raise Exception("Does not support non multilevel yet!")
+
+        raise Exception("Does not support non multilevel yet!")
 
 
     def get_payload_raw(self):
@@ -186,8 +185,8 @@ class Dmesg(Parser):
                 artifact_info_type += '_' + file_info[2]
             artifact_info_type = remove_suffix(artifact_info_type,".log")
             return (file_name, file_info, target_board, artifact_info_type)
-        else:
-            raise Exception("Does not support non multilevel yet!")
+
+        raise Exception("Does not support non multilevel yet!")
 
 class DmesgError(Dmesg):
     
@@ -229,8 +228,8 @@ class xmlParser(Parser):
             target_board = remove_suffix(target_board,"-reports.xml")
             artifact_info_type=file_info
             return (file_name, file_info, target_board, artifact_info_type)
-        else:
-            raise Exception("Does not support non multilevel yet!")
+
+        raise Exception("Does not support non multilevel yet!")
         
     def get_payload_raw(self):
         payload = []
