@@ -14,8 +14,9 @@ class ProductionLog(metaclass=ABCMeta):
     }
 
     skip_insert = False
+    board_name = ""
 
-    def __init__(self, server=None, username=None, password=None, dbname=None) -> None:
+    def __init__(self, server=None, username=None, password=None, dbname=None, boardname=None) -> None:
 
         if not server:
             server = os.getenv("DBSERVER")
@@ -25,7 +26,10 @@ class ProductionLog(metaclass=ABCMeta):
             password = os.getenv("DBPASSWORD")
         if not dbname:
             dbname = os.getenv("DBNAME")
-
+        if not boardname:
+            self.board_name = os.getenv("BOARD_NAME")
+        else:
+            self.board_name = boardname
         cmd = f"mongodb+srv://{username}:{password}@{server}/"
 
         try:
@@ -49,14 +53,6 @@ class ProductionLog(metaclass=ABCMeta):
 
     @abstractmethod
     def process_logs(self) -> None:
-        """Name of driver used for transmitting data.
-        This is the IIO device used collect data from.
-        """
-        raise NotImplementedError  # pragma: no cover
-
-    @property
-    @abstractmethod
-    def board_name(self) -> None:
         """Name of driver used for transmitting data.
         This is the IIO device used collect data from.
         """

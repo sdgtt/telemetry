@@ -21,9 +21,10 @@ def cli():
 @click.option("--username", default=None, help="Username for mongo server")
 @click.option("--password", default=None, help="Password for mongo server")
 @click.option("--dbname", default=None, help="Target collection for mongo server")
-def prod_synchrona_upload(tdir, server, username, password, dbname):
+@click.option("--board", default=None, help="Name of target board")
+def prod_logs_upload(tdir, server, username, password, dbname, board):
     """Upload unprocessed test logs to mongo for synchrona."""
-    sync = telemetry.prod.SynchronaLog(server, username, password, dbname)
+    sync = telemetry.prod.BoardLog(server, username, password, dbname, board)
     sync.default_unprocessed_log_dir = tdir
     sync.default_processed_log_dir = os.path.join(tdir, "processed")
     if not os.path.isdir(sync.default_processed_log_dir):
@@ -171,7 +172,7 @@ def main(args=None):
     return 0
 
 
-cli.add_command(prod_synchrona_upload)
+cli.add_command(prod_logs_upload)
 cli.add_command(log_boot_logs)
 cli.add_command(log_hdl_resources_from_csv)
 cli.add_command(log_artifacts)

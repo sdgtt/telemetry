@@ -1,5 +1,5 @@
 """Production Public Class Interfaces"""
-from .synchrona import SynchronaLog as __sl
+from .board_log import BoardLog as __sl
 
-class SynchronaLog(__sl):
+class BoardLog(__sl):
     pass

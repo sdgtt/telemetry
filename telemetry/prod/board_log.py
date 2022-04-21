@@ -6,9 +6,8 @@ from .common import ProductionLog
 import pymongo
 
 
-class SynchronaLog(ProductionLog):
+class BoardLog(ProductionLog):
 
-    board_name = "AD-SYNCHRONA14-EBZ"
     skip_insert = True
     default_unprocessed_log_dir = "/test/logs/unprocessed"
     default_processed_log_dir = "/test/logs/processed"

@@ -8,19 +8,19 @@ import datetime
 @pytest.fixture(autouse=True)
 def run_around_tests():
     # Before test
-    sync = telemetry.prod.SynchronaLog()
+    sync = telemetry.prod.BoardLog()
     result = sync.collection.delete_many({})
     yield
     # After test
-    sync = telemetry.prod.SynchronaLog()
+    sync = telemetry.prod.BoardLog()
     result = sync.collection.delete_many({})
 
 
 def test_prod_synchrona_example_import():
-    sync = telemetry.prod.SynchronaLog()
+    sync = telemetry.prod.BoardLog()
     pwd = os.path.dirname(os.path.abspath(__file__))
     artifact_dir = os.path.join(pwd, "prod_example_artifacts")
-    sync = telemetry.prod.SynchronaLog()
+    sync = telemetry.prod.BoardLog()
     sync.default_unprocessed_log_dir = artifact_dir
     sync.default_processed_log_dir = os.path.join(artifact_dir, "processed")
     if not os.path.isdir(sync.default_processed_log_dir):
