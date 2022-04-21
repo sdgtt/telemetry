@@ -42,7 +42,7 @@ class ProductionLog(metaclass=ABCMeta):
                 print(e1, e2)
                 raise Exception("Unable to connect to MongoDB")
 
-        db = self.client["sdg"]
+        db = self.client["production_test1"]
         self.collection = db[dbname]
 
     def _ref_scheme(self):
