@@ -33,6 +33,26 @@ def prod_logs_upload(tdir, server, username, password, dbname, board):
 
 
 @click.command()
+@click.option(
+    "--tdir",
+    default="/test/logs/unprocessed",
+    help="Path to directory of unprocessed test logs",
+)
+@click.option("--server", default=None, help="Address of mongo server")
+@click.option("--username", default=None, help="Username for mongo server")
+@click.option("--password", default=None, help="Password for mongo server")
+@click.option("--dbname", default=None, help="Target collection for mongo server")
+def prod_cn0511_upload(tdir, server, username, password, dbname):
+    """Upload txt files from cn0511."""
+    sync = telemetry.prod.TextInfo(server, username, password, dbname)
+    sync.default_unprocessed_log_dir = tdir
+    sync.default_processed_log_dir = os.path.join(tdir, "processed")
+    if not os.path.isdir(sync.default_processed_log_dir):
+        os.mkdir(sync.default_processed_log_dir)
+    sync() # go go
+
+
+@click.command()
 @click.option("--server", default="picard", help="Address of Elasticsearch server")
 @click.option(
     "--filename",
@@ -173,6 +193,7 @@ def main(args=None):
 
 
 cli.add_command(prod_logs_upload)
+cli.add_command(prod_cn0511_upload)
 cli.add_command(log_boot_logs)
 cli.add_command(log_hdl_resources_from_csv)
 cli.add_command(log_artifacts)
