@@ -21,7 +21,8 @@ def get_parser(url):
         '^.*dmesg_.+warn\.log': DmesgWarning,
         '^.*enumerated_devs\.log': EnumeratedDevs,
         '^.*missing_devs\.log': MissingDevs,
-        '^.*pyadi-iio.*\.xml': [PytestFailure, PytestSkipped, PytestError]
+        '^.*pyadi-iio.*\.xml': [PytestFailure, PytestSkipped, PytestError],
+        '^.*HWTestResults.xml': [MatlabFailure, MatlabSkipped, MatlabError]
     }
 
     # find parser
@@ -218,14 +219,12 @@ class xmlParser(Parser):
             url = urlparse(self.url)
             url_path = url.path.split('/')
             file_name = url_path[-1]
-            if isinstance(self, PytestFailure):
-                file_info = "pytest_failure"
-            elif isinstance(self, PytestSkipped):
-                file_info = "pytest_skipped"
-            elif isinstance(self, PytestError):
-                file_info = "pytest_error"
+            parser_type = str(type(self)).split('.')[-1].replace("'>","")
+            x = [i for i, c in enumerate(parser_type) if c.isupper()]
+            file_info = (parser_type[:x[1]]+'_'+parser_type[x[1]:]).lower()
             target_board = file_name.replace('_','-')
             target_board = remove_suffix(target_board,"-reports.xml")
+            target_board = remove_suffix(target_board,"-HWTestResults.xml")
             artifact_info_type=file_info
             return (file_name, file_info, target_board, artifact_info_type)
 
@@ -261,6 +260,8 @@ class xmlParser(Parser):
             payload_str = re.sub("-adi\.\w*", "", payload_str)
             # remove multiple dashes
             payload_str = re.sub("-+", "-", payload_str)
+            # replace () from MATLAB xml with []
+            payload_str = payload_str.replace("(","[").replace(")","]")
             procedure_param = payload_str.split("[")
             procedure[k] = procedure_param[0]
             if len(procedure_param) == 2:
@@ -284,3 +285,13 @@ class PytestSkipped(xmlParser):
 class PytestError(xmlParser):
     def __init__(self, url):
         super(PytestError, self).__init__(url)
+
+class MatlabFailure(xmlParser):
+    def __init__(self, url):
+        super(MatlabFailure, self).__init__(url)
+class MatlabSkipped(xmlParser):
+    def __init__(self, url):
+        super(MatlabSkipped, self).__init__(url)
+class MatlabError(xmlParser):
+    def __init__(self, url):
+        super(MatlabError, self).__init__(url)
