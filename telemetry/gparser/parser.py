@@ -22,7 +22,7 @@ def get_parser(url):
         '^.*enumerated_devs\.log': EnumeratedDevs,
         '^.*missing_devs\.log': MissingDevs,
         '^.*pyadi-iio.*\.xml': [PytestFailure, PytestSkipped, PytestError],
-        '^.*HWTestResults.xml': [MatlabFailure, MatlabSkipped, MatlabError]
+        '^.*HWTestResults\.xml': [MatlabFailure, MatlabSkipped, MatlabError]
     }
 
     # find parser
@@ -219,7 +219,7 @@ class xmlParser(Parser):
             url = urlparse(self.url)
             url_path = url.path.split('/')
             file_name = url_path[-1]
-            parser_type = str(type(self)).split('.')[-1].replace("'>","")
+            parser_type = type(self).__name__
             x = [i for i, c in enumerate(parser_type) if c.isupper()]
             file_info = (parser_type[:x[1]]+'_'+parser_type[x[1]:]).lower()
             target_board = file_name.replace('_','-')
