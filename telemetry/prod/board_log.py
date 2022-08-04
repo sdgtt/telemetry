@@ -22,9 +22,15 @@ class BoardLog(ProductionLog):
         :return:
         """
         # Example: failed_S11-1111SN:11111_2022-03-01_10-54-32.log
-        status = filename.split("_")[0].split("/")[-1]
-        serial_number = filename.split("_")[1]
-        date = filename.split("_")[2].split(".")[0]
+        filename = filename.split("/")[len(filename.split("/")) - 1]
+        if(filename.split("_")[0].split("/")[-1] == "no"):
+            date = "no_date"
+            status = filename.split("_")[2]
+            serial_number = filename.split("_")[3]
+        else:
+            date = filename.split("_")[2].split(".")[0]
+            status = filename.split("_")[0].split("/")[-1]
+            serial_number = filename.split("_")[1]
         return status, serial_number, date
 
     def process_logs(self, schema) -> None:
