@@ -1,19 +1,13 @@
-from requests.adapters import HTTPAdapter
-from requests.packages.urllib3.util.retry import Retry
-from tqdm import tqdm
 from urllib.parse import urlparse
 import json
 import os
 import re
-import requests
 import traceback
 import junitparser
+import telemetry
 from junitparser import JUnitXml, Skipped, Error, Failure
 
-# Temporary directory to contain downloaded file
-FILE_DIR = 'event_horizon'
-
-def get_parser(url):
+def get_parser(url,grabber=None):
     '''Factory method that provides appropriate parser object base on given url'''
     parsers = {
         '^.*dmesg_[a-zA-Z0-9-]+\.log': Dmesg,
@@ -29,50 +23,19 @@ def get_parser(url):
     for sk, parser in parsers.items():
         if re.match(sk, url):
             if isinstance(parser, list):
-                return [p(url) for p in parser]
-            return parser(url)
+                return [p(url, grabber) for p in parser]
+            return parser(url, grabber)
 
     raise Exception("Cannot find Parser for {}".format(url))
-
-def retry_session(retries=3, backoff_factor=0.3, 
-        status_forcelist=(429, 500, 502, 504),
-        session=None,
-    ):
-        session = session or requests.Session()
-        retry = Retry(
-            total=retries,
-            read=retries,
-            connect=retries,
-            backoff_factor=backoff_factor,
-            status_forcelist=status_forcelist,
-        )
-        adapter = HTTPAdapter(max_retries=retry)
-        session.mount('http://', adapter)
-        session.mount('https://', adapter)
-        return session
-
-def grabber(url, fname):
-    ''' Downloads file from a given url as fname'''
-    resp = retry_session().get(url, stream=True)
-    if not resp.ok:
-        raise Exception(url + " - url not found!" )
-    total = int(resp.headers.get("content-length", 0))
-    with open(fname, "wb") as file, tqdm(
-        desc=fname, total=total, unit="iB", unit_scale=True, unit_divisor=1024,
-    ) as bar:
-        for data in resp.iter_content(chunk_size=1024):
-            size = file.write(data)
-            bar.update(size)
 
 def remove_suffix(input_string, suffix):
     if suffix and input_string.endswith(suffix):
         return input_string[:-len(suffix)]
     return input_string
 
-
-class Parser:
+class Parser():
     '''Base class for a parser object'''
-    def __init__(self, url):
+    def __init__(self, url, grabber=None):
         
         self.url = url
         self.server = None
@@ -86,6 +49,10 @@ class Parser:
         self.payload_raw = []
         self.payload = []
         self.payload_param = []
+        if not grabber:
+            self.grabber = telemetry.grabber.Grabber()
+        else:
+            self.grabber = grabber
         self.initialize()
 
     def initialize(self):
@@ -143,11 +110,8 @@ class Parser:
 
     def get_payload_raw(self):
         payload = []
-        file_path = os.path.join(FILE_DIR, self.file_name)
         try:
-            if not os.path.exists(FILE_DIR):
-                os.mkdir(FILE_DIR)
-            grabber(self.url, file_path)
+            file_path = self.grabber.download_file(self.url, self.file_name)
             with open(file_path, "r") as f:
                 payload = [l.strip() for l in f.readlines()]
         except Exception as ex:
@@ -171,8 +135,8 @@ class Parser:
 
 class Dmesg(Parser):
 
-    def __init__(self, url):
-        super(Dmesg, self).__init__(url)
+    def __init__(self, url, grabber):
+        super(Dmesg, self).__init__(url, grabber)
 
     def get_file_info(self):
         '''returns file name, file info, target_board, artifact_info_type'''
@@ -191,27 +155,27 @@ class Dmesg(Parser):
 
 class DmesgError(Dmesg):
     
-    def __init__(self, url):
-        super(DmesgError, self).__init__(url)
+    def __init__(self, url, grabber):
+        super(DmesgError, self).__init__(url, grabber)
 
 class DmesgWarning(Dmesg):
     
-    def __init__(self, url):
-        super(DmesgWarning, self).__init__(url)
+    def __init__(self, url, grabber):
+        super(DmesgWarning, self).__init__(url, grabber)
 
 class EnumeratedDevs(Parser):
     
-    def __init__(self, url):
-        super(EnumeratedDevs, self).__init__(url)
+    def __init__(self, url, grabber):
+        super(EnumeratedDevs, self).__init__(url, grabber)
 
 class MissingDevs(Parser):
     
-    def __init__(self, url):
-        super(MissingDevs, self).__init__(url)
+    def __init__(self, url, grabber):
+        super(MissingDevs, self).__init__(url, grabber)
 
 class xmlParser(Parser):
-    def __init__(self, url):
-        super(xmlParser, self).__init__(url)
+    def __init__(self, url, grabber):
+        super(xmlParser, self).__init__(url, grabber)
         
     def get_file_info(self):
         '''returns file name, file info, target_board, artifact_info_type'''
@@ -234,9 +198,7 @@ class xmlParser(Parser):
         payload = []
         file_path = os.path.join(FILE_DIR, self.file_name)
         try:
-            if not os.path.exists(FILE_DIR):
-                os.mkdir(FILE_DIR)
-            grabber(self.url, file_path)
+            file_path = self.grabber.download_file(self.url, self.file_name)
             # Parser
             xml = JUnitXml.fromfile(file_path)
             resultType = getattr(junitparser, self.file_info.split("_")[1].capitalize())
@@ -277,21 +239,21 @@ class xmlParser(Parser):
         return (payload, payload_param)
 
 class PytestFailure(xmlParser):
-    def __init__(self, url):
-        super(PytestFailure, self).__init__(url)
+    def __init__(self, url, grabber):
+        super(PytestFailure, self).__init__(url, grabber)
 class PytestSkipped(xmlParser):
-    def __init__(self, url):
-        super(PytestSkipped, self).__init__(url)
-class PytestError(xmlParser):
-    def __init__(self, url):
-        super(PytestError, self).__init__(url)
+    def __init__(self, url, grabber):
+        super(PytestSkipped, self).__init__(url, grabber)
+class PytestError(xmlParser,):
+    def __init__(self, url, grabber):
+        super(PytestError, self).__init__(url, grabber)
 
 class MatlabFailure(xmlParser):
-    def __init__(self, url):
-        super(MatlabFailure, self).__init__(url)
+    def __init__(self, url, grabber):
+        super(MatlabFailure, self).__init__(url, grabber)
 class MatlabSkipped(xmlParser):
-    def __init__(self, url):
-        super(MatlabSkipped, self).__init__(url)
+    def __init__(self, url, grabber):
+        super(MatlabSkipped, self).__init__(url, grabber)
 class MatlabError(xmlParser):
-    def __init__(self, url):
-        super(MatlabError, self).__init__(url)
+    def __init__(self, url, grabber):
+        super(MatlabError, self).__init__(url, grabber)
