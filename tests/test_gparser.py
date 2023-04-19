@@ -3,7 +3,7 @@ import os
 import telemetry
 import time
 import datetime
-from unittest.mock import Mock
+from unittest.mock import patch
 
 TEST_JOB = 'http://server/jenkins/job/HW_tests/' \
            'job/HW_test_multiconfig/lastSuccessfulBuild/'
@@ -11,7 +11,7 @@ TEST_JOB = 'http://server/jenkins/job/HW_tests/' \
 @pytest.fixture(autouse=True)
 def setup_env():
     test_directory = os.path.dirname(os.path.abspath(__file__))
-    test_file_dir = os.path.join(telemetry.parser.FILE_DIR)
+    test_file_dir = os.path.join("event_horizon")
     if not os.path.exists(test_file_dir):
         os.mkdir(test_file_dir)
     os.system('cp -a {} {}'.format(os.path.join(test_directory,'test_artifacts','.'),test_file_dir))
@@ -33,9 +33,10 @@ def setup_env():
 )
 def test_get_parser(artifact, parser_object, parser_type):
     test_url = TEST_JOB + 'artifact/' + artifact
-    telemetry.parser.grabber = Mock()
-    p = telemetry.parser.get_parser(test_url)
-    assert type(p) == parser_object
+    grabber = telemetry.grabber.Grabber()
+    with patch.object(parser_object, "get_payload_raw"):
+        p = telemetry.parser.get_parser(test_url,grabber)
+        assert type(p) == parser_object
 
 @pytest.mark.parametrize(
     "artifact,parser_object,parser_type",
@@ -51,9 +52,14 @@ def test_get_parser(artifact, parser_object, parser_type):
 )
 def test_parser(artifact, parser_object, parser_type):
     test_url = TEST_JOB + 'artifact/' + artifact
-    telemetry.parser.grabber = Mock()
-    p = parser_object(test_url)
-    assert p.url == test_url
-    assert p.artifact_info_type == parser_type
-    assert p.file_name == artifact
-    assert len(p.payload_raw) > 0
+    grabber = telemetry.grabber.Grabber()
+    with patch.object(
+        telemetry.grabber.Grabber,
+        "download_file",
+        return_value=os.path.join("event_horizon", artifact)
+    ):
+        p = parser_object(test_url, grabber)
+        assert p.url == test_url
+        assert p.artifact_info_type == parser_type
+        assert p.file_name == artifact
+        assert len(p.payload_raw) > 0

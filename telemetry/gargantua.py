@@ -6,10 +6,20 @@ import telemetry
 
 class Gargantua:
     '''Tool for grabbing and logging Jenkins artifacts'''
-    def __init__(self, jenkins_server, es_server, job_name, jobs=[]):
+    def __init__(self,
+        jenkins_server,
+        jenkins_username,
+        jenkins_password,
+        es_server,
+        job_name,
+        jobs=[]
+    ):
         self.job_name = job_name
         self.jobs = jobs
         self.server = jenkins_server.strip("/")
+        self.auth = None
+        if jenkins_username and jenkins_password:
+            self.auth = (jenkins_username, jenkins_password)
         self.es_server = es_server
 
     def generate_urls(self):
@@ -26,7 +36,10 @@ class Gargantua:
         '''Crawls a given jenkins job url and returns artifacts list by thier relative path'''
         files = []
         ignore = ['dmesg_err.log']
-        page = requests.get(url)
+        if self.auth:
+            page = requests.get(url,auth=self.auth)
+        else:
+            page = requests.get(url)
         if page.status_code == 200:
             soup = BeautifulSoup(page.content, "html.parser")
             fileList = soup.find_all(class_="fileList")
@@ -49,7 +62,7 @@ class Gargantua:
                         #     files.append(directory + f)
             return files
         else:
-            raise Exception("Cannot fetch {}".format(url))
+            raise Exception(f"Cannot fetch {url}: Error code {page.status_code}")
     
     def crawl_files(self):
         artifact_urls = {}
@@ -69,15 +82,15 @@ class Gargantua:
             for f in files:
                 try:
                     # get parser
-                    parser = telemetry.parser.get_parser(job + '/' + f)
+                    grabber = telemetry.grabber.Grabber(self.auth)
+                    parser = telemetry.parser.get_parser(job + '/' + f,grabber)
                     if isinstance(parser, list):
                         for _parser in parser:
                             artifacts.append(Artifact(_parser))
                     else:
                         artifacts.append(Artifact(parser))
                 except Exception as ex:
-                    str(ex)
-                    print("Cannot create Artifact object")
+                    print(f"Cannot create Artifact object {f}; Reason {str(ex)}")
         return artifacts
 
     def log_artifacts(self):
