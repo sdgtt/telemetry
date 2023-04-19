@@ -196,7 +196,6 @@ class xmlParser(Parser):
         
     def get_payload_raw(self):
         payload = []
-        file_path = os.path.join(FILE_DIR, self.file_name)
         try:
             file_path = self.grabber.download_file(self.url, self.file_name)
             # Parser
