@@ -24,12 +24,12 @@ class Gargantua:
 
     def generate_urls(self):
         targets = []
-        jn = self.job_name.split('/')
-        job_name = "/job/{}/".format(jn[0])
-        if len(jn) == 2:
-            job_name = "/job/{}/job/{}/".format(jn[0],jn[1])
+        jns = self.job_name.split('/')
+        job_name = ""
+        for jn in jns:
+            job_name += "/job/{}".format(jn)
         for j in self.jobs:
-            targets.append(self.server + job_name + j + '/artifact')
+            targets.append(self.server + job_name + '/' + j + '/artifact')
         return targets
 
     def crawler(self, url, directory=""):
