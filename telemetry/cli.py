@@ -6,6 +6,35 @@ import telemetry
 import os
 
 
+def validate(field, value, schema):
+    """Validate a field and value data type
+    againts a given es schema
+    """
+    properties = schema["mappings"]["properties"]
+    type_maps = {
+        "keyword" : "str",
+        "text" : "str",
+        "boolean" : "bool",
+        "integer" : "int",
+        "date" : "datetime"
+    }
+    if not field in properties.keys():
+        raise Exception(f"Schema validator: {field} not supported")
+
+    # Validate data type
+    expected_type = type_maps[properties[field]["type"]]
+    actual_type = type(value).__name__
+
+    try:
+        if not actual_type == expected_type:
+            raise Exception(f"Schema validator: {field} expects {expected_type} type, {actual_type} is given")
+    except Exception:
+        if expected_type == "bool":
+            if value.lower() in ["false", "true"]:
+                value = bool(value)
+        if expected_type == "int":
+            value = int(value)
+
 @click.group()
 def cli():
     pass
@@ -118,39 +147,24 @@ def grab_and_log_artifacts(
 @click.option("--server", default="picard", help="Address of Elasticsearch server")
 @click.argument("in_args", nargs=-1)
 def log_boot_logs(server, in_args):
-    entry = {
-        "boot_folder_name": "NA",
-        "hdl_hash": "NA",
-        "linux_hash": "NA",
-        "boot_partition_hash": "NA",
-        "hdl_branch": "NA",
-        "linux_branch": "NA",
-        "boot_partition_branch": "NA",
-        "is_hdl_release": False,
-        "is_linux_release": False,
-        "is_boot_partition_release" : False,
-        "uboot_reached": False,
-        "linux_prompt_reached": False,
-        "drivers_enumerated": 0,
-        "drivers_missing": 0,
-        "dmesg_warnings_found": 0,
-        "dmesg_errors_found": 0,
-        "jenkins_job_date": datetime.datetime.now(),
-        "jenkins_build_number": 0,
-        "jenkins_project_name": 0,
-        "jenkins_agent": "NA",
-        "jenkins_trigger": "NA",
-        "pytest_errors": 0,
-        "pytest_failures": 0,
-        "pytest_skipped": 0,
-        "pytest_tests": 0,
-        "matlab_errors": 0,
-        "matlab_failures": 0,
-        "matlab_skipped": 0,
-        "matlab_tests": 0,
-        "last_failing_stage" : "NA",
-        "last_failing_stage_failure": "NA"
-    }
+    
+    tel = telemetry.ingest(server=server)
+    schema = tel.db.import_schema(tel._get_schema("boot_tests.json"))
+    entry = dict()
+    for k,v in schema["mappings"]["properties"].items():
+        if k == "source_adjacency_matrix":
+            continue
+        if v["type"] in ["txt","keyword"]:
+            entry.update({k:"NA"})
+        elif v["type"] in ["integer"]:
+            entry.update({k: 0})
+        elif v["type"] in ["boolean"]:
+            entry.update({k: False})
+        elif k == "jenkins_job_date":
+            entry.update({k:datetime.datetime.now()})
+        else:
+            entry.update({k: None})
+
     if len(in_args) == 0:
         click.echo("Must have non-zero arguments for database entry")
         sys.exit(1)
@@ -160,8 +174,10 @@ def log_boot_logs(server, in_args):
             + "       and in the form of: entry1<space>value1<space>entry2<space>value2"
         )
         sys.exit(1)
+
     for i in range(0, len(in_args), 2):
         if in_args[i] in entry:
+            validate(in_args[i], in_args[i+1],schema)
             if in_args[i + 1].lower() == "true":
                 entry[in_args[i]] = True
             elif in_args[i + 1].lower() == "false":
@@ -171,6 +187,7 @@ def log_boot_logs(server, in_args):
         else:
             click.echo("ERROR: " + in_args[i] + " not a valid entry")
             sys.exit(1)
+
     tel = telemetry.ingest(server=server)
     tel.log_boot_tests(**entry)
 
