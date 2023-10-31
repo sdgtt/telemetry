@@ -1,0 +1,61 @@
+{
+    "settings": {
+        "number_of_shards": 1,
+        "number_of_replicas": 0
+    },
+    "mappings": {
+        "properties": {
+            "board_name": {
+                "type": "keyword"
+            },
+            "noos_project": {
+                "type": "keyword"
+            },
+            "project_example": {
+                "type": "keyword"
+            },
+            "git_hash": {
+                "type": "text"
+            },
+            "noos_branch": {
+                "type": "keyword"
+            },
+            "is_binary_avail": {
+                "type": "boolean"
+            },
+            "is_boot_successful": {
+                "type": "boolean"
+            },
+            "jenkins_job_date": {
+                "type": "date"
+            },
+            "jenkins_build_number": {
+                "type": "integer"
+            },
+            "jenkins_project_name": {
+                "type": "keyword"
+            },
+            "jenkins_agent": {
+                "type": "keyword"
+            },
+            "pytest_errors": {
+                "type": "integer"
+            },
+            "pytest_failures": {
+                "type": "integer"
+            },
+            "pytest_skipped": {
+                "type": "integer"
+            },
+            "pytest_tests": {
+                "type": "integer"
+            },
+            "last_failing_stage": {
+                "type": "keyword"
+            },
+            "last_failing_stage_failure": {
+                "type": "text"
+            }
+        }
+    }
+}

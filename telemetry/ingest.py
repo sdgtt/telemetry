@@ -182,6 +182,55 @@ class ingest:
         # Add entry
         self.db.add_entry(entry)
 
+    def log_noos_tests(
+        self,
+        board_name,
+        noos_project,
+        project_example,
+        git_hash,
+        noos_branch,
+        is_binary_avail,
+        is_boot_successful,
+        jenkins_job_date,
+        jenkins_build_number,
+        jenkins_project_name,
+        jenkins_agent,
+        pytest_errors,
+        pytest_failures,
+        pytest_skipped,
+        pytest_tests,
+        last_failing_stage,
+        last_failing_stage_failure
+    ):
+        """ Upload no-os test result data to elasticsearch """
+
+        # Create query
+        entry = {
+            "board_name": board_name,
+            "noos_project": noos_project,
+            "project_example": project_example,
+            "git_hash": git_hash,
+            "noos_branch": noos_branch,
+            "is_binary_avail": is_binary_avail,
+            "is_boot_successful": is_boot_successful,
+            "jenkins_job_date": jenkins_job_date,
+            "jenkins_build_number": jenkins_build_number,
+            "jenkins_project_name": jenkins_project_name,
+            "jenkins_agent": jenkins_agent,
+            "pytest_errors": pytest_errors,
+            "pytest_failures": pytest_failures,
+            "pytest_skipped": pytest_skipped,
+            "pytest_tests": pytest_tests,
+            "last_failing_stage": last_failing_stage,
+            "last_failing_stage_failure": last_failing_stage_failure
+        }
+        # Setup index if necessary
+        self.db.index_name = "dummy" if self.use_test_index else "noos_tests"
+        s = self.db.import_schema(self._get_schema("noos_tests.json"))
+        self.db.create_db_from_schema(s)
+        # Add entry
+        self.db.add_entry(entry)
+
     def log_hdl_resources_from_csv(self, filename):
 
         if not os.path.exists(filename):

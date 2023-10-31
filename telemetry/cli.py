@@ -191,6 +191,51 @@ def log_boot_logs(server, in_args):
     tel = telemetry.ingest(server=server)
     tel.log_boot_tests(**entry)
 
+@click.command()
+@click.option("--server", default="picard", help="Address of Elasticsearch server")
+@click.argument("in_args", nargs=-1)
+def log_noos_logs(server, in_args):
+    
+    tel = telemetry.ingest(server=server)
+    schema = tel.db.import_schema(tel._get_schema("noos_tests.json"))
+    entry = dict()
+    for k,v in schema["mappings"]["properties"].items():
+        if v["type"] in ["text","keyword"]:
+            entry.update({k:"NA"})
+        elif v["type"] in ["integer"]:
+            entry.update({k: 0})
+        elif v["type"] in ["boolean"]:
+            entry.update({k: False})
+        elif k == "jenkins_job_date":
+            entry.update({k:datetime.datetime.now()})
+        else:
+            entry.update({k: None})
+
+    if len(in_args) == 0:
+        click.echo("Must have non-zero arguments for database entry")
+        sys.exit(1)
+    if int(len(in_args) / 2) != len(in_args) / 2:
+        click.echo(
+            "ERROR: Number of inputs arguments must be even\n"
+            + "       and in the form of: entry1<space>value1<space>entry2<space>value2"
+        )
+        sys.exit(1)
+
+    for i in range(0, len(in_args), 2):
+        if in_args[i] in entry:
+            validate(in_args[i], in_args[i+1],schema)
+            if in_args[i + 1].lower() == "true":
+                entry[in_args[i]] = True
+            elif in_args[i + 1].lower() == "false":
+                entry[in_args[i]] = False
+            else:
+                entry[in_args[i]] = in_args[i + 1]
+        else:
+            click.echo("ERROR: " + in_args[i] + " not a valid entry")
+            sys.exit(1)
+
+    tel = telemetry.ingest(server=server)
+    tel.log_noos_tests(**entry)
 
 @click.command()
 def main(args=None):
@@ -202,6 +247,7 @@ def main(args=None):
 
 cli.add_command(prod_logs_upload)
 cli.add_command(log_boot_logs)
+cli.add_command(log_noos_logs)
 cli.add_command(log_hdl_resources_from_csv)
 cli.add_command(log_artifacts)
 cli.add_command(grab_and_log_artifacts)
