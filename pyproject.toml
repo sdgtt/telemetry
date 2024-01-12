@@ -1,0 +1,48 @@
+[build-system]
+requires = ["setuptools>=40.6.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "telemetry"
+dynamic = ["readme"]
+version = "0.0.1"
+description = "Python module for simplifying collection and display of test data"
+authors = [{ name = "Travis F. Collins", email = "travis.collins@analog.com" }]
+license = { text = "BSD License" }
+requires-python = ">=3.5"
+classifiers = [
+    "Development Status :: 2 - Pre-Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: BSD License",
+    "Natural Language :: English",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.5",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+]
+dependencies = [
+    "Click>=7.0",
+    "elasticsearch>=7.16.0",
+    "pymongo[srv]",
+    "bs4",
+    "tqdm",
+    "requests",
+]
+
+[tool.setuptools.dynamic]
+readme = { file = "README.rst", content-type = "text/x-rst" }
+
+[tool.setuptools]
+packages = ["telemetry", "telemetry.gparser", "telemetry.prod"]
+
+[project.scripts]
+telemetry = "telemetry.cli:cli"
+
+[project.urls]
+homepage = "https://sdgtt.github.io/telemetry/"
+documentation = "https://sdgtt.github.io/telemetry/"
+repository = "https://github.com/sdgtt/telemetry"
+
+[tool.setuptools.package-data]
+telemetry = ["resources/*.json", "tests/test_artifacts/*"]
