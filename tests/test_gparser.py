@@ -29,6 +29,7 @@ def setup_env():
             telemetry.parser.EnumeratedDevs, 'enumerated_devs'),
         ('zynq-zed-adv7511-adrv9002-rx2tx2-vcmos_missing_devs.log', \
             telemetry.parser.MissingDevs, 'missing_devs'),
+        ('info.txt', telemetry.parser.InfoTxt, 'info_txt'),
     ]
 )
 def test_get_parser(artifact, parser_object, parser_type):
@@ -48,6 +49,7 @@ def test_get_parser(artifact, parser_object, parser_type):
             telemetry.parser.EnumeratedDevs, 'enumerated_devs'),
         ('zynq-zed-adv7511-adrv9002-rx2tx2-vcmos_missing_devs.log', \
             telemetry.parser.MissingDevs, 'missing_devs'),
+        ('info.txt', telemetry.parser.InfoTxt, 'info_txt'),
     ]
 )
 def test_parser(artifact, parser_object, parser_type):
@@ -62,4 +64,6 @@ def test_parser(artifact, parser_object, parser_type):
         assert p.url == test_url
         assert p.artifact_info_type == parser_type
         assert p.file_name == artifact
+        assert len(p.payload_raw) > 0
+        assert len(p.payload) > 0
         assert len(p.payload_raw) > 0
