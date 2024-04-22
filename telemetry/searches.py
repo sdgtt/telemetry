@@ -15,25 +15,54 @@ class searches:
         loc = os.path.dirname(__file__)
         return os.path.join(loc, "resources", name)
 
-    def artifacts(self):
+    def artifacts(self,
+                   target_board=None,
+                   job=None,
+                   job_no = None,
+                   artifact_info_type = None,
+                ):
         """ Query artifacts data from elasticsearch """
         # Returns a list of artifact information sorted by asc achive_date
-        index = "boot_tests" if not self.use_test_index else "dummy"
-
-        query = {
+        index = "artifacts" if not self.use_test_index else "dummy"
+        s = []
+        if target_board:
+            s.append({"match": {"target_board.keyword": target_board}})
+        if job:
+            s.append({"match": {"job.keyword": job}})
+        if job_no:
+            s.append({"match": {"job_no.keyword": job_no}})
+        if artifact_info_type:
+            s.append({"match": {"artifact_info_type.keyword": artifact_info_type}})
+        # Create query
+        if s:
+            query = {
+                "sort": [{"archive_date": {"order": "desc"}}],
+                "query": {"bool": {"must": s}},
+            }
+        else:
+            query = {
                 "sort": [{"archive_date": {"order": "desc"}}],
                 "query": {"match_all": {}},
             }
+
         res = self.db.es.search(index=index, size=1000, body=query)
         artifacts_data = [data["_source"] for data in res["hits"]["hits"]]
         return artifacts_data
 
-    def boot_tests(self, boot_folder_name=None):
+    def boot_tests(self,
+                   boot_folder_name=None,
+                   jenkins_project_name=None,
+                   jenkins_build_no = None,
+                ):
         """ Query boot test results from elasticsearch """
         index = "boot_tests" if not self.use_test_index else "dummy"
         s = []
         if boot_folder_name:
-            s.append({"match": {"boot_folder_name": boot_folder_name}})
+            s.append({"match": {"boot_folder_name.keyword": boot_folder_name}})
+        if jenkins_project_name:
+            s.append({"match": {"jenkins_project_name.keyword": jenkins_project_name}})
+        if jenkins_build_no:
+            s.append({"match": {"jenkins_build_number.keyword": jenkins_build_no}})
         # Create query
         if s:
             query = {
@@ -190,3 +219,9 @@ class searches:
             }
             for i in range(len(dates))
         }
+    
+if __name__=="__main__":
+    s = searches(server="10.116.110.150")
+    b = s.boot_tests("zynq-zc702-adv7511-ad9361-fmcomms2-3","HW_tests/HW_test_multiconfig","1329")
+    a = s.artifacts("zynq-zc702-adv7511-ad9361-fmcomms2-3","HW_tests/HW_test_multiconfig","1329")
+    [ print(entry) for entry in a]

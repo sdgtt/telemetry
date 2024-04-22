@@ -5,6 +5,7 @@ import datetime
 import telemetry
 import os
 
+import telemetry.report
 
 def validate(field, value, schema):
     """Validate a field and value data type
@@ -191,7 +192,52 @@ def log_boot_logs(server, in_args):
     tel = telemetry.ingest(server=server)
     tel.log_boot_tests(**entry)
 
+@click.command()
+@click.option("--server", default="picard", help="Address of Elasticsearch server")
+@click.option("--job_name", required=True, help="Jenkisn job name to fetch")
+@click.option("--build_number", required=True, help="Build no to fetch")
+@click.option("--board_name", default=None, help="Board to fetch, will select all if empty")
+def create_results_gist(server, job_name, build_number, board_name):
+    tel = telemetry.searches(server=server)
+    boot_test = tel.boot_tests(
+        boot_folder_name=board_name,
+        jenkins_project_name=job_name,
+        jenkins_build_no=build_number
+    )
 
+    if len(boot_test.keys()) == 0:
+        raise Exception(f"{job_name} - {build_number} not found")
+    data = {}
+    # get artifacts
+    artifacts_info_txt=tel.artifacts(
+        target_board=None,
+        job=job_name,
+        job_no = build_number,
+        artifact_info_type = "info_txt",
+    )
+    for bn, info in boot_test.items():
+        artifacts = tel.artifacts(board_name, job_name, build_number)
+        artifact_types = ["enumerated_devs", "missing_devs", "dmesg_err", "pytest_failure"]
+        for artifactory_type in artifact_types:
+            info[0].update({artifactory_type: []})
+            for artifact in artifacts:
+                if artifact["artifact_info_type"] == artifactory_type:
+                    info[0][artifactory_type].append(artifact["payload"])
+        
+        if artifacts_info_txt:
+            info[0]["info_txt"] = dict()
+            info[0]["info_txt"].update({"Built projects": list()})
+            for artifact in artifacts_info_txt:
+                if artifact["payload"] == "Built projects":
+                    info[0]["info_txt"]["Built projects"].append(artifact["payload_param"])
+                    continue
+                info[0]["info_txt"].update({artifact["payload"]:artifact["payload_param"]})
+
+        data[bn] = info[0]
+
+    m = telemetry.markdown.ResultsMarkdown(data)
+    m.generate_gist()
+    
 @click.command()
 def main(args=None):
     """Console script for telemetry."""
@@ -205,6 +251,7 @@ cli.add_command(log_boot_logs)
 cli.add_command(log_hdl_resources_from_csv)
 cli.add_command(log_artifacts)
 cli.add_command(grab_and_log_artifacts)
+cli.add_command(create_results_gist)
 cli.add_command(main)
 
 if __name__ == "__main__":
