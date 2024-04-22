@@ -105,10 +105,10 @@ class ResultsMarkdown(Markdown):
             }
         return param_dict
 
-    def generate_gist(self):
+    def generate_gist(self, url, token):
         for bn,param in self.param_dict.items():
             outfile = self.generate(param, bn+".md")
-            gist = telemetry.gist.Gist()
+            gist = telemetry.gist.Gist(url, token)
             gist_link = gist.create_gist(outfile, f'''Boardname: {param["board_name"]}\n
                                            Branch: {param["branch"]}\nPR ID: {param["pr_id"]}\n
                                            timestamp: {param["timestamp"]}''')

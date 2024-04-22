@@ -197,7 +197,9 @@ def log_boot_logs(server, in_args):
 @click.option("--job_name", required=True, help="Jenkisn job name to fetch")
 @click.option("--build_number", required=True, help="Build no to fetch")
 @click.option("--board_name", default=None, help="Board to fetch, will select all if empty")
-def create_results_gist(server, job_name, build_number, board_name):
+@click.option("--github_gist_url", default=None, help="Base URL to the gist repository")
+@click.option("--github_gist_token", default=None, help="Token required for gist access")
+def create_results_gist(server, job_name, build_number, board_name, github_gist_url, github_gist_token):
     tel = telemetry.searches(server=server)
     boot_test = tel.boot_tests(
         boot_folder_name=board_name,
@@ -236,7 +238,7 @@ def create_results_gist(server, job_name, build_number, board_name):
         data[bn] = info[0]
 
     m = telemetry.markdown.ResultsMarkdown(data)
-    m.generate_gist()
+    m.generate_gist(github_gist_url, github_gist_token)
     
 @click.command()
 def main(args=None):
