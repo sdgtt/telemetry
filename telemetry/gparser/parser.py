@@ -272,7 +272,8 @@ class InfoTxt(Parser):
             "(DIRECTION):\s(.+)$",
             "(Triggered\sby):\s(.+)$",
             "(COMMIT\sSHA):\s(.+)$",
-            "(COMMIT_DATE):\s(.+)$"
+            "(COMMIT_DATE):\s(.+)$",
+            "-\s([^:\s]+)$",
         ]
         super(InfoTxt, self).__init__(url, grabber)
         
@@ -315,7 +316,10 @@ class InfoTxt(Parser):
         for l in self.payload_raw:
             for p in self.regex_patterns:
                 x = re.search(p,l)
-                if x:
+                if x and len(x.groups())==1:
+                    payload.append("Built projects")
+                    payload_param.append(x.group(1))
+                elif x and len(x.groups())==2:
                     payload.append(x.group(1))
                     payload_param.append(x.group(2))
         return (payload, payload_param)
