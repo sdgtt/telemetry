@@ -37,6 +37,9 @@ class ResultsMarkdown(Markdown):
     def generate_param(self,data):
         param_dict = {}
         for bn, info in data.items():
+            if info == "NA":
+                param_dict[bn] = None
+                continue
             test_build_status = None
             if str(info["last_failing_stage"]) in self.CRITICAL:
                 test_build_status = "FAILURE"
@@ -106,10 +109,14 @@ class ResultsMarkdown(Markdown):
         return param_dict
 
     def generate_gist(self, url, token):
+        print(f"========== Publish Results ==========")
         for bn,param in self.param_dict.items():
+            if not param:
+                print(f'Result: {bn} | ---- | HW not available')
+                continue
             outfile = self.generate(param, bn+".md")
             gist = telemetry.gist.Gist(url, token)
             gist_link = gist.create_gist(outfile, f'''Boardname: {param["board_name"]}\n
                                            Branch: {param["branch"]}\nPR ID: {param["pr_id"]}\n
                                            timestamp: {param["timestamp"]}''')
-            print(f'Gist created: {gist.gh_url}/{gist_link} - {param["test_status"]}')
+            print(f'Result: {bn} | {gist.gh_url}/{gist_link} | {param["test_status"]}')

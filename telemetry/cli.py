@@ -217,25 +217,35 @@ def create_results_gist(server, job_name, build_number, board_name, github_gist_
         job_no = build_number,
         artifact_info_type = "info_txt",
     )
-    for bn, info in boot_test.items():
-        artifacts = tel.artifacts(board_name, job_name, build_number)
-        artifact_types = ["enumerated_devs", "missing_devs", "dmesg_err", "pytest_failure"]
-        for artifactory_type in artifact_types:
-            info[0].update({artifactory_type: []})
-            for artifact in artifacts:
-                if artifact["artifact_info_type"] == artifactory_type:
-                    info[0][artifactory_type].append(artifact["payload"])
-        
-        if artifacts_info_txt:
-            info[0]["info_txt"] = dict()
-            info[0]["info_txt"].update({"Built projects": list()})
-            for artifact in artifacts_info_txt:
-                if artifact["payload"] == "Built projects":
-                    info[0]["info_txt"]["Built projects"].append(artifact["payload_param"])
-                    continue
-                info[0]["info_txt"].update({artifact["payload"]:artifact["payload_param"]})
+    built_projects = list()
+    for artifact in artifacts_info_txt:
+        if artifact["payload"] == "Built projects":
+            built_projects.append(artifact["payload_param"])
+    
+    for board in built_projects:
+        if not board in boot_test.keys():
+            data[board] = "NA"
+        else:
+            bn = board
+            info = boot_test[board]
+            artifacts = tel.artifacts(board, job_name, build_number)
+            artifact_types = ["enumerated_devs", "missing_devs", "dmesg_err", "pytest_failure"]
+            for artifactory_type in artifact_types:
+                info[0].update({artifactory_type: []})
+                for artifact in artifacts:
+                    if artifact["artifact_info_type"] == artifactory_type:
+                        info[0][artifactory_type].append(artifact["payload"])
+            
+            if artifacts_info_txt:
+                info[0]["info_txt"] = dict()
+                info[0]["info_txt"].update({"Built projects": list()})
+                for artifact in artifacts_info_txt:
+                    if artifact["payload"] == "Built projects":
+                        info[0]["info_txt"]["Built projects"].append(artifact["payload_param"])
+                        continue
+                    info[0]["info_txt"].update({artifact["payload"]:artifact["payload_param"]})
 
-        data[bn] = info[0]
+            data[bn] = info[0]
 
     m = telemetry.markdown.ResultsMarkdown(data)
     m.generate_gist(github_gist_url, github_gist_token)
