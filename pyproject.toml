@@ -28,6 +28,7 @@ dependencies = [
     "bs4",
     "tqdm",
     "requests",
+    "pygithub",
 ]
 
 [tool.setuptools.dynamic]
