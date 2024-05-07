@@ -16,7 +16,8 @@ def get_parser(url,grabber=None):
         '^.*enumerated_devs\.log': EnumeratedDevs,
         '^.*missing_devs\.log': MissingDevs,
         '^.*pyadi-iio.*\.xml': [PytestFailure, PytestSkipped, PytestError],
-        '^.*HWTestResults\.xml': [MatlabFailure, MatlabSkipped, MatlabError]
+        '^.*HWTestResults\.xml': [MatlabFailure, MatlabSkipped, MatlabError],
+        '^.*info\.txt': InfoTxt,
     }
 
     # find parser
@@ -71,13 +72,12 @@ class Parser():
         self.artifact_info_type=file_info[3]
         self.payload_raw=self.get_payload_raw()
         payload_parsed=self.get_payload_parsed()
-        if isinstance(self, xmlParser):
+        if isinstance(payload_parsed, tuple):
             self.payload=payload_parsed[0]
             self.payload_param=payload_parsed[1]
         else:
             self.payload=payload_parsed
-            for k in range(len(payload_parsed)):
-                self.payload_param.append("NA") 
+            self.payload_param=self.get_payload_param() 
 
     def show_info(self):
         return self.__dict__
@@ -132,6 +132,12 @@ class Parser():
                 x = re.search("(.*)", p)
                 payload.append(x.group(1))
         return payload
+    
+    def get_payload_param(self):
+        payload_param = list()
+        for k in self.payload:
+            payload_param.append("NA")
+        return payload_param
 
 class Dmesg(Parser):
 
@@ -256,3 +262,64 @@ class MatlabSkipped(xmlParser):
 class MatlabError(xmlParser):
     def __init__(self, url, grabber):
         super(MatlabError, self).__init__(url, grabber)
+
+class InfoTxt(Parser):
+    def __init__(self, url, grabber):
+        self.regex_patterns = [
+            "(BRANCH):\s(.+)$",
+            "(PR_ID):\s(.+)$",
+            "(TIMESTAMP):\s(.+)$",
+            "(DIRECTION):\s(.+)$",
+            "(Triggered\sby):\s(.+)$",
+            "(COMMIT\sSHA):\s(.+)$",
+            "(COMMIT_DATE):\s(.+)$",
+            "-\s([^:\s]+)$",
+        ]
+        super(InfoTxt, self).__init__(url, grabber)
+        
+
+    def get_file_info(self):
+        '''returns file name, file info, target_board, artifact_info_type'''
+        if self.multilevel:
+            url = urlparse(self.url)
+            file_name = url.path.split('/')[-1]
+            file_info = "NA"
+            target_board="NA"
+            artifact_info_type = "info_txt"
+            return (file_name, file_info, target_board, artifact_info_type)
+
+        raise Exception("Does not support non multilevel yet!")
+
+    def get_payload_raw(self):
+        payload = []
+        try:
+            file_path = self.grabber.download_file(self.url, self.file_name)
+            with open(file_path, "r") as f:
+                for l in f.readlines():
+                    found = False
+                    for p in self.regex_patterns:
+                        if re.search(p,l.strip()):
+                            found=True
+                    if found:
+                        payload.append(l.strip())
+        except Exception as ex:
+            traceback.print_exc()
+            print("Error Parsing File!")
+        finally:
+            os.remove(file_path)
+
+        return payload
+    
+    def get_payload_parsed(self):
+        payload = list()
+        payload_param = list()
+        for l in self.payload_raw:
+            for p in self.regex_patterns:
+                x = re.search(p,l)
+                if x and len(x.groups())==1:
+                    payload.append("Built projects")
+                    payload_param.append(x.group(1))
+                elif x and len(x.groups())==2:
+                    payload.append(x.group(1))
+                    payload_param.append(x.group(2))
+        return (payload, payload_param)

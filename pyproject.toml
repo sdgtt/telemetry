@@ -28,13 +28,14 @@ dependencies = [
     "bs4",
     "tqdm",
     "requests",
+    "pygithub",
 ]
 
 [tool.setuptools.dynamic]
 readme = { file = "README.rst", content-type = "text/x-rst" }
 
 [tool.setuptools]
-packages = ["telemetry", "telemetry.gparser", "telemetry.prod"]
+packages = ["telemetry", "telemetry.gparser", "telemetry.prod", "telemetry.report"]
 
 [project.scripts]
 telemetry = "telemetry.cli:cli"
@@ -45,4 +46,4 @@ documentation = "https://sdgtt.github.io/telemetry/"
 repository = "https://github.com/sdgtt/telemetry"
 
 [tool.setuptools.package-data]
-telemetry = ["resources/*.json", "tests/test_artifacts/*"]
+telemetry = ["resources/*.json", "tests/test_artifacts/*", "report/templates/*.md"]
