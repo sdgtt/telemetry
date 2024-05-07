@@ -219,9 +219,4 @@ class searches:
             }
             for i in range(len(dates))
         }
-    
-if __name__=="__main__":
-    s = searches(server="10.116.110.150")
-    b = s.boot_tests("zynq-zc702-adv7511-ad9361-fmcomms2-3","HW_tests/HW_test_multiconfig","1329")
-    a = s.artifacts("zynq-zc702-adv7511-ad9361-fmcomms2-3","HW_tests/HW_test_multiconfig","1329")
-    [ print(entry) for entry in a]
+
