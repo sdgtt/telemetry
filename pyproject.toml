@@ -36,7 +36,7 @@ dependencies = [
 readme = { file = "README.rst", content-type = "text/x-rst" }
 
 [tool.setuptools]
-packages = ["telemetry", "telemetry.gparser", "telemetry.prod", "telemetry.report"]
+packages = ["telemetry", "telemetry.gparser", "telemetry.prod", "telemetry.report", "telemetry.dev"]
 
 [project.scripts]
 telemetry = "telemetry.cli:cli"
