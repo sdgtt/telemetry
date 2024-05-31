@@ -65,7 +65,6 @@ def pytest_configure(config):
     for field in required_metadata[project]:
         metadata[field] = os.getenv(field.upper(), "NA")
     # Overwrite with CLI values
-    print(dir(config.option))
     for field in required_metadata[project]:
         field = field.replace("-", "_")
         if hasattr(config.option, f"telemetry_{field}"):
@@ -89,20 +88,15 @@ def pytest_sessionfinish(session, exitstatus):
     session.config._telemetry_metadata["junit_xml"] = xml
 
     res = session.config._telemetry
-    print("res", res)
-    print("Uploading data")
-
     # Create job ID
     if session.config.option.telemetry_jenkins_job:
         job_id = session.config.option.telemetry_jenkins_job
     else:
         job_id = "m" + str(time.strftime("%Y%m%d_%H%M%S"))
-    print(job_id)
-
+    
     # Get files
     telemetry_files = session.config.stash.get("telemetry_files", None)
-    print(telemetry_files)
-
+    
     res.submit_test_data(
         job_id, session.config._telemetry_metadata, [xmlpath] + telemetry_files
     )
