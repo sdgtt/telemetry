@@ -42,7 +42,7 @@ packages = ["telemetry", "telemetry.gparser", "telemetry.prod", "telemetry.repor
 telemetry = "telemetry.cli:cli"
 
 [project.entry-points.pytest11]
-pybench = "telemetry.plugin"
+telemetry = "telemetry.plugin"
 
 [project.urls]
 homepage = "https://sdgtt.github.io/telemetry/"
