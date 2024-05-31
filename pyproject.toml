@@ -29,6 +29,7 @@ dependencies = [
     "tqdm",
     "requests",
     "pygithub",
+    "minio",
 ]
 
 [tool.setuptools.dynamic]
@@ -39,6 +40,9 @@ packages = ["telemetry", "telemetry.gparser", "telemetry.prod", "telemetry.repor
 
 [project.scripts]
 telemetry = "telemetry.cli:cli"
+
+[project.entry-points.pytest11]
+pybench = "telemetry.plugin"
 
 [project.urls]
 homepage = "https://sdgtt.github.io/telemetry/"
