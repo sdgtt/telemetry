@@ -4,3 +4,4 @@ junitparser==2.4.2
 elasticsearch==7.16.0
 pygithub==2.3.0
 minio
+junitparser
