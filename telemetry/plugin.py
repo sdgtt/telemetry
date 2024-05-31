@@ -90,13 +90,13 @@ def pytest_sessionfinish(session, exitstatus):
     res = session.config._telemetry
     # Create job ID
     if session.config.option.telemetry_jenkins_job:
-        job_id = session.config.option.telemetry_jenkins_job
+        job_id = f"j{str(session.config.option.telemetry_jenkins_job)}"
     else:
         job_id = "m" + str(time.strftime("%Y%m%d_%H%M%S"))
-    
+
     # Get files
     telemetry_files = session.config.stash.get("telemetry_files", None)
-    
+
     res.submit_test_data(
         job_id, session.config._telemetry_metadata, [xmlpath] + telemetry_files
     )
