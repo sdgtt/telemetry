@@ -81,6 +81,8 @@ def pytest_configure(config):
 
 # Hook to run after all tests are done
 def pytest_sessionfinish(session, exitstatus):
+    if not session.config.option.telemetry_enable:
+        return
     # Get XML data
     xmlpath = session.config.option.xmlpath
     with open(xmlpath, "r") as f:
