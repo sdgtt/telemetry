@@ -6,6 +6,7 @@ from telemetry.gargantua import Gargantua as gargantua
 from telemetry.gparser import parser
 from telemetry.gparser import grabber
 from telemetry.report import gist, markdown
+from telemetry.dev.vpx import VPX
 
 import telemetry.prod as prod
 

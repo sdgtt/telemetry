@@ -1,0 +1,20 @@
+devboard_telemetry:
+  project: vpx
+  servers:
+    - name: minio
+      type: minio
+      address: localhost
+      port: 9000
+      # access_key: minio
+      # secret_key: analoganalog
+      access_key: KMKQ5o93bSp5VVVxdI5X
+      secret_key: zCLIpPPXKm61gUsKGjN1BzRHPHysqtZhJUwVPquS
+      # bucket: vpx_washington
+    - name: mongo
+      type: mongo
+      address: localhost
+      port: 27017
+      username: root
+      password: analog
+      # database: devboards
+      # collection: vpx_washington
