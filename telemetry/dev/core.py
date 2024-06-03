@@ -46,14 +46,12 @@ class Core:
         if "mongo" in extracted_config:
             self.mongo = self.setup_mongo(extracted_config["mongo"])
         else:
-            ...
-            # raise Exception("No MongoDB configuration found")
+            raise Exception("No MongoDB configuration found")
 
         if "minio" in extracted_config:
             self.minio = self.setup_minio(extracted_config["minio"])
         else:
-            ...
-            # raise Exception("No Minio configuration found")
+            raise Exception("No Minio configuration found")
 
     def setup_mongo(self, config):
         """Setup MongoDB connection."""
