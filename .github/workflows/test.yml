@@ -39,7 +39,7 @@ jobs:
          curl 127.0.0.1:9200
          curl localhost:9200
     - name: Run tests
-      run: SERVER="127.0.0.1" python3 -m pytest -v --cov=telemetry tests -k "not prod"
+      run: SERVER="127.0.0.1" python3 -m pytest -v --cov=telemetry tests -k "not prod and not dev"
 
     - name: Report coverage
       env:
