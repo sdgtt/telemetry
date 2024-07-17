@@ -6,6 +6,7 @@ import telemetry
 import os
 
 import telemetry.report
+from telemetry.report.utility import map_th_to_bp, map_bp_to_th
 
 def validate(field, value, schema):
     """Validate a field and value data type
@@ -209,7 +210,6 @@ def create_results_gist(server, job_name, build_number, board_name, github_gist_
 
     if len(boot_test.keys()) == 0:
         raise Exception(f"{job_name} - {build_number} not found")
-    data = {}
     # get artifacts
     artifacts_info_txt=tel.artifacts(
         target_board=None,
@@ -218,15 +218,30 @@ def create_results_gist(server, job_name, build_number, board_name, github_gist_
         artifact_info_type = "info_txt",
     )
     built_projects = list()
+    translated_built_projects = list()
+    data = {}
+    translated_data = {}
     for artifact in artifacts_info_txt:
         if artifact["payload"] == "Built projects":
             built_projects.append(artifact["payload_param"])
-    
+
+    # translate first to test harness board naming scheme
     for board in built_projects:
+        translated = map_bp_to_th(board)
+        if translated:
+            if type(translated) == list:
+                for variant in translated:
+                    if variant not in translated_built_projects:
+                        translated_built_projects.append(variant)
+            else:
+                translated_built_projects.append(translated)
+        else:
+            translated_built_projects.append(board)
+
+    for board in translated_built_projects:
         if not board in boot_test.keys():
             data[board] = "NA"
         else:
-            bn = board
             info = boot_test[board]
             artifacts = tel.artifacts(board, job_name, build_number)
             artifact_types = ["enumerated_devs", "missing_devs", "dmesg_err", "pytest_failure"]
@@ -245,9 +260,22 @@ def create_results_gist(server, job_name, build_number, board_name, github_gist_
                         continue
                     info[0]["info_txt"].update({artifact["payload"]:artifact["payload_param"]})
 
-            data[bn] = info[0]
+            
+            info[0]["variance_info"] = board.split("-v")[1] if len(board.split("-v")) == 2 else None
+            data[board] = info[0]
 
-    m = telemetry.markdown.ResultsMarkdown(data)
+    # translate back to boot partition naming scheme
+    for bn, details in data.items():
+        translated = map_th_to_bp(bn)
+        if translated:
+            board_name = translated
+        else:
+            board_name = bn
+        if board_name in translated_data:
+            board_name += f" ({details['variance_info']})"
+        translated_data.update({board_name: details})
+
+    m = telemetry.markdown.ResultsMarkdown(translated_data)
     m.generate_gist(github_gist_url, github_gist_token)
     
 @click.command()
