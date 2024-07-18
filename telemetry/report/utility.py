@@ -9,6 +9,8 @@ BOOT_PARTITION_BN_MAP = {
     "zynq-zed-adv7511-adrv9002" : "zynq-zed-adv7511-adrv9002-vcmos",
     "zynqmp-zcu102-rev10-adrv9002-rx2tx2" : ["zynqmp-zcu102-rev10-adrv9002-rx2tx2-vcmos","zynqmp-zcu102-rev10-adrv9002-rx2tx2-vlvds"],
     "zynqmp-zcu102-rev10-adrv9002" : ["zynqmp-zcu102-rev10-adrv9002-vcmos","zynqmp-zcu102-rev10-adrv9002-vlvds"],
+    "zynqmp-adrv9009-zu11eg-revb-adrv2crr-fmc-revb-jesd204-fsm":"zynqmp-adrv9009-zu11eg-revb-adrv2crr-fmc-revb",
+    "zynqmp-adrv9009-zu11eg-revb-adrv2crr-fmc-revb-sync-fmcomms8-jesd204-fsm":"zynqmp-adrv9009-zu11eg-revb-adrv2crr-fmc-revb-sync-fmcomms8",
 }
 
 def map_bp_to_th(bp_bn_name):
