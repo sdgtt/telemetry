@@ -31,6 +31,7 @@ dependencies = [
     "pygithub",
     "minio",
     "junitparser",
+    "pyyaml",
 ]
 
 [tool.setuptools.dynamic]
