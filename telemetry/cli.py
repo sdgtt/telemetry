@@ -209,7 +209,7 @@ def create_results_gist(server, job_name, build_number, board_name, github_gist_
     )
 
     if len(boot_test.keys()) == 0:
-        raise Exception(f"{job_name} - {build_number} not found")
+        print(f"No boot test data found for {job_name} - {build_number}")
     # get artifacts
     artifacts_info_txt=tel.artifacts(
         target_board=None,
