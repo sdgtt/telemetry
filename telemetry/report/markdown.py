@@ -46,19 +46,25 @@ class ResultsMarkdown(Markdown):
             elif int(info["drivers_missing"])>0 or\
                 int(info["dmesg_errors_found"])>0 or\
                 int(info["pytest_errors"])>0 or\
-                int(info["pytest_failures"])>0:
+                int(info["pytest_failures"])>0 or\
+                (int(info["pytest_skipped"])==0 and int(info["pytest_tests"]==0)):
                 test_build_status = "UNSTABLE"
             elif str(info["last_failing_stage"]) == "NA":
                 test_build_status = "PASSING"
             else:
                 test_build_status = "INVALID"
 
+            # update test stage status
             uboot_reached_status = "✔" if bool(info["uboot_reached"]) else "❌"
             linux_prompt_reached_status = "✔" if bool(info["linux_prompt_reached"]) else "❌"
             drivers_enumerated_status = "✔" if int(info["drivers_missing"]) == 0 and test_build_status != "FAILURE" else "❌"
             dmesg_status = "✔" if int(info["dmesg_errors_found"]) == 0 and test_build_status != "FAILURE" else "❌"
             pytest_tests_status = "✔" if int(info["pytest_failures"]) == 0 and test_build_status != "FAILURE" else "❌"
 
+            # added validations
+            pytest_tests_status = "⛔" if int(info["pytest_skipped"]) == 0 and int(info["pytest_tests"]) == 0 else pytest_tests_status
+
+            # update test stage details
             if test_build_status == "FAILURE":
                 iio_drivers_missing_details = "No Details"
                 iio_drivers_found_details = "No Details"
@@ -69,6 +75,7 @@ class ResultsMarkdown(Markdown):
                 iio_drivers_found_details = "No iio drivers found" if len(info["enumerated_devs"]) == 0 else ("<br>").join(info["enumerated_devs"])
                 dmesg_errors_found_details = "No errors" if len(info["dmesg_err"]) == 0 else ("<br>").join(info["dmesg_err"])
                 pytest_failures_details = "No failures" if len(info["pytest_failure"]) == 0 else ("<br>").join(info["pytest_failure"])
+                pytest_failures_details = "Invalid" if pytest_tests_status == "⛔" else pytest_failures_details
 
             last_failing_stage = str(info["last_failing_stage"])
             last_failing_stage_failure = str(info["last_failing_stage_failure"])
