@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="12" time="18.410" timestamp="2024-11-04T14:22:24.531169" hostname="TDEVERA2-L01"><testcase classname="test.test_daq3_p" name="test_daq3_dds_loopback[peak_min=-50-frequency=5000000-scale=0.12-param_set={}-channel=0-classname=adi.DAQ3]" time="2.444" /><testcase classname="test.test_daq3_p" name="test_daq3_dds_loopback[peak_min=-50-frequency=5000000-scale=0.12-param_set={}-channel=1-classname=adi.DAQ3]" time="1.358" /><testcase classname="test.test_daq3_p" name="test_daq3_dds_loopback[peak_min=-50-frequency=10000000-scale=0.06-param_set={}-channel=0-classname=adi.DAQ3]" time="1.397"><properties><property name="exception_type_and_message" value="AssertionError: assert -53.914503994625996 &gt; -50" /><property name="test_description" value="dds_loopback: Test DDS loopback with connected loopback cables.&#10;    This test requires a devices with TX and RX onboard where the transmit&#10;    signal can be recovered. TX FPGA DDSs are used to generate a sinusoid&#10;    which is then estimated on the RX side. The receive tone must be within&#10;    1% of its expected frequency with a specified peak&#10;&#10;    parameters:&#10;        uri: type=string&#10;            URI of IIO context of target board/system&#10;        classname: type=string&#10;            Name of pyadi interface class which contain attribute&#10;        param_set: type=dict&#10;            Dictionary of attribute and values to be set before tone is&#10;            generated and received&#10;        channel: type=list&#10;            List of integers or list of list of integers of channels to&#10;            enable through tx_enabled_channels&#10;        frequency: type=integer&#10;            Frequency in Hz of transmitted tone&#10;        scale: type=float&#10;            Scale of DDS tone. Range [0,1]&#10;        peak_min: type=float&#10;            Minimum acceptable value of maximum peak in dBFS of received tone&#10;&#10;    " /></properties><failure message="assert -53.914503994625996 &gt; -50">test_dds_loopback = &lt;function dds_loopback at 0x000002528402BF60&gt;, iio_uri = 'ip:localhost', classname = 'adi.DAQ3', param_set = {}, channel = 0, frequency = 10000000, scale = 0.06, peak_min = -50
+
+    @pytest.mark.iio_hardware(hardware, True)
+    @pytest.mark.parametrize("classname", [(classname)])
+    @pytest.mark.parametrize("channel", [0, 1])
+    @pytest.mark.parametrize("param_set", [dict()])
+    @pytest.mark.parametrize(
+        "frequency, scale",
+        [
+            (5000000, 0.12),
+            (10000000, 0.06),
+            (10000000, 0.12),
+            (15000000, 0.12),
+            (15000000, 0.5),
+            (200000000, 0.5),
+        ],
+    )
+    @pytest.mark.parametrize("peak_min", [-50])
+    def test_daq3_dds_loopback(
+        test_dds_loopback,
+        iio_uri,
+        classname,
+        param_set,
+        channel,
+        frequency,
+        scale,
+        peak_min,
+    ):
+&gt;       test_dds_loopback(
+            iio_uri, classname, param_set, channel, frequency, scale, peak_min
+        )
+
+test\test_daq3_p.py:50: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+uri = 'ip:localhost', classname = 'adi.DAQ3', param_set = {}, channel = 0, frequency = 10000000, scale = 0.06, peak_min = -50, use_obs = False, use_rx2 = False
+
+    def dds_loopback(
+        uri,
+        classname,
+        param_set,
+        channel,
+        frequency,
+        scale,
+        peak_min,
+        use_obs=False,
+        use_rx2=False,
+    ):
+        """dds_loopback: Test DDS loopback with connected loopback cables.
+        This test requires a devices with TX and RX onboard where the transmit
+        signal can be recovered. TX FPGA DDSs are used to generate a sinusoid
+        which is then estimated on the RX side. The receive tone must be within
+        1% of its expected frequency with a specified peak
+    
+        parameters:
+            uri: type=string
+                URI of IIO context of target board/system
+            classname: type=string
+                Name of pyadi interface class which contain attribute
+            param_set: type=dict
+                Dictionary of attribute and values to be set before tone is
+                generated and received
+            channel: type=list
+                List of integers or list of list of integers of channels to
+                enable through tx_enabled_channels
+            frequency: type=integer
+                Frequency in Hz of transmitted tone
+            scale: type=float
+                Scale of DDS tone. Range [0,1]
+            peak_min: type=float
+                Minimum acceptable value of maximum peak in dBFS of received tone
+    
+        """
+        # See if we can tone using DMAs
+        sdr = eval(classname + "(uri='" + uri + "')")
+        # Set custom device parameters
+        for p in param_set.keys():
+            setattr(sdr, p, param_set[p])
+        # Set common buffer settings
+        sdr.tx_cyclic_buffer = True
+        N = 2 ** 14
+    
+        if use_obs and use_rx2:
+            raise Exception("Both RX2 and OBS are selected. Select one at a time.")
+    
+        if use_rx2:
+            sdr.rx2_enabled_channels = [channel]
+            sdr.rx2_buffer_size = N * 2 * len(sdr.rx2_enabled_channels)
+        elif use_obs:
+            sdr.obs.rx_enabled_channels = [0]
+            sdr.obs.rx_buffer_size = N * 2 * len(sdr.obs.rx_enabled_channels)
+        else:
+            sdr.rx_enabled_channels = [channel]
+            sdr.rx_buffer_size = N * 2 * len(sdr.rx_enabled_channels)
+    
+        # Create a sinewave waveform
+        if hasattr(sdr, "sample_rate"):
+            RXFS = int(sdr.sample_rate)
+        else:
+            RXFS = int(sdr.orx_sample_rate) if use_obs else int(sdr.rx_sample_rate)
+    
+        sdr.dds_single_tone(frequency, scale, channel)
+    
+        # Pass through SDR
+        try:
+            for _ in range(10):  # Wait
+                data = sdr.rx2() if use_rx2 else sdr.obs.rx() if use_obs else sdr.rx()
+        except Exception as e:
+            del sdr
+            raise Exception(e)
+        del sdr
+        tone_peaks, tone_freqs = spec.spec_est(data, fs=RXFS, ref=2 ** 15, plot=False)
+        indx = np.argmax(tone_peaks)
+        diff = np.abs(tone_freqs[indx] - frequency)
+        s = "Peak: " + str(tone_peaks[indx]) + "@" + str(tone_freqs[indx])
+        print(s)
+    
+        if do_html_log:
+            pytest.data_log = {
+                "html": gen_line_plot_html(
+                    tone_freqs,
+                    tone_peaks,
+                    "Frequency (Hz)",
+                    "Amplitude (dBFS)",
+                    "{} ({})".format(s, classname),
+                )
+            }
+    
+        assert (frequency * 0.01) &gt; diff
+&gt;       assert tone_peaks[indx] &gt; peak_min
+E       assert -53.914503994625996 &gt; -50
+
+test\dma_tests.py:341: AssertionError</failure></testcase><testcase classname="test.test_daq3_p" name="test_daq3_dds_loopback[peak_min=-50-frequency=10000000-scale=0.06-param_set={}-channel=1-classname=adi.DAQ3]" time="1.396"><properties><property name="exception_type_and_message" value="AssertionError: assert -54.11450058246225 &gt; -50" /><property name="test_description" value="dds_loopback: Test DDS loopback with connected loopback cables.&#10;    This test requires a devices with TX and RX onboard where the transmit&#10;    signal can be recovered. TX FPGA DDSs are used to generate a sinusoid&#10;    which is then estimated on the RX side. The receive tone must be within&#10;    1% of its expected frequency with a specified peak&#10;&#10;    parameters:&#10;        uri: type=string&#10;            URI of IIO context of target board/system&#10;        classname: type=string&#10;            Name of pyadi interface class which contain attribute&#10;        param_set: type=dict&#10;            Dictionary of attribute and values to be set before tone is&#10;            generated and received&#10;        channel: type=list&#10;            List of integers or list of list of integers of channels to&#10;            enable through tx_enabled_channels&#10;        frequency: type=integer&#10;            Frequency in Hz of transmitted tone&#10;        scale: type=float&#10;            Scale of DDS tone. Range [0,1]&#10;        peak_min: type=float&#10;            Minimum acceptable value of maximum peak in dBFS of received tone&#10;&#10;    " /></properties><failure message="assert -54.11450058246225 &gt; -50">test_dds_loopback = &lt;function dds_loopback at 0x000002528402BF60&gt;, iio_uri = 'ip:localhost', classname = 'adi.DAQ3', param_set = {}, channel = 1, frequency = 10000000, scale = 0.06, peak_min = -50
+
+    @pytest.mark.iio_hardware(hardware, True)
+    @pytest.mark.parametrize("classname", [(classname)])
+    @pytest.mark.parametrize("channel", [0, 1])
+    @pytest.mark.parametrize("param_set", [dict()])
+    @pytest.mark.parametrize(
+        "frequency, scale",
+        [
+            (5000000, 0.12),
+            (10000000, 0.06),
+            (10000000, 0.12),
+            (15000000, 0.12),
+            (15000000, 0.5),
+            (200000000, 0.5),
+        ],
+    )
+    @pytest.mark.parametrize("peak_min", [-50])
+    def test_daq3_dds_loopback(
+        test_dds_loopback,
+        iio_uri,
+        classname,
+        param_set,
+        channel,
+        frequency,
+        scale,
+        peak_min,
+    ):
+&gt;       test_dds_loopback(
+            iio_uri, classname, param_set, channel, frequency, scale, peak_min
+        )
+
+test\test_daq3_p.py:50: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+uri = 'ip:localhost', classname = 'adi.DAQ3', param_set = {}, channel = 1, frequency = 10000000, scale = 0.06, peak_min = -50, use_obs = False, use_rx2 = False
+
+    def dds_loopback(
+        uri,
+        classname,
+        param_set,
+        channel,
+        frequency,
+        scale,
+        peak_min,
+        use_obs=False,
+        use_rx2=False,
+    ):
+        """dds_loopback: Test DDS loopback with connected loopback cables.
+        This test requires a devices with TX and RX onboard where the transmit
+        signal can be recovered. TX FPGA DDSs are used to generate a sinusoid
+        which is then estimated on the RX side. The receive tone must be within
+        1% of its expected frequency with a specified peak
+    
+        parameters:
+            uri: type=string
+                URI of IIO context of target board/system
+            classname: type=string
+                Name of pyadi interface class which contain attribute
+            param_set: type=dict
+                Dictionary of attribute and values to be set before tone is
+                generated and received
+            channel: type=list
+                List of integers or list of list of integers of channels to
+                enable through tx_enabled_channels
+            frequency: type=integer
+                Frequency in Hz of transmitted tone
+            scale: type=float
+                Scale of DDS tone. Range [0,1]
+            peak_min: type=float
+                Minimum acceptable value of maximum peak in dBFS of received tone
+    
+        """
+        # See if we can tone using DMAs
+        sdr = eval(classname + "(uri='" + uri + "')")
+        # Set custom device parameters
+        for p in param_set.keys():
+            setattr(sdr, p, param_set[p])
+        # Set common buffer settings
+        sdr.tx_cyclic_buffer = True
+        N = 2 ** 14
+    
+        if use_obs and use_rx2:
+            raise Exception("Both RX2 and OBS are selected. Select one at a time.")
+    
+        if use_rx2:
+            sdr.rx2_enabled_channels = [channel]
+            sdr.rx2_buffer_size = N * 2 * len(sdr.rx2_enabled_channels)
+        elif use_obs:
+            sdr.obs.rx_enabled_channels = [0]
+            sdr.obs.rx_buffer_size = N * 2 * len(sdr.obs.rx_enabled_channels)
+        else:
+            sdr.rx_enabled_channels = [channel]
+            sdr.rx_buffer_size = N * 2 * len(sdr.rx_enabled_channels)
+    
+        # Create a sinewave waveform
+        if hasattr(sdr, "sample_rate"):
+            RXFS = int(sdr.sample_rate)
+        else:
+            RXFS = int(sdr.orx_sample_rate) if use_obs else int(sdr.rx_sample_rate)
+    
+        sdr.dds_single_tone(frequency, scale, channel)
+    
+        # Pass through SDR
+        try:
+            for _ in range(10):  # Wait
+                data = sdr.rx2() if use_rx2 else sdr.obs.rx() if use_obs else sdr.rx()
+        except Exception as e:
+            del sdr
+            raise Exception(e)
+        del sdr
+        tone_peaks, tone_freqs = spec.spec_est(data, fs=RXFS, ref=2 ** 15, plot=False)
+        indx = np.argmax(tone_peaks)
+        diff = np.abs(tone_freqs[indx] - frequency)
+        s = "Peak: " + str(tone_peaks[indx]) + "@" + str(tone_freqs[indx])
+        print(s)
+    
+        if do_html_log:
+            pytest.data_log = {
+                "html": gen_line_plot_html(
+                    tone_freqs,
+                    tone_peaks,
+                    "Frequency (Hz)",
+                    "Amplitude (dBFS)",
+                    "{} ({})".format(s, classname),
+                )
+            }
+    
+        assert (frequency * 0.01) &gt; diff
+&gt;       assert tone_peaks[indx] &gt; peak_min
+E       assert -54.11450058246225 &gt; -50
+
+test\dma_tests.py:341: AssertionError</failure></testcase><testcase classname="test.test_daq3_p" name="test_daq3_dds_loopback[peak_min=-50-frequency=10000000-scale=0.12-param_set={}-channel=0-classname=adi.DAQ3]" time="1.407" /><testcase classname="test.test_daq3_p" name="test_daq3_dds_loopback[peak_min=-50-frequency=10000000-scale=0.12-param_set={}-channel=1-classname=adi.DAQ3]" time="1.420" /><testcase classname="test.test_daq3_p" name="test_daq3_dds_loopback[peak_min=-50-frequency=15000000-scale=0.12-param_set={}-channel=0-classname=adi.DAQ3]" time="1.275" /><testcase classname="test.test_daq3_p" name="test_daq3_dds_loopback[peak_min=-50-frequency=15000000-scale=0.12-param_set={}-channel=1-classname=adi.DAQ3]" time="1.494" /><testcase classname="test.test_daq3_p" name="test_daq3_dds_loopback[peak_min=-50-frequency=15000000-scale=0.5-param_set={}-channel=0-classname=adi.DAQ3]" time="1.407" /><testcase classname="test.test_daq3_p" name="test_daq3_dds_loopback[peak_min=-50-frequency=15000000-scale=0.5-param_set={}-channel=1-classname=adi.DAQ3]" time="1.425" /><testcase classname="test.test_daq3_p" name="test_daq3_dds_loopback[peak_min=-50-frequency=200000000-scale=0.5-param_set={}-channel=0-classname=adi.DAQ3]" time="1.480" /><testcase classname="test.test_daq3_p" name="test_daq3_dds_loopback[peak_min=-50-frequency=200000000-scale=0.5-param_set={}-channel=1-classname=adi.DAQ3]" time="1.466" /></testsuite></testsuites>
