@@ -50,6 +50,7 @@ def test_get_parser(artifact, parser_object, parser_type):
         ('zynq-zed-adv7511-adrv9002-rx2tx2-vcmos_missing_devs.log', \
             telemetry.parser.MissingDevs, 'missing_devs'),
         ('info.txt', telemetry.parser.InfoTxt, 'info_txt'),
+        ('zynqmp_zcu102_rev10_fmcdaq3_reports.xml', telemetry.parser.PytestFailure, 'pytest_failure'),
     ]
 )
 def test_parser(artifact, parser_object, parser_type):
