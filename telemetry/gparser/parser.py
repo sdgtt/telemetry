@@ -6,6 +6,7 @@ import traceback
 import junitparser
 import telemetry
 from junitparser import JUnitXml, Skipped, Error, Failure
+import xml.etree.ElementTree as ET
 
 def get_parser(url,grabber=None):
     '''Factory method that provides appropriate parser object base on given url'''
@@ -243,13 +244,83 @@ class xmlParser(Parser):
         payload_param = param
         return (payload, payload_param)
 
-class PytestFailure(xmlParser):
+class pytestxml_parser(xmlParser):
+    def __init__(self, url, grabber):
+        super(pytestxml_parser, self).__init__(url, grabber)
+    
+    def get_payload_raw(self):
+        payload = []
+        try:
+            file_path = self.grabber.download_file(self.url, self.file_name)
+            # Load and parse the XML using element tree 
+            tree = ET.parse(file_path)
+            root = tree.getroot()              
+
+            # Iterate over all test cases
+            for testcase in root.findall(".//testcase"):
+                # Get the name of the test case
+                test_name = testcase.get("name")
+                # Find the properties tag
+                properties = testcase.find("properties")
+                failure = testcase.find("failure")
+                error = testcase.find("error")
+                skipped = testcase.find("skipped")
+
+                if properties is not None:
+                    if  failure is not None:
+                        # failure tag content
+                        failure_text = failure.text
+                        fail_content_lines = failure_text.splitlines()
+                        fail_line_statement = fail_content_lines[-4]
+                        # exception statement with parameter names
+                        exc_param_value = (fail_line_statement[1:]).lstrip()
+                        fail_content_list = failure_text.split("@", 1)
+                        param_test = ""
+                        if len(fail_content_list) > 0:
+                            # test parameters and values
+                            param_test = fail_content_list[0]
+                        test_desc = ""
+
+                        # Iterate through each property in the properties tag
+                        for prop in properties.findall("property"):
+                            # Get the property name and value
+                            prop_name = prop.get("name")
+                            prop_value = prop.get("value")
+                            if prop_name == "exception_type_and_message":
+                                # update test name with exception type and value
+                                test_name = test_name + ": " + prop_value + " (" + exc_param_value + ")"
+                            if prop_name == "test_description":
+                                # test description
+                                test_desc = prop_value
+                        test_details = [test_name, param_test, test_desc] 
+                        payload.append(test_details) 
+                    elif error is not None:
+                        payload.append(test_name)
+                    elif skipped is not None:
+                        payload.append(test_name)
+            
+        except Exception as ex:
+            traceback.print_exc()
+            print("Error Parsing File!")
+        finally:
+            os.remove(file_path)
+        return payload
+    
+    def get_payload_parsed(self):
+        num_payload = len(self.payload_raw)
+        param = list(range(num_payload))
+        
+        payload = self.payload_raw
+        payload_param = param
+        return (payload, payload_param)
+
+class PytestFailure(pytestxml_parser):
     def __init__(self, url, grabber):
         super(PytestFailure, self).__init__(url, grabber)
-class PytestSkipped(xmlParser):
+class PytestSkipped(pytestxml_parser):
     def __init__(self, url, grabber):
         super(PytestSkipped, self).__init__(url, grabber)
-class PytestError(xmlParser,):
+class PytestError(pytestxml_parser,):
     def __init__(self, url, grabber):
         super(PytestError, self).__init__(url, grabber)
 
