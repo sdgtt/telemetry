@@ -73,27 +73,16 @@ class ResultsMarkdown(Markdown):
             else:
                 iio_drivers_missing_details = "No missing drivers" if len(info["missing_devs"]) == 0 else ("<br>").join(info["missing_devs"])
                 iio_drivers_found_details = "No iio drivers found" if len(info["enumerated_devs"]) == 0 else ("<br>").join(info["enumerated_devs"])
-                dmesg_errors_found_details = "No errors" if len(info["dmesg_err"]) == 0 else ("<br>").join(info["dmesg_err"])   
-                pytest_failures_details = "No failures"             
+                dmesg_errors_found_details = "No errors" if len(info["dmesg_err"]) == 0 else ("<br>").join(info["dmesg_err"])                   
+                pytest_failures_details = "No failures"      
                 pytest_failures_details = "Invalid" if pytest_tests_status == "⛔" else pytest_failures_details
-                pytest_details = [] # list of all pytest failure details
+                pytest_details = []
                 if len(info["pytest_failure"]) != 0:
-                    if isinstance(info["pytest_failure"][0], list):
-                        if len(info["pytest_failure"][0]) > 0: 
-                            for items in info["pytest_failure"][0]:
-                                # add the details of first test case in the list as separate items (no changes)
-                                pytest_details.append(items)
-                        for data in info["pytest_failure"][1:]:
-                            if isinstance(data, list):
-                                if len(data) > 0:
-                                    # add the details of remaining test cases in the list and add "* " to data[0] (test case name) for markdown 
-                                    pytest_details.append(f"* {data[0]}")                            
-                                    for details in data[1:]:
-                                        pytest_details.append(details)
-                        # create structure of pytest failure details for markdown
-                        pytest_failures_details = ("\n\n").join(pytest_details)                                
-                    else:
-                        pytest_failures_details = ("<br>").join(info["pytest_failure"])
+                    pytest_details.append(info["pytest_failure"][0])
+                    for item in info["pytest_failure"][1:]:
+                        item_update = "- " + item
+                        pytest_details.append(item_update)
+                    pytest_failures_details = ("\n\n").join(pytest_details) 
 
             last_failing_stage = str(info["last_failing_stage"])
             last_failing_stage_failure = str(info["last_failing_stage_failure"])
