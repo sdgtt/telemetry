@@ -1,0 +1,1102 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites><testsuite name="pytest" errors="0" failures="8" skipped="9" tests="43" time="17.983" timestamp="2024-12-18T09:42:22.597147" hostname="sdg-nuc-01"><testcase classname="test.test_ad9081" name="test_ad9081_str_attr[attr=rx_nyquist_zone-val=['even', 'odd']-classname=adi.ad9081]" time="0.058" /><testcase classname="test.test_ad9081" name="test_ad9081_str_attr[attr=loopback_mode-val=[0]-classname=adi.ad9081]" time="0.317" /><testcase classname="test.test_ad9081" name="test_ad9081_str_attr[attr=rx_test_mode-val=['midscale_short', 'pos_fullscale', 'neg_fullscale', 'checkerboard', 'pn23', 'pn9', 'one_zero_toggle', 'user', 'pn7', 'pn15', 'pn31', 'ramp', 'off']-classname=adi.ad9081]" time="0.180"><properties><property name="exception_type_and_message" value="OSError: [Errno 22] Invalid argument" /><property name="test_name_function" value="attribute_multiple_values" /><property name="test_function_module" value="test.attr_tests" /></properties><failure message="OSError: [Errno 22] Invalid argument">test_attribute_multiple_values = &lt;function attribute_multiple_values at 0x7bb6970d8af0&gt;
+iio_uri = 'ip:192.168.10.114', classname = 'adi.ad9081', attr = 'rx_test_mode'
+val = ['midscale_short', 'pos_fullscale', 'neg_fullscale', 'checkerboard', 'pn23', 'pn9', ...]
+
+    @pytest.mark.iio_hardware(hardware)
+    @pytest.mark.parametrize("classname", [(classname)])
+    @pytest.mark.parametrize(
+        "attr, val",
+        [
+            ("rx_nyquist_zone", ["even", "odd"]),
+            ("loopback_mode", [0]),
+            (
+                "rx_test_mode",
+                [
+                    "midscale_short",
+                    "pos_fullscale",
+                    "neg_fullscale",
+                    "checkerboard",
+                    "pn23",
+                    "pn9",
+                    "one_zero_toggle",
+                    "user",
+                    "pn7",
+                    "pn15",
+                    "pn31",
+                    "ramp",
+                    "off",
+                ],
+            ),
+            (
+                "tx_main_ffh_mode",
+                ["phase_continuous", "phase_incontinuous", "phase_coherent"],
+            ),
+        ],
+    )
+    def test_ad9081_str_attr(test_attribute_multiple_values, iio_uri, classname, attr, val):
+&gt;       test_attribute_multiple_values(iio_uri, classname, attr, val, 0)
+
+test/test_ad9081.py:65: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+test/attr_tests.py:221: in attribute_multiple_values
+    assert dev_interface(uri, classname, val, attr, tol, sleep=sleep)
+test/common.py:114: in dev_interface
+    setattr(sdr, attr, val)
+adi/ad9081.py:268: in rx_test_mode
+    self._set_iio_attr_single(
+adi/ad9081.py:170: in _set_iio_attr_single
+    return self._set_iio_attr(channel_name, attr, output, value, _ctrl)
+adi/attribute.py:71: in _set_iio_attr
+    raise ex
+adi/attribute.py:69: in _set_iio_attr
+    channel.attrs[attr_name].value = str(value)
+/usr/local/lib/python3.8/dist-packages/iio.py:704: in &lt;lambda&gt;
+    lambda self, x: self._write(x),
+/usr/local/lib/python3.8/dist-packages/iio.py:736: in _write
+    _c_write_attr(self._channel, self._name_ascii, value.encode("ascii"))
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+result = -22, func = &lt;_FuncPtr object at 0x7bb6c56de880&gt;
+arguments = (&lt;iio.LP__Channel object at 0x7bb69f77a5c0&gt;, b'test_mode', b'ramp')
+
+    def _check_negative(result, func, arguments):
+        if result &gt;= 0:
+            return result
+&gt;       raise OSError(-result, _strerror(-result))
+E       OSError: [Errno 22] Invalid argument
+
+/usr/local/lib/python3.8/dist-packages/iio.py:62: OSError</failure></testcase><testcase classname="test.test_ad9081" name="test_ad9081_str_attr[attr=tx_main_ffh_mode-val=['phase_continuous', 'phase_incontinuous', 'phase_coherent']-classname=adi.ad9081]" time="0.042" /><testcase classname="test.test_ad9081" name="test_ad9081_str_attr_err[attr=loopback_mode-val=[2, 1]-classname=adi.ad9081]" time="0.012" /><testcase classname="test.test_ad9081" name="test_ad9081_attr[attr=rx_main_nco_frequencies-start=-2000000000-stop=2000000000-step=1-tol=1-repeats=10-classname=adi.ad9081]" time="0.164" /><testcase classname="test.test_ad9081" name="test_ad9081_attr[attr=tx_main_nco_frequencies-start=-6000000000-stop=6000000000-step=1-tol=1-repeats=10-classname=adi.ad9081]" time="0.165" /><testcase classname="test.test_ad9081" name="test_ad9081_attr[attr=rx_channel_nco_frequencies-start=-500000000-stop=500000000-step=1-tol=1-repeats=10-classname=adi.ad9081]" time="0.168" /><testcase classname="test.test_ad9081" name="test_ad9081_attr[attr=tx_channel_nco_frequencies-start=-750000000-stop=750000000-step=1-tol=1-repeats=10-classname=adi.ad9081]" time="0.162" /><testcase classname="test.test_ad9081" name="test_ad9081_attr[attr=rx_main_nco_phases-start=-180000-stop=180000-step=1-tol=1-repeats=10-classname=adi.ad9081]" time="0.152" /><testcase classname="test.test_ad9081" name="test_ad9081_attr[attr=tx_main_nco_phases-start=-180000-stop=180000-step=1-tol=1-repeats=10-classname=adi.ad9081]" time="0.145" /><testcase classname="test.test_ad9081" name="test_ad9081_attr[attr=rx_channel_nco_phases-start=-180000-stop=180000-step=1-tol=1-repeats=10-classname=adi.ad9081]" time="0.159" /><testcase classname="test.test_ad9081" name="test_ad9081_attr[attr=tx_channel_nco_phases-start=-180000-stop=180000-step=1-tol=1-repeats=10-classname=adi.ad9081]" time="0.147" /><testcase classname="test.test_ad9081" name="test_ad9081_attr[attr=tx_main_nco_test_tone_scales-start=0.0-stop=1.0-step=0.01-tol=0.01-repeats=10-classname=adi.ad9081]" time="0.147" /><testcase classname="test.test_ad9081" name="test_ad9081_attr[attr=tx_channel_nco_test_tone_scales-start=0.0-stop=1.0-step=0.01-tol=0.01-repeats=10-classname=adi.ad9081]" time="0.140" /><testcase classname="test.test_ad9081" name="test_ad9081_attr[attr=tx_main_ffh_index-start=1-stop=31-step=1-tol=0-repeats=10-classname=adi.ad9081]" time="0.148" /><testcase classname="test.test_ad9081" name="test_ad9081_attr[attr=tx_main_ffh_frequency-start=-6000000000-stop=6000000000-step=1-tol=1-repeats=10-classname=adi.ad9081]" time="0.145" /><testcase classname="test.test_ad9081" name="test_ad9081_attr[attr=tx_channel_nco_gain_scales-start=0.0-stop=0.5-step=0.01-tol=0.01-repeats=10-classname=adi.ad9081]" time="0.165" /><testcase classname="test.test_ad9081" name="test_ad9081_rx_data[channel=0-classname=adi.ad9081]" time="0.094" /><testcase classname="test.test_ad9081" name="test_ad9081_rx_data[channel=1-classname=adi.ad9081]" time="0.069" /><testcase classname="test.test_ad9081" name="test_ad9081_rx_data[channel=2-classname=adi.ad9081]" time="0.012"><properties><property name="exception_type_and_message" value="Skipped: Skipping test: Channel 2not available." /><property name="test_name_function" value="dma_rx" /><property name="test_function_module" value="test.dma_tests" /></properties><skipped type="pytest.skip" message="Skipping test: Channel 2not available.">/var/lib/jenkins/workspace/cct/HW_test_hdl@4/pyadi-iio/test/test_ad9081.py:121: Skipping test: Channel 2not available.</skipped></testcase><testcase classname="test.test_ad9081" name="test_ad9081_rx_data[channel=3-classname=adi.ad9081]" time="0.013"><properties><property name="exception_type_and_message" value="Skipped: Skipping test: Channel 3not available." /><property name="test_name_function" value="dma_rx" /><property name="test_function_module" value="test.dma_tests" /></properties><skipped type="pytest.skip" message="Skipping test: Channel 3not available.">/var/lib/jenkins/workspace/cct/HW_test_hdl@4/pyadi-iio/test/test_ad9081.py:121: Skipping test: Channel 3not available.</skipped></testcase><testcase classname="test.test_ad9081" name="test_ad9081_tx_data[channel=0-classname=adi.ad9081]" time="0.050" /><testcase classname="test.test_ad9081" name="test_ad9081_tx_data[channel=1-classname=adi.ad9081]" time="0.043" /><testcase classname="test.test_ad9081" name="test_ad9081_tx_data[channel=2-classname=adi.ad9081]" time="0.013"><properties><property name="exception_type_and_message" value="Skipped: Skipping test: Channel 2not available." /><property name="test_name_function" value="dma_tx" /><property name="test_function_module" value="test.dma_tests" /></properties><skipped type="pytest.skip" message="Skipping test: Channel 2not available.">/var/lib/jenkins/workspace/cct/HW_test_hdl@4/pyadi-iio/test/test_ad9081.py:131: Skipping test: Channel 2not available.</skipped></testcase><testcase classname="test.test_ad9081" name="test_ad9081_tx_data[channel=3-classname=adi.ad9081]" time="0.012"><properties><property name="exception_type_and_message" value="Skipped: Skipping test: Channel 3not available." /><property name="test_name_function" value="dma_tx" /><property name="test_function_module" value="test.dma_tests" /></properties><skipped type="pytest.skip" message="Skipping test: Channel 3not available.">/var/lib/jenkins/workspace/cct/HW_test_hdl@4/pyadi-iio/test/test_ad9081.py:131: Skipping test: Channel 3not available.</skipped></testcase><testcase classname="test.test_ad9081" name="test_ad9081_cyclic_buffers[param_set={'loopback_mode': 0, 'rx_nyquist_zone': ['odd', 'odd', 'odd', 'odd'], 'tx_channel_nco_gain_scales': [0.5, 0.5, 0.5, 0.5], 'rx_main_nco_frequencies': [1000000000, 1000000000, 1000000000, 1000000000], 'tx_main_nco_frequencies': [1000000000, 1000000000, 1000000000, 1000000000], 'rx_channel_nco_frequencies': [0, 0, 0, 0], 'tx_channel_nco_frequencies': [0, 0, 0, 0], 'rx_main_nco_phases': [0, 0, 0, 0], 'tx_main_nco_phases': [0, 0, 0, 0], 'rx_channel_nco_phases': [0, 0, 0, 0], 'tx_channel_nco_phases': [0, 0, 0, 0], 'tx_channel_nco_test_tone_en': [0, 0, 0, 0], 'tx_main_nco_test_tone_en': [0, 0, 0, 0]}-channel=0-classname=adi.ad9081]" time="0.081" /><testcase classname="test.test_ad9081" name="test_ad9081_cyclic_buffers[param_set={'loopback_mode': 0, 'rx_nyquist_zone': ['odd', 'odd', 'odd', 'odd'], 'tx_channel_nco_gain_scales': [0.5, 0.5, 0.5, 0.5], 'rx_main_nco_frequencies': [1000000000, 1000000000, 1000000000, 1000000000], 'tx_main_nco_frequencies': [1000000000, 1000000000, 1000000000, 1000000000], 'rx_channel_nco_frequencies': [0, 0, 0, 0], 'tx_channel_nco_frequencies': [0, 0, 0, 0], 'rx_main_nco_phases': [0, 0, 0, 0], 'tx_main_nco_phases': [0, 0, 0, 0], 'rx_channel_nco_phases': [0, 0, 0, 0], 'tx_channel_nco_phases': [0, 0, 0, 0], 'tx_channel_nco_test_tone_en': [0, 0, 0, 0], 'tx_main_nco_test_tone_en': [0, 0, 0, 0]}-channel=1-classname=adi.ad9081]" time="0.072" /><testcase classname="test.test_ad9081" name="test_ad9081_cyclic_buffers[param_set={'loopback_mode': 0, 'rx_nyquist_zone': ['odd', 'odd', 'odd', 'odd'], 'tx_channel_nco_gain_scales': [0.5, 0.5, 0.5, 0.5], 'rx_main_nco_frequencies': [1000000000, 1000000000, 1000000000, 1000000000], 'tx_main_nco_frequencies': [1000000000, 1000000000, 1000000000, 1000000000], 'rx_channel_nco_frequencies': [0, 0, 0, 0], 'tx_channel_nco_frequencies': [0, 0, 0, 0], 'rx_main_nco_phases': [0, 0, 0, 0], 'tx_main_nco_phases': [0, 0, 0, 0], 'rx_channel_nco_phases': [0, 0, 0, 0], 'tx_channel_nco_phases': [0, 0, 0, 0], 'tx_channel_nco_test_tone_en': [0, 0, 0, 0], 'tx_main_nco_test_tone_en': [0, 0, 0, 0]}-channel=2-classname=adi.ad9081]" time="0.011"><properties><property name="exception_type_and_message" value="Skipped: Skipping test: Channel 2not available." /><property name="test_name_function" value="cyclic_buffer" /><property name="test_function_module" value="test.dma_tests" /></properties><skipped type="pytest.skip" message="Skipping test: Channel 2not available.">/var/lib/jenkins/workspace/cct/HW_test_hdl@4/pyadi-iio/test/test_ad9081.py:163: Skipping test: Channel 2not available.</skipped></testcase><testcase classname="test.test_ad9081" name="test_ad9081_cyclic_buffers[param_set={'loopback_mode': 0, 'rx_nyquist_zone': ['odd', 'odd', 'odd', 'odd'], 'tx_channel_nco_gain_scales': [0.5, 0.5, 0.5, 0.5], 'rx_main_nco_frequencies': [1000000000, 1000000000, 1000000000, 1000000000], 'tx_main_nco_frequencies': [1000000000, 1000000000, 1000000000, 1000000000], 'rx_channel_nco_frequencies': [0, 0, 0, 0], 'tx_channel_nco_frequencies': [0, 0, 0, 0], 'rx_main_nco_phases': [0, 0, 0, 0], 'tx_main_nco_phases': [0, 0, 0, 0], 'rx_channel_nco_phases': [0, 0, 0, 0], 'tx_channel_nco_phases': [0, 0, 0, 0], 'tx_channel_nco_test_tone_en': [0, 0, 0, 0], 'tx_main_nco_test_tone_en': [0, 0, 0, 0]}-channel=3-classname=adi.ad9081]" time="0.012"><properties><property name="exception_type_and_message" value="Skipped: Skipping test: Channel 3not available." /><property name="test_name_function" value="cyclic_buffer" /><property name="test_function_module" value="test.dma_tests" /></properties><skipped type="pytest.skip" message="Skipping test: Channel 3not available.">/var/lib/jenkins/workspace/cct/HW_test_hdl@4/pyadi-iio/test/test_ad9081.py:163: Skipping test: Channel 3not available.</skipped></testcase><testcase classname="test.test_ad9081" name="test_ad9081_cyclic_buffers_exception[param_set={'loopback_mode': 0, 'rx_main_nco_frequencies': [1000000000, 1000000000, 1000000000, 1000000000], 'tx_main_nco_frequencies': [1000000000, 1000000000, 1000000000, 1000000000], 'rx_channel_nco_frequencies': [0, 0, 0, 0], 'tx_channel_nco_frequencies': [0, 0, 0, 0], 'rx_main_nco_phases': [0, 0, 0, 0], 'tx_main_nco_phases': [0, 0, 0, 0], 'rx_channel_nco_phases': [0, 0, 0, 0], 'tx_channel_nco_phases': [0, 0, 0, 0], 'tx_channel_nco_test_tone_en': [0, 0, 0, 0], 'tx_main_nco_test_tone_en': [0, 0, 0, 0]}-channel=0-classname=adi.ad9081]" time="0.066" /><testcase classname="test.test_ad9081" name="test_ad9081_cyclic_buffers_exception[param_set={'loopback_mode': 0, 'rx_main_nco_frequencies': [1000000000, 1000000000, 1000000000, 1000000000], 'tx_main_nco_frequencies': [1000000000, 1000000000, 1000000000, 1000000000], 'rx_channel_nco_frequencies': [0, 0, 0, 0], 'tx_channel_nco_frequencies': [0, 0, 0, 0], 'rx_main_nco_phases': [0, 0, 0, 0], 'tx_main_nco_phases': [0, 0, 0, 0], 'rx_channel_nco_phases': [0, 0, 0, 0], 'tx_channel_nco_phases': [0, 0, 0, 0], 'tx_channel_nco_test_tone_en': [0, 0, 0, 0], 'tx_main_nco_test_tone_en': [0, 0, 0, 0]}-channel=1-classname=adi.ad9081]" time="0.066" /><testcase classname="test.test_ad9081" name="test_ad9081_cyclic_buffers_exception[param_set={'loopback_mode': 0, 'rx_main_nco_frequencies': [1000000000, 1000000000, 1000000000, 1000000000], 'tx_main_nco_frequencies': [1000000000, 1000000000, 1000000000, 1000000000], 'rx_channel_nco_frequencies': [0, 0, 0, 0], 'tx_channel_nco_frequencies': [0, 0, 0, 0], 'rx_main_nco_phases': [0, 0, 0, 0], 'tx_main_nco_phases': [0, 0, 0, 0], 'rx_channel_nco_phases': [0, 0, 0, 0], 'tx_channel_nco_phases': [0, 0, 0, 0], 'tx_channel_nco_test_tone_en': [0, 0, 0, 0], 'tx_main_nco_test_tone_en': [0, 0, 0, 0]}-channel=2-classname=adi.ad9081]" time="0.011"><properties><property name="exception_type_and_message" value="Skipped: Skipping test: Channel 2not available." /><property name="test_name_function" value="cyclic_buffer_exception" /><property name="test_function_module" value="test.dma_tests" /></properties><skipped type="pytest.skip" message="Skipping test: Channel 2not available.">/var/lib/jenkins/workspace/cct/HW_test_hdl@4/pyadi-iio/test/test_ad9081.py:194: Skipping test: Channel 2not available.</skipped></testcase><testcase classname="test.test_ad9081" name="test_ad9081_cyclic_buffers_exception[param_set={'loopback_mode': 0, 'rx_main_nco_frequencies': [1000000000, 1000000000, 1000000000, 1000000000], 'tx_main_nco_frequencies': [1000000000, 1000000000, 1000000000, 1000000000], 'rx_channel_nco_frequencies': [0, 0, 0, 0], 'tx_channel_nco_frequencies': [0, 0, 0, 0], 'rx_main_nco_phases': [0, 0, 0, 0], 'tx_main_nco_phases': [0, 0, 0, 0], 'rx_channel_nco_phases': [0, 0, 0, 0], 'tx_channel_nco_phases': [0, 0, 0, 0], 'tx_channel_nco_test_tone_en': [0, 0, 0, 0], 'tx_main_nco_test_tone_en': [0, 0, 0, 0]}-channel=3-classname=adi.ad9081]" time="0.012"><properties><property name="exception_type_and_message" value="Skipped: Skipping test: Channel 3not available." /><property name="test_name_function" value="cyclic_buffer_exception" /><property name="test_function_module" value="test.dma_tests" /></properties><skipped type="pytest.skip" message="Skipping test: Channel 3not available.">/var/lib/jenkins/workspace/cct/HW_test_hdl@4/pyadi-iio/test/test_ad9081.py:194: Skipping test: Channel 3not available.</skipped></testcase><testcase classname="test.test_ad9081" name="test_ad9081_loopback[channel=0-classname=adi.ad9081]" time="0.112" /><testcase classname="test.test_ad9081" name="test_ad9081_sfdr[sfdr_min=70-param_set={'loopback_mode': 0, 'rx_main_nco_frequencies': [1000000000, 1000000000, 1000000000, 1000000000], 'tx_main_nco_frequencies': [1000000000, 1000000000, 1000000000, 1000000000], 'rx_channel_nco_frequencies': [0, 0, 0, 0], 'tx_channel_nco_frequencies': [0, 0, 0, 0], 'rx_main_nco_phases': [0, 0, 0, 0], 'tx_main_nco_phases': [0, 0, 0, 0], 'rx_channel_nco_phases': [0, 0, 0, 0], 'tx_channel_nco_phases': [0, 0, 0, 0], 'tx_channel_nco_test_tone_en': [0, 0, 0, 0], 'tx_main_nco_test_tone_en': [0, 0, 0, 0]}-channel=0-classname=adi.ad9081]" time="8.395"><properties><property name="exception_type_and_message" value="AssertionError: assert 0.5749985164147731 &gt; 70" /><property name="test_name_function" value="t_sfdr" /><property name="test_function_module" value="test.dma_tests" /></properties><failure message="assert 0.5749985164147731 &gt; 70">test_sfdr = &lt;function t_sfdr at 0x7bb6a9ca9820&gt;, iio_uri = 'ip:192.168.10.114'
+classname = 'adi.ad9081', channel = 0
+param_set = {'loopback_mode': 0, 'rx_channel_nco_frequencies': [0, 0], 'rx_channel_nco_phases': [0, 0], 'rx_main_nco_frequencies': [1000000000, 1000000000], ...}
+sfdr_min = 70
+
+    @pytest.mark.iio_hardware(hardware, True)
+    @pytest.mark.parametrize("classname", [(classname)])
+    @pytest.mark.parametrize("channel", [0])
+    @pytest.mark.parametrize(
+        "param_set",
+        [
+            dict(
+                loopback_mode=0,
+                rx_main_nco_frequencies=[1000000000, 1000000000, 1000000000, 1000000000],
+                tx_main_nco_frequencies=[1000000000, 1000000000, 1000000000, 1000000000],
+                rx_channel_nco_frequencies=[0, 0, 0, 0],
+                tx_channel_nco_frequencies=[0, 0, 0, 0],
+                rx_main_nco_phases=[0, 0, 0, 0],
+                tx_main_nco_phases=[0, 0, 0, 0],
+                rx_channel_nco_phases=[0, 0, 0, 0],
+                tx_channel_nco_phases=[0, 0, 0, 0],
+                tx_channel_nco_test_tone_en=[0, 0, 0, 0],
+                tx_main_nco_test_tone_en=[0, 0, 0, 0],
+            )
+        ],
+    )
+    @pytest.mark.parametrize("sfdr_min", [70])
+    def test_ad9081_sfdr(test_sfdr, iio_uri, classname, channel, param_set, sfdr_min):
+        param_set = scale_field(param_set, iio_uri)
+&gt;       test_sfdr(iio_uri, classname, channel, param_set, sfdr_min, full_scale=0.5)
+
+test/test_ad9081.py:232: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+uri = 'ip:192.168.10.114', classname = 'adi.ad9081', channel = 0
+param_set = {'loopback_mode': 0, 'rx_channel_nco_frequencies': [0, 0], 'rx_channel_nco_phases': [0, 0], 'rx_main_nco_frequencies': [1000000000, 1000000000], ...}
+sfdr_min = 70, use_obs = False, full_scale = 0.5
+
+    def t_sfdr(uri, classname, channel, param_set, sfdr_min, use_obs=False, full_scale=0.9):
+        """t_sfdr: Test SFDR loopback of tone with connected loopback cables.
+        This test requires a devices with TX and RX onboard where the transmit
+        signal can be recovered. Sinuoidal data is passed to DMAs which is then
+        estimated on the RX side. The peak and second peak are determined in
+        the received signal to determine the sfdr.
+    
+        parameters:
+            uri: type=string
+                URI of IIO context of target board/system
+            classname: type=string
+                Name of pyadi interface class which contain attribute
+            channel: type=list
+                List of integers or list of list of integers of channels to
+                enable through tx_enabled_channels
+            param_set: type=dict
+                Dictionary of attribute and values to be set before tone is
+                generated and received
+            sfdr_min: type=float
+                Minimum acceptable value of SFDR in dB
+    
+        """
+        # See if we can tone using DMAs
+        sdr = eval(classname + "(uri='" + uri + "')")
+        # Set custom device parameters
+        for p in param_set.keys():
+            setattr(sdr, p, param_set[p])
+        time.sleep(5)  # Wait for QEC to kick in
+        # Set common buffer settings
+        N = 2 ** 14
+        sdr.tx_cyclic_buffer = True
+        sdr.tx_enabled_channels = [channel]
+        sdr.tx_buffer_size = N * 2 * len(sdr.tx_enabled_channels)
+    
+        if use_obs:
+            sdr.obs.rx_enabled_channels = [0]
+            sdr.obs.rx_buffer_size = N * 2 * len(sdr.obs.rx_enabled_channels)
+        else:
+            sdr.rx_enabled_channels = [channel]
+            sdr.rx_buffer_size = N * 2 * len(sdr.rx_enabled_channels)
+    
+        # Create a sinewave waveform
+        if hasattr(sdr, "sample_rate"):
+            RXFS = int(sdr.sample_rate)
+        else:
+            RXFS = int(sdr.rx_sample_rate)
+    
+        if hasattr(sdr, "tx_sample_rate"):
+            FS = int(sdr.tx_sample_rate)
+        else:
+            FS = RXFS
+    
+        fc = FS * 0.1
+        fc = int(fc / (FS / N)) * (FS / N)
+        ts = 1 / float(FS)
+        t = np.arange(0, N * ts, ts)
+        i = np.cos(2 * np.pi * t * fc) * 2 ** 15 * full_scale
+        q = np.sin(2 * np.pi * t * fc) * 2 ** 15 * full_scale
+        iq = i + 1j * q
+        # Pass through SDR
+        try:
+            sdr.tx(iq)
+            time.sleep(3)
+            for _ in range(10):  # Wait for IQ correction to stabilize
+                data = sdr.obs.rx() if use_obs else sdr.rx()
+        except Exception as e:
+            del sdr
+            raise Exception(e)
+        del sdr
+        val, amp, freqs = spec.sfdr(data, fs=RXFS, plot=False)
+        if do_html_log:
+            pytest.data_log = {
+                "html": gen_line_plot_html(
+                    freqs,
+                    amp,
+                    "Frequency (Hz)",
+                    "Amplitude (dBFS)",
+                    "SDFR {} dBc ({})".format(val, classname),
+                )
+            }
+        print("SFDR:", val, "dB")
+&gt;       assert val &gt; sfdr_min
+E       assert 0.5749985164147731 &gt; 70
+
+test/dma_tests.py:733: AssertionError</failure></testcase><testcase classname="test.test_ad9081" name="test_ad9081_dds_loopback[peak_min=-30-param_set={'loopback_mode': 0, 'rx_main_nco_frequencies': [1000000000, 1000000000, 1000000000, 1000000000], 'tx_main_nco_frequencies': [1000000000, 1000000000, 1000000000, 1000000000], 'rx_channel_nco_frequencies': [0, 0, 0, 0], 'tx_channel_nco_frequencies': [0, 0, 0, 0], 'rx_main_nco_phases': [0, 0, 0, 0], 'tx_main_nco_phases': [0, 0, 0, 0], 'rx_channel_nco_phases': [0, 0, 0, 0], 'tx_channel_nco_phases': [0, 0, 0, 0]}-frequency=10000000-scale=0.5-channel=0-classname=adi.ad9081]" time="0.183"><properties><property name="exception_type_and_message" value="AssertionError: assert (10000000 * 0.01) &gt; 607431640.625" /><property name="test_name_function" value="dds_loopback" /><property name="test_function_module" value="test.dma_tests" /></properties><failure message="assert (10000000 * 0.01) &gt; 607431640.625">test_dds_loopback = &lt;function dds_loopback at 0x7bb6a9ca95e0&gt;
+iio_uri = 'ip:192.168.10.114', classname = 'adi.ad9081'
+param_set = {'loopback_mode': 0, 'rx_channel_nco_frequencies': [0, 0], 'rx_channel_nco_phases': [0, 0], 'rx_main_nco_frequencies': [1000000000, 1000000000], ...}
+channel = 0, frequency = 10000000, scale = 0.5, peak_min = -30
+
+    @pytest.mark.iio_hardware(hardware, True)
+    @pytest.mark.parametrize("classname", [(classname)])
+    @pytest.mark.parametrize("channel", [0])
+    @pytest.mark.parametrize("frequency, scale", [(10000000, 0.5)])
+    @pytest.mark.parametrize(
+        "param_set",
+        [
+            dict(
+                loopback_mode=0,
+                rx_main_nco_frequencies=[1000000000, 1000000000, 1000000000, 1000000000],
+                tx_main_nco_frequencies=[1000000000, 1000000000, 1000000000, 1000000000],
+                rx_channel_nco_frequencies=[0, 0, 0, 0],
+                tx_channel_nco_frequencies=[0, 0, 0, 0],
+                rx_main_nco_phases=[0, 0, 0, 0],
+                tx_main_nco_phases=[0, 0, 0, 0],
+                rx_channel_nco_phases=[0, 0, 0, 0],
+                tx_channel_nco_phases=[0, 0, 0, 0],
+            )
+        ],
+    )
+    @pytest.mark.parametrize("peak_min", [-30])
+    def test_ad9081_dds_loopback(
+        test_dds_loopback,
+        iio_uri,
+        classname,
+        param_set,
+        channel,
+        frequency,
+        scale,
+        peak_min,
+    ):
+        param_set = scale_field(param_set, iio_uri)
+&gt;       test_dds_loopback(
+            iio_uri, classname, param_set, channel, frequency, scale, peak_min
+        )
+
+test/test_ad9081.py:268: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+uri = 'ip:192.168.10.114', classname = 'adi.ad9081'
+param_set = {'loopback_mode': 0, 'rx_channel_nco_frequencies': [0, 0], 'rx_channel_nco_phases': [0, 0], 'rx_main_nco_frequencies': [1000000000, 1000000000], ...}
+channel = 0, frequency = 10000000, scale = 0.5, peak_min = -30, use_obs = False
+use_rx2 = False
+
+    def dds_loopback(
+        uri,
+        classname,
+        param_set,
+        channel,
+        frequency,
+        scale,
+        peak_min,
+        use_obs=False,
+        use_rx2=False,
+    ):
+        """dds_loopback: Test DDS loopback with connected loopback cables.
+        This test requires a devices with TX and RX onboard where the transmit
+        signal can be recovered. TX FPGA DDSs are used to generate a sinusoid
+        which is then estimated on the RX side. The receive tone must be within
+        1% of its expected frequency with a specified peak
+    
+        parameters:
+            uri: type=string
+                URI of IIO context of target board/system
+            classname: type=string
+                Name of pyadi interface class which contain attribute
+            param_set: type=dict
+                Dictionary of attribute and values to be set before tone is
+                generated and received
+            channel: type=list
+                List of integers or list of list of integers of channels to
+                enable through tx_enabled_channels
+            frequency: type=integer
+                Frequency in Hz of transmitted tone
+            scale: type=float
+                Scale of DDS tone. Range [0,1]
+            peak_min: type=float
+                Minimum acceptable value of maximum peak in dBFS of received tone
+    
+        """
+        # See if we can tone using DMAs
+        sdr = eval(classname + "(uri='" + uri + "')")
+        # Set custom device parameters
+        for p in param_set.keys():
+            setattr(sdr, p, param_set[p])
+        # Set common buffer settings
+        sdr.tx_cyclic_buffer = True
+        N = 2 ** 14
+    
+        if use_obs and use_rx2:
+            raise Exception("Both RX2 and OBS are selected. Select one at a time.")
+    
+        if use_rx2:
+            sdr.rx2_enabled_channels = [channel]
+            sdr.rx2_buffer_size = N * 2 * len(sdr.rx2_enabled_channels)
+        elif use_obs:
+            sdr.obs.rx_enabled_channels = [0]
+            sdr.obs.rx_buffer_size = N * 2 * len(sdr.obs.rx_enabled_channels)
+        else:
+            sdr.rx_enabled_channels = [channel]
+            sdr.rx_buffer_size = N * 2 * len(sdr.rx_enabled_channels)
+    
+        # Create a sinewave waveform
+        if hasattr(sdr, "sample_rate"):
+            RXFS = int(sdr.sample_rate)
+        else:
+            RXFS = int(sdr.orx_sample_rate) if use_obs else int(sdr.rx_sample_rate)
+    
+        sdr.dds_single_tone(frequency, scale, channel)
+    
+        # Pass through SDR
+        try:
+            for _ in range(10):  # Wait
+                data = sdr.rx2() if use_rx2 else sdr.obs.rx() if use_obs else sdr.rx()
+        except Exception as e:
+            del sdr
+            raise Exception(e)
+        del sdr
+        tone_peaks, tone_freqs = spec.spec_est(data, fs=RXFS, ref=2 ** 15, plot=False)
+        indx = np.argmax(tone_peaks)
+        diff = np.abs(tone_freqs[indx] - frequency)
+        s = "Peak: " + str(tone_peaks[indx]) + "@" + str(tone_freqs[indx])
+        print(s)
+    
+        if do_html_log:
+            pytest.data_log = {
+                "html": gen_line_plot_html(
+                    tone_freqs,
+                    tone_peaks,
+                    "Frequency (Hz)",
+                    "Amplitude (dBFS)",
+                    "{} ({})".format(s, classname),
+                )
+            }
+    
+&gt;       assert (frequency * 0.01) &gt; diff
+E       assert (10000000 * 0.01) &gt; 607431640.625
+
+test/dma_tests.py:340: AssertionError</failure></testcase><testcase classname="test.test_ad9081" name="test_ad9081_iq_loopback[param_set={'loopback_mode': 0, 'rx_main_nco_frequencies': [500000000, 500000000, 500000000, 500000000], 'tx_main_nco_frequencies': [500000000, 500000000, 500000000, 500000000], 'rx_channel_nco_frequencies': [1234567, 1234567, 1234567, 1234567], 'tx_channel_nco_frequencies': [1234567, 1234567, 1234567, 1234567], 'rx_main_nco_phases': [0, 0, 0, 0], 'tx_main_nco_phases': [0, 0, 0, 0], 'rx_channel_nco_phases': [0, 0, 0, 0], 'tx_channel_nco_phases': [0, 0, 0, 0]}-channel=0-classname=adi.ad9081]" time="1.283"><properties><property name="exception_type_and_message" value="AssertionError: assert (149963378.90625 * 0.01) &gt; 802505493.1640625" /><property name="test_name_function" value="cw_loopback" /><property name="test_function_module" value="test.dma_tests" /></properties><failure message="assert (149963378.90625 * 0.01) &gt; 802505493.1640625">test_iq_loopback = &lt;function cw_loopback at 0x7bb6a9ca9790&gt;
+iio_uri = 'ip:192.168.10.114', classname = 'adi.ad9081', channel = 0
+param_set = {'loopback_mode': 0, 'rx_channel_nco_frequencies': [1234567, 1234567], 'rx_channel_nco_phases': [0, 0], 'rx_main_nco_frequencies': [500000000, 500000000], ...}
+
+    @pytest.mark.iio_hardware(hardware, True)
+    @pytest.mark.parametrize("classname", [(classname)])
+    @pytest.mark.parametrize("channel", [0])
+    @pytest.mark.parametrize(
+        "param_set",
+        [
+            dict(
+                loopback_mode=0,
+                rx_main_nco_frequencies=[500000000, 500000000, 500000000, 500000000],
+                tx_main_nco_frequencies=[500000000, 500000000, 500000000, 500000000],
+                rx_channel_nco_frequencies=[1234567, 1234567, 1234567, 1234567],
+                tx_channel_nco_frequencies=[1234567, 1234567, 1234567, 1234567],
+                rx_main_nco_phases=[0, 0, 0, 0],
+                tx_main_nco_phases=[0, 0, 0, 0],
+                rx_channel_nco_phases=[0, 0, 0, 0],
+                tx_channel_nco_phases=[0, 0, 0, 0],
+            ),
+            dict(
+                loopback_mode=0,
+                rx_main_nco_frequencies=[750000000, 750000000, 750000000, 750000000],
+                tx_main_nco_frequencies=[750000000, 750000000, 750000000, 750000000],
+                rx_channel_nco_frequencies=[-1234567, -1234567, -1234567, -1234567],
+                tx_channel_nco_frequencies=[-1234567, -1234567, -1234567, -1234567],
+                rx_main_nco_phases=[0, 0, 0, 0],
+                tx_main_nco_phases=[0, 0, 0, 0],
+                rx_channel_nco_phases=[0, 0, 0, 0],
+                tx_channel_nco_phases=[0, 0, 0, 0],
+            ),
+            dict(
+                loopback_mode=0,
+                rx_main_nco_frequencies=[1000000000, 1000000000, 1000000000, 1000000000],
+                tx_main_nco_frequencies=[1000000000, 1000000000, 1000000000, 1000000000],
+                rx_channel_nco_frequencies=[0, 0, 0, 0],
+                tx_channel_nco_frequencies=[0, 0, 0, 0],
+                rx_main_nco_phases=[0, 0, 0, 0],
+                tx_main_nco_phases=[0, 0, 0, 0],
+                rx_channel_nco_phases=[0, 0, 0, 0],
+                tx_channel_nco_phases=[0, 0, 0, 0],
+            ),
+        ],
+    )
+    def test_ad9081_iq_loopback(test_iq_loopback, iio_uri, classname, channel, param_set):
+        param_set = scale_field(param_set, iio_uri)
+&gt;       test_iq_loopback(iio_uri, classname, channel, param_set)
+
+test/test_ad9081.py:317: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+uri = 'ip:192.168.10.114', classname = 'adi.ad9081', channel = 0
+param_set = {'loopback_mode': 0, 'rx_channel_nco_frequencies': [1234567, 1234567], 'rx_channel_nco_phases': [0, 0], 'rx_main_nco_frequencies': [500000000, 500000000], ...}
+use_tx2 = False, use_rx2 = False
+
+    def cw_loopback(uri, classname, channel, param_set, use_tx2=False, use_rx2=False):
+        """cw_loopback: Test CW loopback with connected loopback cables.
+        This test requires a devices with TX and RX onboard where the transmit
+        signal can be recovered. Sinuoidal data is passed to DMAs which is then
+        estimated on the RX side. The receive tone must be within
+        1% of its expected frequency at the max peak found
+    
+        parameters:
+            uri: type=string
+                URI of IIO context of target board/system
+            classname: type=string
+                Name of pyadi interface class which contain attribute
+            channel: type=list
+                List of integers or list of list of integers of channels to
+                enable through tx_enabled_channels
+            param_set: type=dict
+                Dictionary of attribute and values to be set before tone is
+                generated and received
+            use_tx2: type=bool
+                Boolean if set will use tx2() as tx method
+            use_rx2: type=bool
+                Boolean if set will use rx2() as rx method
+        """
+        # See if we can tone using DMAs
+        sdr = eval(classname + "(uri='" + uri + "')")
+        # Set custom device parameters
+        for p in param_set.keys():
+            setattr(sdr, p, param_set[p])
+        time.sleep(1)
+        # Verify still set
+        for p in param_set.keys():
+            if isinstance(param_set[p], str):
+                assert getattr(sdr, p) == param_set[p]
+            else:
+                assert (
+                    np.argmax(np.abs(np.array(getattr(sdr, p)) - np.array(param_set[p])))
+                    &lt; 4
+                )
+        # Set common buffer settings
+        N = 2 ** 14
+        if use_tx2:
+            sdr.tx2_cyclic_buffer = True
+            sdr.tx2_enabled_channels = [channel]
+            sdr.tx2_buffer_size = N * 2 * len(sdr.tx2_enabled_channels)
+        else:
+            sdr.tx_cyclic_buffer = True
+            sdr.tx_enabled_channels = [channel]
+            sdr.tx_buffer_size = N * 2 * len(sdr.tx_enabled_channels)
+    
+        if use_rx2:
+            sdr.rx2_enabled_channels = [channel]
+            sdr.rx2_buffer_size = N * 2 * len(sdr.rx2_enabled_channels)
+        else:
+            sdr.rx_enabled_channels = [channel]
+            sdr.rx_buffer_size = N * 2 * len(sdr.rx_enabled_channels)
+    
+        # Create a sinewave waveform
+        if hasattr(sdr, "sample_rate"):
+            RXFS = int(sdr.sample_rate)
+        elif hasattr(sdr, "rx_sample_rate"):
+            RXFS = int(sdr.rx_sample_rate)
+        else:
+            """no sample_rate nor rx_sample_rate. Let's try something like
+            rx($channel)_sample_rate"""
+            attr = "rx" + str(channel) + "_sample_rate"
+            RXFS = int(getattr(sdr, attr))
+    
+        A = 2 ** 15
+        if hasattr(sdr, "tx_sample_rate"):
+            FS = int(sdr.tx_sample_rate)
+        else:
+            FS = RXFS
+        fc = FS * 0.1
+        fc = int(fc / (FS / N)) * (FS / N)
+    
+        ts = 1 / float(FS)
+        t = np.arange(0, N * ts, ts)
+        if sdr._complex_data:
+            i = np.cos(2 * np.pi * t * fc) * A * 0.5
+            q = np.sin(2 * np.pi * t * fc) * A * 0.5
+            cw = i + 1j * q
+        else:
+            cw = np.cos(2 * np.pi * t * fc) * A * 1
+    
+        # Pass through SDR
+        try:
+            if use_tx2:
+                sdr.tx2(cw)
+            else:
+                sdr.tx(cw)
+            for _ in range(30):  # Wait to stabilize
+                data = sdr.rx2() if use_rx2 else sdr.rx()
+        except Exception as e:
+            del sdr
+            raise Exception(e)
+        del sdr
+        # tone_freq = freq_est(data, RXFS)
+        # diff = np.abs(tone_freq - fc)
+        # print("Peak: @"+str(tone_freq) )
+        # assert (fc * 0.01) &gt; diff
+    
+        tone_peaks, tone_freqs = spec.spec_est(data, fs=RXFS, ref=A, plot=False)
+        indx = np.argmax(tone_peaks)
+        diff = np.abs(tone_freqs[indx] - fc)
+        s = "Peak: " + str(tone_peaks[indx]) + "@" + str(tone_freqs[indx])
+        print(s)
+    
+        if do_html_log:
+            pytest.data_log = {
+                "html": gen_line_plot_html(
+                    tone_freqs,
+                    tone_peaks,
+                    "Frequency (Hz)",
+                    "Amplitude (dBFS)",
+                    "{} ({})".format(s, classname),
+                )
+            }
+    
+&gt;       assert (fc * 0.01) &gt; diff
+E       assert (149963378.90625 * 0.01) &gt; 802505493.1640625
+
+test/dma_tests.py:648: AssertionError</failure></testcase><testcase classname="test.test_ad9081" name="test_ad9081_iq_loopback[param_set={'loopback_mode': 0, 'rx_main_nco_frequencies': [750000000, 750000000, 750000000, 750000000], 'tx_main_nco_frequencies': [750000000, 750000000, 750000000, 750000000], 'rx_channel_nco_frequencies': [-1234567, -1234567, -1234567, -1234567], 'tx_channel_nco_frequencies': [-1234567, -1234567, -1234567, -1234567], 'rx_main_nco_phases': [0, 0, 0, 0], 'tx_main_nco_phases': [0, 0, 0, 0], 'rx_channel_nco_phases': [0, 0, 0, 0], 'tx_channel_nco_phases': [0, 0, 0, 0]}-channel=0-classname=adi.ad9081]" time="1.390"><properties><property name="exception_type_and_message" value="AssertionError: assert (149963378.90625 * 0.01) &gt; 606536865.234375" /><property name="test_name_function" value="cw_loopback" /><property name="test_function_module" value="test.dma_tests" /></properties><failure message="assert (149963378.90625 * 0.01) &gt; 606536865.234375">test_iq_loopback = &lt;function cw_loopback at 0x7bb6a9ca9790&gt;
+iio_uri = 'ip:192.168.10.114', classname = 'adi.ad9081', channel = 0
+param_set = {'loopback_mode': 0, 'rx_channel_nco_frequencies': [-1234567, -1234567], 'rx_channel_nco_phases': [0, 0], 'rx_main_nco_frequencies': [750000000, 750000000], ...}
+
+    @pytest.mark.iio_hardware(hardware, True)
+    @pytest.mark.parametrize("classname", [(classname)])
+    @pytest.mark.parametrize("channel", [0])
+    @pytest.mark.parametrize(
+        "param_set",
+        [
+            dict(
+                loopback_mode=0,
+                rx_main_nco_frequencies=[500000000, 500000000, 500000000, 500000000],
+                tx_main_nco_frequencies=[500000000, 500000000, 500000000, 500000000],
+                rx_channel_nco_frequencies=[1234567, 1234567, 1234567, 1234567],
+                tx_channel_nco_frequencies=[1234567, 1234567, 1234567, 1234567],
+                rx_main_nco_phases=[0, 0, 0, 0],
+                tx_main_nco_phases=[0, 0, 0, 0],
+                rx_channel_nco_phases=[0, 0, 0, 0],
+                tx_channel_nco_phases=[0, 0, 0, 0],
+            ),
+            dict(
+                loopback_mode=0,
+                rx_main_nco_frequencies=[750000000, 750000000, 750000000, 750000000],
+                tx_main_nco_frequencies=[750000000, 750000000, 750000000, 750000000],
+                rx_channel_nco_frequencies=[-1234567, -1234567, -1234567, -1234567],
+                tx_channel_nco_frequencies=[-1234567, -1234567, -1234567, -1234567],
+                rx_main_nco_phases=[0, 0, 0, 0],
+                tx_main_nco_phases=[0, 0, 0, 0],
+                rx_channel_nco_phases=[0, 0, 0, 0],
+                tx_channel_nco_phases=[0, 0, 0, 0],
+            ),
+            dict(
+                loopback_mode=0,
+                rx_main_nco_frequencies=[1000000000, 1000000000, 1000000000, 1000000000],
+                tx_main_nco_frequencies=[1000000000, 1000000000, 1000000000, 1000000000],
+                rx_channel_nco_frequencies=[0, 0, 0, 0],
+                tx_channel_nco_frequencies=[0, 0, 0, 0],
+                rx_main_nco_phases=[0, 0, 0, 0],
+                tx_main_nco_phases=[0, 0, 0, 0],
+                rx_channel_nco_phases=[0, 0, 0, 0],
+                tx_channel_nco_phases=[0, 0, 0, 0],
+            ),
+        ],
+    )
+    def test_ad9081_iq_loopback(test_iq_loopback, iio_uri, classname, channel, param_set):
+        param_set = scale_field(param_set, iio_uri)
+&gt;       test_iq_loopback(iio_uri, classname, channel, param_set)
+
+test/test_ad9081.py:317: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+uri = 'ip:192.168.10.114', classname = 'adi.ad9081', channel = 0
+param_set = {'loopback_mode': 0, 'rx_channel_nco_frequencies': [-1234567, -1234567], 'rx_channel_nco_phases': [0, 0], 'rx_main_nco_frequencies': [750000000, 750000000], ...}
+use_tx2 = False, use_rx2 = False
+
+    def cw_loopback(uri, classname, channel, param_set, use_tx2=False, use_rx2=False):
+        """cw_loopback: Test CW loopback with connected loopback cables.
+        This test requires a devices with TX and RX onboard where the transmit
+        signal can be recovered. Sinuoidal data is passed to DMAs which is then
+        estimated on the RX side. The receive tone must be within
+        1% of its expected frequency at the max peak found
+    
+        parameters:
+            uri: type=string
+                URI of IIO context of target board/system
+            classname: type=string
+                Name of pyadi interface class which contain attribute
+            channel: type=list
+                List of integers or list of list of integers of channels to
+                enable through tx_enabled_channels
+            param_set: type=dict
+                Dictionary of attribute and values to be set before tone is
+                generated and received
+            use_tx2: type=bool
+                Boolean if set will use tx2() as tx method
+            use_rx2: type=bool
+                Boolean if set will use rx2() as rx method
+        """
+        # See if we can tone using DMAs
+        sdr = eval(classname + "(uri='" + uri + "')")
+        # Set custom device parameters
+        for p in param_set.keys():
+            setattr(sdr, p, param_set[p])
+        time.sleep(1)
+        # Verify still set
+        for p in param_set.keys():
+            if isinstance(param_set[p], str):
+                assert getattr(sdr, p) == param_set[p]
+            else:
+                assert (
+                    np.argmax(np.abs(np.array(getattr(sdr, p)) - np.array(param_set[p])))
+                    &lt; 4
+                )
+        # Set common buffer settings
+        N = 2 ** 14
+        if use_tx2:
+            sdr.tx2_cyclic_buffer = True
+            sdr.tx2_enabled_channels = [channel]
+            sdr.tx2_buffer_size = N * 2 * len(sdr.tx2_enabled_channels)
+        else:
+            sdr.tx_cyclic_buffer = True
+            sdr.tx_enabled_channels = [channel]
+            sdr.tx_buffer_size = N * 2 * len(sdr.tx_enabled_channels)
+    
+        if use_rx2:
+            sdr.rx2_enabled_channels = [channel]
+            sdr.rx2_buffer_size = N * 2 * len(sdr.rx2_enabled_channels)
+        else:
+            sdr.rx_enabled_channels = [channel]
+            sdr.rx_buffer_size = N * 2 * len(sdr.rx_enabled_channels)
+    
+        # Create a sinewave waveform
+        if hasattr(sdr, "sample_rate"):
+            RXFS = int(sdr.sample_rate)
+        elif hasattr(sdr, "rx_sample_rate"):
+            RXFS = int(sdr.rx_sample_rate)
+        else:
+            """no sample_rate nor rx_sample_rate. Let's try something like
+            rx($channel)_sample_rate"""
+            attr = "rx" + str(channel) + "_sample_rate"
+            RXFS = int(getattr(sdr, attr))
+    
+        A = 2 ** 15
+        if hasattr(sdr, "tx_sample_rate"):
+            FS = int(sdr.tx_sample_rate)
+        else:
+            FS = RXFS
+        fc = FS * 0.1
+        fc = int(fc / (FS / N)) * (FS / N)
+    
+        ts = 1 / float(FS)
+        t = np.arange(0, N * ts, ts)
+        if sdr._complex_data:
+            i = np.cos(2 * np.pi * t * fc) * A * 0.5
+            q = np.sin(2 * np.pi * t * fc) * A * 0.5
+            cw = i + 1j * q
+        else:
+            cw = np.cos(2 * np.pi * t * fc) * A * 1
+    
+        # Pass through SDR
+        try:
+            if use_tx2:
+                sdr.tx2(cw)
+            else:
+                sdr.tx(cw)
+            for _ in range(30):  # Wait to stabilize
+                data = sdr.rx2() if use_rx2 else sdr.rx()
+        except Exception as e:
+            del sdr
+            raise Exception(e)
+        del sdr
+        # tone_freq = freq_est(data, RXFS)
+        # diff = np.abs(tone_freq - fc)
+        # print("Peak: @"+str(tone_freq) )
+        # assert (fc * 0.01) &gt; diff
+    
+        tone_peaks, tone_freqs = spec.spec_est(data, fs=RXFS, ref=A, plot=False)
+        indx = np.argmax(tone_peaks)
+        diff = np.abs(tone_freqs[indx] - fc)
+        s = "Peak: " + str(tone_peaks[indx]) + "@" + str(tone_freqs[indx])
+        print(s)
+    
+        if do_html_log:
+            pytest.data_log = {
+                "html": gen_line_plot_html(
+                    tone_freqs,
+                    tone_peaks,
+                    "Frequency (Hz)",
+                    "Amplitude (dBFS)",
+                    "{} ({})".format(s, classname),
+                )
+            }
+    
+&gt;       assert (fc * 0.01) &gt; diff
+E       assert (149963378.90625 * 0.01) &gt; 606536865.234375
+
+test/dma_tests.py:648: AssertionError</failure></testcase><testcase classname="test.test_ad9081" name="test_ad9081_iq_loopback[param_set={'loopback_mode': 0, 'rx_main_nco_frequencies': [1000000000, 1000000000, 1000000000, 1000000000], 'tx_main_nco_frequencies': [1000000000, 1000000000, 1000000000, 1000000000], 'rx_channel_nco_frequencies': [0, 0, 0, 0], 'tx_channel_nco_frequencies': [0, 0, 0, 0], 'rx_main_nco_phases': [0, 0, 0, 0], 'tx_main_nco_phases': [0, 0, 0, 0], 'rx_channel_nco_phases': [0, 0, 0, 0], 'tx_channel_nco_phases': [0, 0, 0, 0]}-channel=0-classname=adi.ad9081]" time="1.364"><properties><property name="exception_type_and_message" value="AssertionError: assert (149963378.90625 * 0.01) &gt; 590194702.1484375" /><property name="test_name_function" value="cw_loopback" /><property name="test_function_module" value="test.dma_tests" /></properties><failure message="assert (149963378.90625 * 0.01) &gt; 590194702.1484375">test_iq_loopback = &lt;function cw_loopback at 0x7bb6a9ca9790&gt;
+iio_uri = 'ip:192.168.10.114', classname = 'adi.ad9081', channel = 0
+param_set = {'loopback_mode': 0, 'rx_channel_nco_frequencies': [0, 0], 'rx_channel_nco_phases': [0, 0], 'rx_main_nco_frequencies': [1000000000, 1000000000], ...}
+
+    @pytest.mark.iio_hardware(hardware, True)
+    @pytest.mark.parametrize("classname", [(classname)])
+    @pytest.mark.parametrize("channel", [0])
+    @pytest.mark.parametrize(
+        "param_set",
+        [
+            dict(
+                loopback_mode=0,
+                rx_main_nco_frequencies=[500000000, 500000000, 500000000, 500000000],
+                tx_main_nco_frequencies=[500000000, 500000000, 500000000, 500000000],
+                rx_channel_nco_frequencies=[1234567, 1234567, 1234567, 1234567],
+                tx_channel_nco_frequencies=[1234567, 1234567, 1234567, 1234567],
+                rx_main_nco_phases=[0, 0, 0, 0],
+                tx_main_nco_phases=[0, 0, 0, 0],
+                rx_channel_nco_phases=[0, 0, 0, 0],
+                tx_channel_nco_phases=[0, 0, 0, 0],
+            ),
+            dict(
+                loopback_mode=0,
+                rx_main_nco_frequencies=[750000000, 750000000, 750000000, 750000000],
+                tx_main_nco_frequencies=[750000000, 750000000, 750000000, 750000000],
+                rx_channel_nco_frequencies=[-1234567, -1234567, -1234567, -1234567],
+                tx_channel_nco_frequencies=[-1234567, -1234567, -1234567, -1234567],
+                rx_main_nco_phases=[0, 0, 0, 0],
+                tx_main_nco_phases=[0, 0, 0, 0],
+                rx_channel_nco_phases=[0, 0, 0, 0],
+                tx_channel_nco_phases=[0, 0, 0, 0],
+            ),
+            dict(
+                loopback_mode=0,
+                rx_main_nco_frequencies=[1000000000, 1000000000, 1000000000, 1000000000],
+                tx_main_nco_frequencies=[1000000000, 1000000000, 1000000000, 1000000000],
+                rx_channel_nco_frequencies=[0, 0, 0, 0],
+                tx_channel_nco_frequencies=[0, 0, 0, 0],
+                rx_main_nco_phases=[0, 0, 0, 0],
+                tx_main_nco_phases=[0, 0, 0, 0],
+                rx_channel_nco_phases=[0, 0, 0, 0],
+                tx_channel_nco_phases=[0, 0, 0, 0],
+            ),
+        ],
+    )
+    def test_ad9081_iq_loopback(test_iq_loopback, iio_uri, classname, channel, param_set):
+        param_set = scale_field(param_set, iio_uri)
+&gt;       test_iq_loopback(iio_uri, classname, channel, param_set)
+
+test/test_ad9081.py:317: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+uri = 'ip:192.168.10.114', classname = 'adi.ad9081', channel = 0
+param_set = {'loopback_mode': 0, 'rx_channel_nco_frequencies': [0, 0], 'rx_channel_nco_phases': [0, 0], 'rx_main_nco_frequencies': [1000000000, 1000000000], ...}
+use_tx2 = False, use_rx2 = False
+
+    def cw_loopback(uri, classname, channel, param_set, use_tx2=False, use_rx2=False):
+        """cw_loopback: Test CW loopback with connected loopback cables.
+        This test requires a devices with TX and RX onboard where the transmit
+        signal can be recovered. Sinuoidal data is passed to DMAs which is then
+        estimated on the RX side. The receive tone must be within
+        1% of its expected frequency at the max peak found
+    
+        parameters:
+            uri: type=string
+                URI of IIO context of target board/system
+            classname: type=string
+                Name of pyadi interface class which contain attribute
+            channel: type=list
+                List of integers or list of list of integers of channels to
+                enable through tx_enabled_channels
+            param_set: type=dict
+                Dictionary of attribute and values to be set before tone is
+                generated and received
+            use_tx2: type=bool
+                Boolean if set will use tx2() as tx method
+            use_rx2: type=bool
+                Boolean if set will use rx2() as rx method
+        """
+        # See if we can tone using DMAs
+        sdr = eval(classname + "(uri='" + uri + "')")
+        # Set custom device parameters
+        for p in param_set.keys():
+            setattr(sdr, p, param_set[p])
+        time.sleep(1)
+        # Verify still set
+        for p in param_set.keys():
+            if isinstance(param_set[p], str):
+                assert getattr(sdr, p) == param_set[p]
+            else:
+                assert (
+                    np.argmax(np.abs(np.array(getattr(sdr, p)) - np.array(param_set[p])))
+                    &lt; 4
+                )
+        # Set common buffer settings
+        N = 2 ** 14
+        if use_tx2:
+            sdr.tx2_cyclic_buffer = True
+            sdr.tx2_enabled_channels = [channel]
+            sdr.tx2_buffer_size = N * 2 * len(sdr.tx2_enabled_channels)
+        else:
+            sdr.tx_cyclic_buffer = True
+            sdr.tx_enabled_channels = [channel]
+            sdr.tx_buffer_size = N * 2 * len(sdr.tx_enabled_channels)
+    
+        if use_rx2:
+            sdr.rx2_enabled_channels = [channel]
+            sdr.rx2_buffer_size = N * 2 * len(sdr.rx2_enabled_channels)
+        else:
+            sdr.rx_enabled_channels = [channel]
+            sdr.rx_buffer_size = N * 2 * len(sdr.rx_enabled_channels)
+    
+        # Create a sinewave waveform
+        if hasattr(sdr, "sample_rate"):
+            RXFS = int(sdr.sample_rate)
+        elif hasattr(sdr, "rx_sample_rate"):
+            RXFS = int(sdr.rx_sample_rate)
+        else:
+            """no sample_rate nor rx_sample_rate. Let's try something like
+            rx($channel)_sample_rate"""
+            attr = "rx" + str(channel) + "_sample_rate"
+            RXFS = int(getattr(sdr, attr))
+    
+        A = 2 ** 15
+        if hasattr(sdr, "tx_sample_rate"):
+            FS = int(sdr.tx_sample_rate)
+        else:
+            FS = RXFS
+        fc = FS * 0.1
+        fc = int(fc / (FS / N)) * (FS / N)
+    
+        ts = 1 / float(FS)
+        t = np.arange(0, N * ts, ts)
+        if sdr._complex_data:
+            i = np.cos(2 * np.pi * t * fc) * A * 0.5
+            q = np.sin(2 * np.pi * t * fc) * A * 0.5
+            cw = i + 1j * q
+        else:
+            cw = np.cos(2 * np.pi * t * fc) * A * 1
+    
+        # Pass through SDR
+        try:
+            if use_tx2:
+                sdr.tx2(cw)
+            else:
+                sdr.tx(cw)
+            for _ in range(30):  # Wait to stabilize
+                data = sdr.rx2() if use_rx2 else sdr.rx()
+        except Exception as e:
+            del sdr
+            raise Exception(e)
+        del sdr
+        # tone_freq = freq_est(data, RXFS)
+        # diff = np.abs(tone_freq - fc)
+        # print("Peak: @"+str(tone_freq) )
+        # assert (fc * 0.01) &gt; diff
+    
+        tone_peaks, tone_freqs = spec.spec_est(data, fs=RXFS, ref=A, plot=False)
+        indx = np.argmax(tone_peaks)
+        diff = np.abs(tone_freqs[indx] - fc)
+        s = "Peak: " + str(tone_peaks[indx]) + "@" + str(tone_freqs[indx])
+        print(s)
+    
+        if do_html_log:
+            pytest.data_log = {
+                "html": gen_line_plot_html(
+                    tone_freqs,
+                    tone_peaks,
+                    "Frequency (Hz)",
+                    "Amplitude (dBFS)",
+                    "{} ({})".format(s, classname),
+                )
+            }
+    
+&gt;       assert (fc * 0.01) &gt; diff
+E       assert (149963378.90625 * 0.01) &gt; 590194702.1484375
+
+test/dma_tests.py:648: AssertionError</failure></testcase><testcase classname="test.test_ad9081" name="test_ad9081_nco_loopback[peak_min=-30-param_set={'loopback_mode': 0, 'rx_main_nco_frequencies': [1000000000, 1000000000, 1000000000, 1000000000], 'tx_main_nco_frequencies': [1010000000, 1010000000, 1010000000, 1010000000], 'rx_channel_nco_frequencies': [0, 0, 0, 0], 'tx_channel_nco_frequencies': [0, 0, 0, 0], 'tx_main_nco_test_tone_scales': [0.5, 0.5, 0.5, 0.5], 'tx_main_nco_test_tone_en': [1, 1, 1, 1], 'tx_channel_nco_test_tone_en': [0, 0, 0, 0]}-frequency=10000000-channel=0-classname=adi.ad9081]" time="0.163"><properties><property name="exception_type_and_message" value="AssertionError: assert (10000000 * 0.01) &gt; 538350830.078125" /><property name="test_name_function" value="nco_loopback" /><property name="test_function_module" value="test.dma_tests" /></properties><failure message="assert (10000000 * 0.01) &gt; 538350830.078125">test_tone_loopback = &lt;function nco_loopback at 0x7bb6a9ca9700&gt;
+iio_uri = 'ip:192.168.10.114', classname = 'adi.ad9081'
+param_set = {'loopback_mode': 0, 'rx_channel_nco_frequencies': [0, 0], 'rx_main_nco_frequencies': [1000000000, 1000000000], 'tx_channel_nco_frequencies': [0, 0], ...}
+channel = 0, frequency = 10000000, peak_min = -30
+
+    @pytest.mark.iio_hardware(hardware, True)
+    @pytest.mark.parametrize("classname", [(classname)])
+    @pytest.mark.parametrize("channel", [0])
+    @pytest.mark.parametrize("frequency", [10000000])
+    @pytest.mark.parametrize(
+        "param_set",
+        [
+            dict(
+                loopback_mode=0,
+                rx_main_nco_frequencies=[1000000000, 1000000000, 1000000000, 1000000000],
+                tx_main_nco_frequencies=[1010000000, 1010000000, 1010000000, 1010000000],
+                rx_channel_nco_frequencies=[0, 0, 0, 0],
+                tx_channel_nco_frequencies=[0, 0, 0, 0],
+                tx_main_nco_test_tone_scales=[0.5, 0.5, 0.5, 0.5],
+                tx_main_nco_test_tone_en=[1, 1, 1, 1],
+                tx_channel_nco_test_tone_en=[0, 0, 0, 0],
+            ),
+            dict(
+                loopback_mode=0,
+                rx_main_nco_frequencies=[1000000000, 1000000000, 1000000000, 1000000000],
+                tx_main_nco_frequencies=[1000000000, 1000000000, 1000000000, 1000000000],
+                rx_channel_nco_frequencies=[0, 0, 0, 0],
+                tx_channel_nco_frequencies=[10000000, 10000000, 10000000, 10000000],
+                tx_channel_nco_test_tone_scales=[0.5, 0.5, 0.5, 0.5],
+                tx_main_nco_test_tone_en=[0, 0, 0, 0],
+                tx_channel_nco_test_tone_en=[1, 1, 1, 1],
+            ),
+        ],
+    )
+    @pytest.mark.parametrize("peak_min", [-30])
+    def test_ad9081_nco_loopback(
+        test_tone_loopback, iio_uri, classname, param_set, channel, frequency, peak_min,
+    ):
+        param_set = scale_field(param_set, iio_uri)
+&gt;       test_tone_loopback(iio_uri, classname, param_set, channel, frequency, peak_min)
+
+test/test_ad9081.py:355: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+uri = 'ip:192.168.10.114', classname = 'adi.ad9081'
+param_set = {'loopback_mode': 0, 'rx_channel_nco_frequencies': [0, 0], 'rx_main_nco_frequencies': [1000000000, 1000000000], 'tx_channel_nco_frequencies': [0, 0], ...}
+channel = 0, frequency = 10000000, peak_min = -30
+
+    def nco_loopback(uri, classname, param_set, channel, frequency, peak_min):
+        """nco_loopback: TX/DAC Test tone loopback with connected loopback cables.
+        This test requires a devices with TX and RX onboard where the transmit
+        signal can be recovered. TX/DAC internal NCOs are used to generate a sinusoid
+        which is then estimated on the RX side. The receive tone must be within
+        1% of its expected frequency with a specified peak
+    
+        parameters:
+            uri: type=string
+                URI of IIO context of target board/system
+            classname: type=string
+                Name of pyadi interface class which contain attribute
+            param_set: type=dict
+                Dictionary of attribute and values to be set before tone is
+                generated and received
+            channel: type=list
+                List of integers or list of list of integers of channels to
+                enable through tx_enabled_channels
+            frequency: type=integer
+                Frequency in Hz of transmitted tone
+            peak_min: type=float
+                Minimum acceptable value of maximum peak in dBFS of received tone
+    
+        """
+        # See if we can tone using DMAs
+        sdr = eval(classname + "(uri='" + uri + "')")
+        # Set custom device parameters
+        for p in param_set.keys():
+            setattr(sdr, p, param_set[p])
+    
+        N = 2 ** 14
+        sdr.rx_enabled_channels = [channel]
+        sdr.rx_buffer_size = N * 2 * len(sdr.rx_enabled_channels)
+        # Create a sinewave waveform
+        if hasattr(sdr, "sample_rate"):
+            RXFS = int(sdr.sample_rate)
+        elif hasattr(sdr, "rx_sample_rate"):
+            RXFS = int(sdr.rx_sample_rate)
+        else:
+            """no sample_rate nor rx_sample_rate. Let's try something like
+            rx($channel)_sample_rate"""
+            attr = "rx" + str(channel) + "_sample_rate"
+            RXFS = int(getattr(sdr, attr))
+    
+        # Pass through SDR
+        try:
+            for _ in range(10):  # Wait
+                data = sdr.rx()
+        except Exception as e:
+            del sdr
+            raise Exception(e)
+        del sdr
+        tone_peaks, tone_freqs = spec.spec_est(data, fs=RXFS, ref=2 ** 15)
+        indx = np.argmax(tone_peaks)
+        diff = np.abs(tone_freqs[indx] - frequency)
+        s = "Peak: " + str(tone_peaks[indx]) + "@" + str(tone_freqs[indx])
+        print(s)
+        if do_html_log:
+            pytest.data_log = {
+                "html": gen_line_plot_html(
+                    tone_freqs,
+                    tone_peaks,
+                    "Frequency (Hz)",
+                    "Amplitude (dBFS)",
+                    "{} ({})".format(s, classname),
+                )
+            }
+    
+&gt;       assert (frequency * 0.01) &gt; diff
+E       assert (10000000 * 0.01) &gt; 538350830.078125
+
+test/dma_tests.py:526: AssertionError</failure></testcase><testcase classname="test.test_ad9081" name="test_ad9081_nco_loopback[peak_min=-30-param_set={'loopback_mode': 0, 'rx_main_nco_frequencies': [1000000000, 1000000000, 1000000000, 1000000000], 'tx_main_nco_frequencies': [1000000000, 1000000000, 1000000000, 1000000000], 'rx_channel_nco_frequencies': [0, 0, 0, 0], 'tx_channel_nco_frequencies': [10000000, 10000000, 10000000, 10000000], 'tx_channel_nco_test_tone_scales': [0.5, 0.5, 0.5, 0.5], 'tx_main_nco_test_tone_en': [0, 0, 0, 0], 'tx_channel_nco_test_tone_en': [1, 1, 1, 1]}-frequency=10000000-channel=0-classname=adi.ad9081]" time="0.217"><properties><property name="exception_type_and_message" value="AssertionError: assert (10000000 * 0.01) &gt; 484472045.8984375" /><property name="test_name_function" value="nco_loopback" /><property name="test_function_module" value="test.dma_tests" /></properties><failure message="assert (10000000 * 0.01) &gt; 484472045.8984375">test_tone_loopback = &lt;function nco_loopback at 0x7bb6a9ca9700&gt;
+iio_uri = 'ip:192.168.10.114', classname = 'adi.ad9081'
+param_set = {'loopback_mode': 0, 'rx_channel_nco_frequencies': [0, 0], 'rx_main_nco_frequencies': [1000000000, 1000000000], 'tx_channel_nco_frequencies': [10000000, 10000000], ...}
+channel = 0, frequency = 10000000, peak_min = -30
+
+    @pytest.mark.iio_hardware(hardware, True)
+    @pytest.mark.parametrize("classname", [(classname)])
+    @pytest.mark.parametrize("channel", [0])
+    @pytest.mark.parametrize("frequency", [10000000])
+    @pytest.mark.parametrize(
+        "param_set",
+        [
+            dict(
+                loopback_mode=0,
+                rx_main_nco_frequencies=[1000000000, 1000000000, 1000000000, 1000000000],
+                tx_main_nco_frequencies=[1010000000, 1010000000, 1010000000, 1010000000],
+                rx_channel_nco_frequencies=[0, 0, 0, 0],
+                tx_channel_nco_frequencies=[0, 0, 0, 0],
+                tx_main_nco_test_tone_scales=[0.5, 0.5, 0.5, 0.5],
+                tx_main_nco_test_tone_en=[1, 1, 1, 1],
+                tx_channel_nco_test_tone_en=[0, 0, 0, 0],
+            ),
+            dict(
+                loopback_mode=0,
+                rx_main_nco_frequencies=[1000000000, 1000000000, 1000000000, 1000000000],
+                tx_main_nco_frequencies=[1000000000, 1000000000, 1000000000, 1000000000],
+                rx_channel_nco_frequencies=[0, 0, 0, 0],
+                tx_channel_nco_frequencies=[10000000, 10000000, 10000000, 10000000],
+                tx_channel_nco_test_tone_scales=[0.5, 0.5, 0.5, 0.5],
+                tx_main_nco_test_tone_en=[0, 0, 0, 0],
+                tx_channel_nco_test_tone_en=[1, 1, 1, 1],
+            ),
+        ],
+    )
+    @pytest.mark.parametrize("peak_min", [-30])
+    def test_ad9081_nco_loopback(
+        test_tone_loopback, iio_uri, classname, param_set, channel, frequency, peak_min,
+    ):
+        param_set = scale_field(param_set, iio_uri)
+&gt;       test_tone_loopback(iio_uri, classname, param_set, channel, frequency, peak_min)
+
+test/test_ad9081.py:355: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+uri = 'ip:192.168.10.114', classname = 'adi.ad9081'
+param_set = {'loopback_mode': 0, 'rx_channel_nco_frequencies': [0, 0], 'rx_main_nco_frequencies': [1000000000, 1000000000], 'tx_channel_nco_frequencies': [10000000, 10000000], ...}
+channel = 0, frequency = 10000000, peak_min = -30
+
+    def nco_loopback(uri, classname, param_set, channel, frequency, peak_min):
+        """nco_loopback: TX/DAC Test tone loopback with connected loopback cables.
+        This test requires a devices with TX and RX onboard where the transmit
+        signal can be recovered. TX/DAC internal NCOs are used to generate a sinusoid
+        which is then estimated on the RX side. The receive tone must be within
+        1% of its expected frequency with a specified peak
+    
+        parameters:
+            uri: type=string
+                URI of IIO context of target board/system
+            classname: type=string
+                Name of pyadi interface class which contain attribute
+            param_set: type=dict
+                Dictionary of attribute and values to be set before tone is
+                generated and received
+            channel: type=list
+                List of integers or list of list of integers of channels to
+                enable through tx_enabled_channels
+            frequency: type=integer
+                Frequency in Hz of transmitted tone
+            peak_min: type=float
+                Minimum acceptable value of maximum peak in dBFS of received tone
+    
+        """
+        # See if we can tone using DMAs
+        sdr = eval(classname + "(uri='" + uri + "')")
+        # Set custom device parameters
+        for p in param_set.keys():
+            setattr(sdr, p, param_set[p])
+    
+        N = 2 ** 14
+        sdr.rx_enabled_channels = [channel]
+        sdr.rx_buffer_size = N * 2 * len(sdr.rx_enabled_channels)
+        # Create a sinewave waveform
+        if hasattr(sdr, "sample_rate"):
+            RXFS = int(sdr.sample_rate)
+        elif hasattr(sdr, "rx_sample_rate"):
+            RXFS = int(sdr.rx_sample_rate)
+        else:
+            """no sample_rate nor rx_sample_rate. Let's try something like
+            rx($channel)_sample_rate"""
+            attr = "rx" + str(channel) + "_sample_rate"
+            RXFS = int(getattr(sdr, attr))
+    
+        # Pass through SDR
+        try:
+            for _ in range(10):  # Wait
+                data = sdr.rx()
+        except Exception as e:
+            del sdr
+            raise Exception(e)
+        del sdr
+        tone_peaks, tone_freqs = spec.spec_est(data, fs=RXFS, ref=2 ** 15)
+        indx = np.argmax(tone_peaks)
+        diff = np.abs(tone_freqs[indx] - frequency)
+        s = "Peak: " + str(tone_peaks[indx]) + "@" + str(tone_freqs[indx])
+        print(s)
+        if do_html_log:
+            pytest.data_log = {
+                "html": gen_line_plot_html(
+                    tone_freqs,
+                    tone_peaks,
+                    "Frequency (Hz)",
+                    "Amplitude (dBFS)",
+                    "{} ({})".format(s, classname),
+                )
+            }
+    
+&gt;       assert (frequency * 0.01) &gt; diff
+E       assert (10000000 * 0.01) &gt; 484472045.8984375
+
+test/dma_tests.py:526: AssertionError</failure></testcase><testcase classname="test.test_all_inits" name="test_ad9081" time="0.006"><skipped type="pytest.skip" message="No required hardware found">/var/lib/jenkins/workspace/cct/HW_test_hdl@4/pyadi-iio/test/test_all_inits.py:47: No required hardware found</skipped></testcase></testsuite></testsuites>
