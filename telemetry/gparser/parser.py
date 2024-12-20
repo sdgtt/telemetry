@@ -266,49 +266,44 @@ class pytestxml_parser(xmlParser):
                 # Find the failure tag
                 failure = testcase.find("failure")    
 
-                # Test description links from pyadi-iio
-                attr_link = "https://analogdevicesinc.github.io/pyadi-iio/dev/test_attr.html"
-                dma_link = "https://analogdevicesinc.github.io/pyadi-iio/dev/test_dma.html"
-                generic_link = "https://analogdevicesinc.github.io/pyadi-iio/dev/test_generics.html"
+                attr_link = "https://analogdevicesinc.github.io/pyadi-iio/dev/test_attr.html"                
                 # Set default description link for all tests
-                test_name_link = f"[{test_name}]({attr_link})"    
-
-                url_links = [attr_link, dma_link, generic_link]
-
-                # Get parameters from test case name
-                param_parsed = test_name.split("[", 1)
-                test_name = param_parsed[0]
-                param_parsed_last = (param_parsed[-1])[:-1].strip()
-                # Separate the parameters
-                param_separate = re.split(r'-(?!\d)', param_parsed_last)
-                # Check parameters list for a dictionary named "param_set"
-                for index, param in enumerate(param_separate):
-                    # Check if param_set parameter name exists                    
-                    param_list = []
-                    # Remove param_set= in string
-                    new_param_split = param.split("=", 1)
-                    param_name = new_param_split[0]
-                    new_param = new_param_split[1]
-                    # Check if param is a dictionary and not empty
-                    if new_param[0] == "{" and new_param != "\{\}":
-                        # Convert remaining string to a dictionary
-                        param_dict = ast.literal_eval(new_param)
-                        if param_dict:
-                            for key, value in param_dict.items():
-                                # Convert parameters of param_set back to string
-                                new_updated = "'" + key + "'" + ": " + str(value)
-                                param_list.append(new_updated)
-                            insert_param_name = param_name + "="
-                            param_list.insert(0, insert_param_name)
-                            param_list_string = "   \n".join(param_list)
-                            # Update param in param_separate list
-                            param_separate[index] = param_list_string 
-                # Compile final parameter details
-                param_separate.insert(0,"**Parameters:**")
-                param_display = "\n  - ".join(param_separate) 
+                test_name_link = f"[{test_name}]({attr_link})"                                     
 
                 if properties is not None:
                     if  failure is not None:
+                        # Get parameters from test case name
+                        param_parsed = test_name.split("[", 1)
+                        test_name = param_parsed[0]
+                        param_parsed_last = (param_parsed[-1])[:-1].strip()
+                        # Separate the parameters
+                        param_separate = re.split(r'-(?!\d)', param_parsed_last)
+                        # Check parameters list for a dictionary"
+                        for index, param in enumerate(param_separate):                   
+                            param_list = []
+                            # Separate values from parameter name
+                            new_param_split = param.split("=", 1)
+                            if len(new_param_split) > 1:
+                                param_name = new_param_split[0]
+                                new_param = new_param_split[1].strip()
+                                # Check if param is a dictionary and not empty
+                                if new_param[0] == "{" and new_param != "\{\}":
+                                    # Convert remaining string to a dictionary
+                                    param_dict = ast.literal_eval(new_param)
+                                    if param_dict:
+                                        for key, value in param_dict.items():
+                                            # Convert parameters back to string
+                                            new_updated = "'" + key + "'" + ": " + str(value)
+                                            param_list.append(new_updated)
+                                        insert_param_name = param_name + "="
+                                        param_list.insert(0, insert_param_name)
+                                        param_list_string = "   \n".join(param_list)
+                                        # Update param in param_separate list
+                                        param_separate[index] = param_list_string 
+                        # Compile final parameter details
+                        param_separate.insert(0,"**Parameters:**")
+                        param_display = "\n  - ".join(param_separate)
+
                         # Get failure tag content
                         failure_text = failure.text
                         fail_content_lines = failure_text.splitlines()
