@@ -73,9 +73,16 @@ class ResultsMarkdown(Markdown):
             else:
                 iio_drivers_missing_details = "No missing drivers" if len(info["missing_devs"]) == 0 else ("<br>").join(info["missing_devs"])
                 iio_drivers_found_details = "No iio drivers found" if len(info["enumerated_devs"]) == 0 else ("<br>").join(info["enumerated_devs"])
-                dmesg_errors_found_details = "No errors" if len(info["dmesg_err"]) == 0 else ("<br>").join(info["dmesg_err"])
-                pytest_failures_details = "No failures" if len(info["pytest_failure"]) == 0 else ("<br>").join(info["pytest_failure"])
+                dmesg_errors_found_details = "No errors" if len(info["dmesg_err"]) == 0 else ("<br>").join(info["dmesg_err"])                   
+                pytest_failures_details = "No failures"      
                 pytest_failures_details = "Invalid" if pytest_tests_status == "⛔" else pytest_failures_details
+                pytest_details = []
+                if len(info["pytest_failure"]) != 0:
+                    pytest_details.append(info["pytest_failure"][0])
+                    for item in info["pytest_failure"][1:]:
+                        item_update = "- " + item
+                        pytest_details.append(item_update)
+                    pytest_failures_details = ("\n\n").join(pytest_details) 
 
             last_failing_stage = str(info["last_failing_stage"])
             last_failing_stage_failure = str(info["last_failing_stage_failure"])

@@ -6,6 +6,8 @@ import traceback
 import junitparser
 import telemetry
 from junitparser import JUnitXml, Skipped, Error, Failure
+import xml.etree.ElementTree as ET
+import ast
 
 def get_parser(url,grabber=None):
     '''Factory method that provides appropriate parser object base on given url'''
@@ -243,13 +245,153 @@ class xmlParser(Parser):
         payload_param = param
         return (payload, payload_param)
 
-class PytestFailure(xmlParser):
+class pytestxml_parser(xmlParser):
+    def __init__(self, url, grabber):
+        super(pytestxml_parser, self).__init__(url, grabber)
+    
+    def get_payload_raw(self):
+        payload = []
+        try:
+            file_path = self.grabber.download_file(self.url, self.file_name)
+            # Load and parse the XML using element tree 
+            tree = ET.parse(file_path)
+            root = tree.getroot()              
+
+            # Iterate over all test cases
+            for testcase in root.findall(".//testcase"):
+                # Get the name of the test case
+                test_name = testcase.get("name")
+                # Find the properties tag
+                properties = testcase.find("properties")
+                # Find the failure tag
+                failure = testcase.find("failure")    
+
+                attr_link = "https://analogdevicesinc.github.io/pyadi-iio/dev/test_attr.html"                
+                # Set default description link for all tests
+                test_name_link = f"[{test_name}]({attr_link})"                                     
+
+                if properties is not None:
+                    if  failure is not None:
+                        # Get parameters from test case name
+                        param_parsed = test_name.split("[", 1)
+                        test_name = param_parsed[0]
+                        param_parsed_last = (param_parsed[-1])[:-1].strip()
+                        # Separate the parameters
+                        param_separate = re.split(r'-(?!\d)', param_parsed_last)
+                        # Check parameters list for a dictionary"
+                        for index, param in enumerate(param_separate):                   
+                            param_list = []
+                            # Separate values from parameter name
+                            new_param_split = param.split("=", 1)
+                            if len(new_param_split) > 1:
+                                param_name = new_param_split[0]
+                                new_param = new_param_split[1].strip()
+                                # Check if param is a dictionary and not empty
+                                if new_param[0] == "{" and new_param != "\{\}":
+                                    # Convert remaining string to a dictionary
+                                    param_dict = ast.literal_eval(new_param)
+                                    if param_dict:
+                                        for key, value in param_dict.items():
+                                            # Convert parameters back to string
+                                            new_updated = "'" + key + "'" + ": " + str(value)
+                                            param_list.append(new_updated)
+                                        insert_param_name = param_name + "="
+                                        param_list.insert(0, insert_param_name)
+                                        param_list_string = "   \n".join(param_list)
+                                        # Update param in param_separate list
+                                        param_separate[index] = param_list_string 
+                        # Compile final parameter details
+                        param_separate.insert(0,"**Parameters:**")
+                        param_display = "\n  - ".join(param_separate)
+
+                        # Get failure tag content
+                        failure_text = failure.text
+                        fail_content_lines = failure_text.splitlines()
+                        exc_param_value = ""
+                        # Get exception statement with parameter names
+                        for item in fail_content_lines[::-1]:
+                            if len(item) > 0:
+                                if item[0] == ">":
+                                    exc_param_value = item[1:].lstrip()
+                                    break                        
+                                                                     
+                        test_name_function = ""
+                        test_function_module = ""
+                        exctype_message = ""
+                        # Iterate through each property in the properties tag
+                        for prop in properties.findall("property"):
+                            # Get the property name and value
+                            prop_name = prop.get("name")
+                            prop_value = prop.get("value")
+                            if prop_name == "exception_type_and_message":                                                             
+                                prop_list = prop_value.splitlines() 
+                                new_props = prop_value
+                                prop_list_updated = []
+                                # Check if exception and message has mutiple lines  
+                                if len(prop_list) > 1:
+                                    for props in prop_list:
+                                        if len(props) > 0:
+                                            # Remove leading spaces
+                                            prop_strip = props.lstrip()
+                                            prop_list_updated.append(prop_strip)                                        
+                                if len(prop_list_updated) > 0:
+                                    new_props = " ".join(prop_list_updated)                                            
+                                # Combine exception type, message, and parameters        
+                                exctype_message =  "\n" + "  " + new_props + " ( " + exc_param_value + " )"
+                                # Get test name function
+                            if prop_name == "test_name_function":
+                                # Get test description
+                                test_name_function = prop_value
+                            if prop_name == "test_function_module":
+                                test_function_module = prop_value
+                            
+                            # Create dictionary of pyadi-iio test module links
+                            test_links = {
+                                "test.attr_tests" : "https://analogdevicesinc.github.io/pyadi-iio/dev/test_attr.html",
+                                "test.dma_tests" : "https://analogdevicesinc.github.io/pyadi-iio/dev/test_dma.html", 
+                                "test.generics" : "https://analogdevicesinc.github.io/pyadi-iio/dev/test_generics.html"
+                            }
+                            
+                            # Set test description link
+                            if test_function_module != "":
+                                if test_name_function != "":
+                                    if test_function_module in test_links:
+                                        test_permalink = test_links[test_function_module] + "#" + test_function_module + "." + test_name_function
+                                        test_name_link = f"[{test_name}]({test_permalink})"
+                                else:
+                                    if test_function_module in test_links:
+                                        test_permalink = test_links[test_function_module]
+                                        test_name_link = f"[{test_name}]({test_permalink})"
+
+                        # Compile the test details
+                        test_details = [test_name_link, param_display]
+                        test_details_final = "<br><br>".join(test_details) 
+                        test_details_final = test_details_final + "\n\n" + exctype_message
+
+                        payload.append(test_details_final)
+            
+        except Exception as ex:
+            traceback.print_exc()
+            print("Error Parsing File!")
+        finally:
+            os.remove(file_path)
+        return payload
+    
+    def get_payload_parsed(self):
+        num_payload = len(self.payload_raw)
+        param = list(range(num_payload))
+        
+        payload = self.payload_raw
+        payload_param = param
+        return (payload, payload_param)
+
+class PytestFailure(pytestxml_parser):
     def __init__(self, url, grabber):
         super(PytestFailure, self).__init__(url, grabber)
-class PytestSkipped(xmlParser):
+class PytestSkipped(pytestxml_parser):
     def __init__(self, url, grabber):
         super(PytestSkipped, self).__init__(url, grabber)
-class PytestError(xmlParser,):
+class PytestError(pytestxml_parser,):
     def __init__(self, url, grabber):
         super(PytestError, self).__init__(url, grabber)
 
