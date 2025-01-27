@@ -217,6 +217,9 @@ def create_results_gist(server, job_name, build_number, board_name, github_gist_
         job_no = build_number,
         artifact_info_type = "info_txt",
     )
+    if len(artifacts_info_txt) == 0:
+        print(f"No artifacts_info_txt found for {job_name} - {build_number}")
+
     built_projects = list()
     translated_built_projects = list()
     data = {}

@@ -415,7 +415,7 @@ class InfoTxt(Parser):
             "(Triggered\sby):\s(.+)$",
             "(COMMIT\sSHA):\s(.+)$",
             "(COMMIT_DATE):\s(.+)$",
-            "-\s([^:\s]+)$",
+            "-\s([^:\n]+)$",
         ]
         super(InfoTxt, self).__init__(url, grabber)
         
@@ -460,7 +460,13 @@ class InfoTxt(Parser):
                 x = re.search(p,l)
                 if x and len(x.groups())==1:
                     payload.append("Built projects")
-                    payload_param.append(x.group(1))
+                    # get the payload_param from the payload_raw
+                    # ex. payload_raw: - zynqmp-zcu102-rev10-adrv9025 (adrv9026_zcu102) 
+                    # payload_param: zynqmp-zcu102-rev10-adrv9025
+                    project = re.search('^([\w-]+)(\s\(.*\))*',x.group(1))
+                    if not project:
+                        raise Exception("Cannot find project name in {}".format(x.group(1)))
+                    payload_param.append(project.group(1))
                 elif x and len(x.groups())==2:
                     payload.append(x.group(1))
                     payload_param.append(x.group(2))
