@@ -275,7 +275,8 @@ def create_results_gist(server, job_name, build_number, board_name, github_gist_
         else:
             board_name = bn
         if board_name in translated_data:
-            board_name += f" ({details['variance_info']})"
+            if type(details) == dict and "variance_info" in details:
+                board_name += f" ({details['variance_info']})"
         translated_data.update({board_name: details})
 
     m = telemetry.markdown.ResultsMarkdown(translated_data)
