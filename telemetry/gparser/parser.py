@@ -60,9 +60,6 @@ class Parser():
 
     def initialize(self):
         url_ = urlparse(self.url)
-        self.multilevel = False
-        if len(url_.path.split('/job/')) > 2:
-            self.multilevel = True
 
         # initialize attributes
         self.server = url_.scheme + '://' + url_.netloc + '/' + url_.path.split('/')[1]
@@ -86,29 +83,40 @@ class Parser():
 
     def get_job_info(self):
         '''returns jenkins project name, job no and job date'''
-        if self.multilevel:
-            url = urlparse(self.url)
-            job=url.path.split('/')[3] + '/' + url.path.split('/')[5]
-            job_no=url.path.split('/')[6]
-            # TODO: get job date using jenkins api
-            job_date=None
-            return (job,job_no,job_date)
 
-        raise Exception("Does not support non multilevel yet!")
+        url = urlparse(self.url)
+        parts = [p for p in url.path.split("/") if p]  # split URL
+
+        # Jenkins URL paths look like: /job/folder/job/my-job/123/
+        # Extract all job segments
+        job_parts = []
+        job_no = None
+        job_date = None
+
+        i = 0
+        while i < len(parts):
+            if parts[i] == "job":
+                if i + 1 < len(parts):
+                    job_parts.append(parts[i + 1])
+                    i += 2
+                    continue
+            # Check if the current part is the build number
+            if parts[i].isdigit():
+                job_no = parts[i]
+            i += 1
+
+        job = "/".join(job_parts)
+        return (job, job_no, job_date)
 
     def get_file_info(self):
         '''returns file name, file info, target_board, artifact_info_type'''
-        if self.multilevel:
-            url = urlparse(self.url)
-            file_name = url.path.split('/')[-1]
-            file_info = file_name.split('_')
-            target_board=file_info[0]
-            artifact_info_type=file_info[1] + '_' + file_info[2]
-            artifact_info_type = remove_suffix(artifact_info_type,".log")
-            return (file_name, file_info, target_board, artifact_info_type)
-
-        raise Exception("Does not support non multilevel yet!")
-
+        url = urlparse(self.url)
+        file_name = url.path.split('/')[-1]
+        file_info = file_name.split('_')
+        target_board=file_info[0]
+        artifact_info_type=file_info[1] + '_' + file_info[2]
+        artifact_info_type = remove_suffix(artifact_info_type,".log")
+        return (file_name, file_info, target_board, artifact_info_type)
 
     def get_payload_raw(self):
         payload = []
@@ -148,18 +156,16 @@ class Dmesg(Parser):
 
     def get_file_info(self):
         '''returns file name, file info, target_board, artifact_info_type'''
-        if self.multilevel:
-            url = urlparse(self.url)
-            file_name = url.path.split('/')[-1]
-            file_info = file_name.split('_')
-            target_board=file_info[1]
-            artifact_info_type=file_info[0]
-            if len(file_info) == 3:
-                artifact_info_type += '_' + file_info[2]
-            artifact_info_type = remove_suffix(artifact_info_type,".log")
-            return (file_name, file_info, target_board, artifact_info_type)
+        url = urlparse(self.url)
+        file_name = url.path.split('/')[-1]
+        file_info = file_name.split('_')
+        target_board=file_info[1]
+        artifact_info_type=file_info[0]
+        if len(file_info) == 3:
+            artifact_info_type += '_' + file_info[2]
+        artifact_info_type = remove_suffix(artifact_info_type,".log")
+        return (file_name, file_info, target_board, artifact_info_type)
 
-        raise Exception("Does not support non multilevel yet!")
 
 class DmesgError(Dmesg):
     
@@ -187,21 +193,18 @@ class xmlParser(Parser):
         
     def get_file_info(self):
         '''returns file name, file info, target_board, artifact_info_type'''
-        if self.multilevel:
-            url = urlparse(self.url)
-            url_path = url.path.split('/')
-            file_name = url_path[-1]
-            parser_type = type(self).__name__
-            x = [i for i, c in enumerate(parser_type) if c.isupper()]
-            file_info = (parser_type[:x[1]]+'_'+parser_type[x[1]:]).lower()
-            target_board = file_name.replace('_','-')
-            target_board = remove_suffix(target_board,"-reports.xml")
-            target_board = remove_suffix(target_board,"-HWTestResults.xml")
-            artifact_info_type=file_info
-            return (file_name, file_info, target_board, artifact_info_type)
+        url = urlparse(self.url)
+        url_path = url.path.split('/')
+        file_name = url_path[-1]
+        parser_type = type(self).__name__
+        x = [i for i, c in enumerate(parser_type) if c.isupper()]
+        file_info = (parser_type[:x[1]]+'_'+parser_type[x[1]:]).lower()
+        target_board = file_name.replace('_','-')
+        target_board = remove_suffix(target_board,"-reports.xml")
+        target_board = remove_suffix(target_board,"-HWTestResults.xml")
+        artifact_info_type=file_info
+        return (file_name, file_info, target_board, artifact_info_type)
 
-        raise Exception("Does not support non multilevel yet!")
-        
     def get_payload_raw(self):
         payload = []
         try:
@@ -422,15 +425,12 @@ class InfoTxt(Parser):
 
     def get_file_info(self):
         '''returns file name, file info, target_board, artifact_info_type'''
-        if self.multilevel:
-            url = urlparse(self.url)
-            file_name = url.path.split('/')[-1]
-            file_info = "NA"
-            target_board="NA"
-            artifact_info_type = "info_txt"
-            return (file_name, file_info, target_board, artifact_info_type)
-
-        raise Exception("Does not support non multilevel yet!")
+        url = urlparse(self.url)
+        file_name = url.path.split('/')[-1]
+        file_info = "NA"
+        target_board="NA"
+        artifact_info_type = "info_txt"
+        return (file_name, file_info, target_board, artifact_info_type)
 
     def get_payload_raw(self):
         payload = []
