@@ -93,6 +93,7 @@ class Parser():
         job_no = None
         job_date = None
 
+        base_url = url.scheme + "://" + url.netloc + "/"
         i = 0
         while i < len(parts):
             if parts[i] == "job":
@@ -103,9 +104,13 @@ class Parser():
             # Check if the current part is the build number
             if parts[i].isdigit():
                 job_no = parts[i]
+                # Get the base URL (up until the build no) in order
+                # to access the build's API endpoint
+                base_url += "/".join(parts[:i + 1])
             i += 1
 
         job = "/".join(job_parts)
+        job_date = self.grabber.get_date(base_url)
         return (job, job_no, job_date)
 
     def get_file_info(self):

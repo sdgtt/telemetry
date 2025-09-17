@@ -3,6 +3,7 @@ from requests.packages.urllib3.util.retry import Retry
 from tqdm import tqdm
 import os
 import requests
+from datetime import datetime, timezone
 
 class Grabber:
     '''Class providing grabber functionality'''
@@ -11,6 +12,20 @@ class Grabber:
         self.file_dir = "event_horizon"
         if auth:
             self.sess.auth = auth
+
+    def get_date(self, url):
+        '''Calls the Jenkins API endpoint and returns the date of a build.'''
+        base_url = url.strip()
+        api_url = base_url.rstrip('/') + '/api/json'
+        resp = self.sess.get(api_url)
+        if not resp.ok:
+            raise Exception(f"Failed to call API {url} (status={resp.status_code})")
+
+        data = resp.json()
+        ts = data.get('timestamp')
+        date = datetime.fromtimestamp(ts / 1000.0, tz=timezone.utc)
+
+        return date
 
     def download_file(self, url, filename):
         '''Downloads file'''
