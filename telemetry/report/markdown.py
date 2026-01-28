@@ -2,6 +2,7 @@ import os
 import re
 import telemetry
 from string import Template
+from telemetry.report.blacklist import Blacklist
 
 class Markdown:
     def __init__(self, file):
@@ -28,7 +29,23 @@ class Markdown:
 class ResultsMarkdown(Markdown):
     CRITICAL = ["UpdateBOOTFiles"]
 
-    def __init__(self, data):
+    def __init__(self, data, blacklist=None, blacklist_mode="mark"):
+        """Initialize ResultsMarkdown with optional blacklist filtering.
+
+        Args:
+            data: Test results data dictionary
+            blacklist: Blacklist instance or path to blacklist JSON file
+            blacklist_mode: "mark" to annotate known issues, "hide" to remove them
+        """
+        self.blacklist = None
+        self.blacklist_mode = blacklist_mode
+
+        if blacklist:
+            if isinstance(blacklist, str):
+                self.blacklist = Blacklist(blacklist)
+            elif isinstance(blacklist, Blacklist):
+                self.blacklist = blacklist
+
         self.param_dict = self.generate_param(data)
         dir = os.path.dirname(os.path.realpath(__file__))
         template_path = os.path.join(dir, "templates", "results.template.md")
@@ -71,15 +88,41 @@ class ResultsMarkdown(Markdown):
                 dmesg_errors_found_details = "No Details"
                 pytest_failures_details = "No Details"
             else:
-                iio_drivers_missing_details = "No missing drivers" if len(info["missing_devs"]) == 0 else ("<br>").join(info["missing_devs"])
+                # Get the project name for scope checking
+                project = info.get("jenkins_project_name")
+
+                # Apply blacklist filtering to missing drivers
+                missing_devs = info["missing_devs"]
+                if self.blacklist and missing_devs:
+                    missing_devs = self.blacklist.filter_items(
+                        missing_devs, "missing_driver", self.blacklist_mode, bn, project
+                    )
+                iio_drivers_missing_details = "No missing drivers" if len(missing_devs) == 0 else ("<br>").join(missing_devs)
+
                 iio_drivers_found_details = "No iio drivers found" if len(info["enumerated_devs"]) == 0 else ("<br>").join(info["enumerated_devs"])
-                dmesg_errors_found_details = "No errors" if len(info["dmesg_err"]) == 0 else ("<br>").join(info["dmesg_err"])                   
-                pytest_failures_details = "No failures"      
+
+                # Apply blacklist filtering to dmesg errors
+                dmesg_errors = info["dmesg_err"]
+                if self.blacklist and dmesg_errors:
+                    dmesg_errors = self.blacklist.filter_items(
+                        dmesg_errors, "dmesg_error", self.blacklist_mode, bn, project
+                    )
+                dmesg_errors_found_details = "No errors" if len(dmesg_errors) == 0 else ("<br>").join(dmesg_errors)
+
+                pytest_failures_details = "No failures"
                 pytest_failures_details = "Invalid" if pytest_tests_status == "⛔" else pytest_failures_details
+
+                # Apply blacklist filtering to pytest failures
+                pytest_failure_list = info["pytest_failure"]
+                if self.blacklist and pytest_failure_list:
+                    pytest_failure_list = self.blacklist.filter_items(
+                        pytest_failure_list, "pytest_failure", self.blacklist_mode, bn, project
+                    )
+
                 pytest_details = []
-                if len(info["pytest_failure"]) != 0:
-                    pytest_details.append(info["pytest_failure"][0])
-                    for item in info["pytest_failure"][1:]:
+                if len(pytest_failure_list) != 0:
+                    pytest_details.append(pytest_failure_list[0])
+                    for item in pytest_failure_list[1:]:
                         item_update = "- " + item
                         pytest_details.append(item_update)
                     pytest_failures_details = ("\n\n").join(pytest_details) 

@@ -200,7 +200,10 @@ def log_boot_logs(server, in_args):
 @click.option("--board_name", default=None, help="Board to fetch, will select all if empty")
 @click.option("--github_gist_url", default=None, help="Base URL to the gist repository")
 @click.option("--github_gist_token", default=None, help="Token required for gist access")
-def create_results_gist(server, job_name, build_number, board_name, github_gist_url, github_gist_token):
+@click.option("--blacklist-file", default=None, help="Path to known issues blacklist JSON file")
+@click.option("--blacklist-mode", type=click.Choice(["mark", "hide"]), default="mark",
+              help="How to handle known issues: 'mark' shows them labeled, 'hide' removes them")
+def create_results_gist(server, job_name, build_number, board_name, github_gist_url, github_gist_token, blacklist_file, blacklist_mode):
     tel = telemetry.searches(server=server)
     boot_test = tel.boot_tests(
         boot_folder_name=board_name,
@@ -279,7 +282,7 @@ def create_results_gist(server, job_name, build_number, board_name, github_gist_
                 board_name += f" ({details['variance_info']})"
         translated_data.update({board_name: details})
 
-    m = telemetry.markdown.ResultsMarkdown(translated_data)
+    m = telemetry.markdown.ResultsMarkdown(translated_data, blacklist=blacklist_file, blacklist_mode=blacklist_mode)
     m.generate_gist(github_gist_url, github_gist_token)
     
 @click.command()

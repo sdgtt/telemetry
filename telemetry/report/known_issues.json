@@ -1,0 +1,30 @@
+{
+  "version": "1.0",
+  "rules": [
+    {
+      "type": "dmesg_error",
+      "pattern": "cf_axi_dds: probe failed with error -110",
+      "match_type": "exact",
+      "description": "Known timing issue on ZC706 - JIRA-456",
+      "scope": {
+        "boards": ["zynq-zc706-adv7511-fmcomms2-3"]
+      }
+    },
+    {
+      "type": "dmesg_error",
+      "pattern": "Failed to initialize device",
+      "match_type": "contains",
+      "description": "Sporadic SPI init failure - under investigation",
+      "scope": null
+    },
+    {
+      "type": "pytest_failure",
+      "pattern": "test_ad9361_rx_gain",
+      "match_type": "contains",
+      "description": "Flaky gain test - JIRA-789",
+      "scope": {
+        "projects": ["test", "HW_tests/HW_test_multiconfig"]
+      }
+    }
+  ]
+}
