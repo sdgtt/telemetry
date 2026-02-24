@@ -1,7 +1,9 @@
 from bs4 import BeautifulSoup
+import json
 import os
 import re
 import requests
+from datetime import datetime
 import telemetry
 
 class Gargantua:
@@ -75,7 +77,7 @@ class Gargantua:
             )
         return artifact_urls
 
-    def get_artifacts(self):
+    def get_artifacts(self, content_filter=None):
         artifacts = []
         target_map = self.crawl_files()
         for job, files in target_map.items():
@@ -86,20 +88,20 @@ class Gargantua:
                     parser = telemetry.parser.get_parser(job + '/' + f,grabber)
                     if isinstance(parser, list):
                         for _parser in parser:
-                            artifacts.append(Artifact(_parser))
+                            artifacts.append(Artifact(_parser, content_filter))
                     else:
-                        artifacts.append(Artifact(parser))
+                        artifacts.append(Artifact(parser, content_filter))
                 except Exception as ex:
                     print(f"Cannot create Artifact object {f}; Reason {str(ex)}")
         return artifacts
 
-    def log_artifacts(self):
-        artifacts = self.get_artifacts()
+    def log_artifacts(self, content_filter=None, filter_verbose=False, dry_run=False, dry_run_output=None):
+        artifacts = self.get_artifacts(content_filter)
         ignore = ["dmesg"]
         for artifact in artifacts:
             if artifact.artifact_info_type in ignore:
                 continue
-            artifact.log_elastic(self.es_server)
+            artifact.log_elastic(self.es_server, filter_verbose, dry_run, dry_run_output)
 
 class Artifact:
     '''Class representing a test job artifact'''
@@ -118,8 +120,9 @@ class Artifact:
         "payload_param"
     ]
 
-    def __init__(self,parser):
+    def __init__(self, parser, content_filter=None):
         # get parser object based on url
+        self.content_filter = content_filter
         try:
             self.parser = parser
             for attrib in self.attributes:
@@ -138,22 +141,73 @@ class Artifact:
             dict_map.update({attr: getattr(self, attr)})
         return dict_map
 
-    def log_elastic(self, es_server):
-        '''Send data elasticsearch '''
+    def log_elastic(self, es_server, filter_verbose=False, dry_run=False, dry_run_output=None):
+        '''Send data to elasticsearch with optional pre-upload filtering'''
         try:
-            t = telemetry.ingest(server=es_server)
-            for i,p in enumerate(self.payload_raw):
+            entries_to_upload = []
+            entries_filtered = []
+
+            for i, p in enumerate(self.payload_raw):
+                message = self.payload[i][1] if len(self.payload[i]) == 2 else self.payload[i]
+
+                # Apply content filter if configured
+                if self.content_filter:
+                    should_upload, reason = self.content_filter.should_upload(
+                        message=message,
+                        issue_type=self.artifact_info_type,
+                        board=getattr(self, 'target_board', None),
+                        project=getattr(self, 'job', None)
+                    )
+                    if not should_upload:
+                        if filter_verbose:
+                            print(f"Filtered out (reason: {reason}): {p[:80]}...")
+                        entries_filtered.append({
+                            "reason": reason,
+                            "payload_raw": p,
+                            "payload": message
+                        })
+                        continue
+
                 entry = self.to_dict()
                 entry.update({"job_build_parameters": "NA"})
-                entry.update({"payload": self.payload[i][1] \
-                    if len(self.payload[i]) == 2 else self.payload[i]})
+                entry.update({"payload": message})
                 entry.update({"payload_ts": self.payload[i][0] \
                     if len(self.payload[i]) == 2 else "NA"})
                 entry.update({"payload_param": self.payload_param[i]})
                 entry.update({"payload_raw": p})
-                print("Saving entry to Elastic {}".format(entry))
-                t.log_artifacts(**entry)
-                
+                entries_to_upload.append(entry)
+
+            if dry_run:
+                # Save to local file instead of uploading
+                dry_run_data = {
+                    "artifact_info": {
+                        "file_name": getattr(self, 'file_name', 'unknown'),
+                        "artifact_info_type": getattr(self, 'artifact_info_type', 'unknown'),
+                        "target_board": getattr(self, 'target_board', 'unknown'),
+                        "job": getattr(self, 'job', 'unknown'),
+                        "url": getattr(self, 'url', 'unknown')
+                    },
+                    "summary": {
+                        "total_entries": len(self.payload_raw),
+                        "entries_to_upload": len(entries_to_upload),
+                        "entries_filtered": len(entries_filtered)
+                    },
+                    "entries_to_upload": entries_to_upload,
+                    "entries_filtered": entries_filtered
+                }
+
+                if dry_run_output is not None:
+                    # Append to the output list (will be saved later)
+                    dry_run_output.append(dry_run_data)
+
+                print(f"[DRY-RUN] {self.file_name}: {len(entries_to_upload)} entries would be uploaded, {len(entries_filtered)} filtered out")
+            else:
+                # Actually upload to Elasticsearch
+                t = telemetry.ingest(server=es_server)
+                for entry in entries_to_upload:
+                    print("Saving entry to Elastic {}".format(entry))
+                    t.log_artifacts(**entry)
+
         except Exception as ex:
             print("Cannot ingest artifact")
             raise ex

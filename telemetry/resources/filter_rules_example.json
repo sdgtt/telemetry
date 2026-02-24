@@ -1,0 +1,40 @@
+{
+  "version": "2.0",
+  "description": "Example filter rules for pre-upload filtering to Elasticsearch",
+  "rules": [
+    {
+      "type": "dmesg_error",
+      "pattern": "error|fail|warn|critical",
+      "match_type": "regex",
+      "action": "keep",
+      "description": "Only upload dmesg entries containing error/fail/warn/critical keywords"
+    },
+    {
+      "type": "dmesg_warn",
+      "pattern": "warning|warn|error|fail",
+      "match_type": "regex",
+      "action": "keep",
+      "description": "Only upload dmesg warning entries containing relevant keywords"
+    },
+    {
+      "type": "dmesg_error",
+      "pattern": "cf_axi_dds: probe failed with error -110",
+      "match_type": "exact",
+      "action": "drop",
+      "description": "Known timing issue on ZC706 - exclude from uploads",
+      "scope": {
+        "boards": ["zynq-zc706-adv7511-fmcomms2-3"]
+      }
+    },
+    {
+      "type": "pytest_failure",
+      "pattern": "test_ad9361_rx_gain",
+      "match_type": "contains",
+      "action": "drop",
+      "description": "Flaky gain test - exclude from uploads",
+      "scope": {
+        "projects": ["HW_tests/HW_test_multiconfig"]
+      }
+    }
+  ]
+}

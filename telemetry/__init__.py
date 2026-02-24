@@ -7,6 +7,7 @@ from telemetry.gparser import parser
 from telemetry.gparser import grabber
 from telemetry.report import gist, markdown
 from telemetry.dev.vpx import VPX
+from telemetry.filter import ContentFilter
 
 import telemetry.prod as prod
 

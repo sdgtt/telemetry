@@ -124,17 +124,42 @@ def log_artifacts(server, in_args):
 @click.option("--es-server", required=True, help="Address of Elasticsearch server")
 @click.option("--job-name", default="HW_tests/HW_test_multiconfig", help="Name of Jenkins job")
 @click.option("--job", multiple=True, help="Job(s)/build(s) to process")
+@click.option("--filter-file", default=None, help="Path to filter rules JSON to enable pre-upload filtering")
+@click.option("--filter-verbose", is_flag=True, default=False, help="Log filtered entries to console")
+@click.option("--dry-run", is_flag=True, default=False, help="Save filtered content locally instead of uploading to ES")
+@click.option("--dry-run-output", default=None, help="Output file for dry-run results (default: dry_run_<timestamp>.json)")
 def grab_and_log_artifacts(
         jenkins_server,
         jenkins_username,
         jenkins_password,
         es_server,
         job_name,
-        job
+        job,
+        filter_file,
+        filter_verbose,
+        dry_run,
+        dry_run_output
     ):
     if not len(job) > 0:
         click.echo("Atleast 1 Job/Build (--job) is needed.")
         sys.exit(1)
+
+    # Warn if --filter-verbose is used without --filter-file
+    if filter_verbose and not filter_file:
+        click.echo("WARNING: --filter-verbose has no effect without --filter-file")
+
+    # Load content filter if filter file is provided
+    content_filter = None
+    if filter_file:
+        from telemetry.filter import ContentFilter
+        content_filter = ContentFilter(filter_file)
+        click.echo(f"Content filtering enabled: loaded {len(content_filter.rules)} rules from {filter_file}")
+
+    # Setup dry-run output collection
+    dry_run_results = [] if dry_run else None
+    if dry_run:
+        click.echo("DRY-RUN mode: No data will be uploaded to Elasticsearch")
+
     g = telemetry.gargantua(
         jenkins_server,
         jenkins_username,
@@ -143,7 +168,16 @@ def grab_and_log_artifacts(
         job_name,
         job
     )
-    g.log_artifacts()
+    g.log_artifacts(content_filter, filter_verbose, dry_run, dry_run_results)
+
+    # Save dry-run results to file
+    if dry_run:
+        import json
+        from datetime import datetime
+        output_file = dry_run_output or f"dry_run_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+        with open(output_file, 'w') as f:
+            json.dump(dry_run_results, f, indent=2, default=str)
+        click.echo(f"Dry-run results saved to: {output_file} ({len(dry_run_results)} artifacts)")
 
 @click.command()
 @click.option("--server", default="picard", help="Address of Elasticsearch server")
