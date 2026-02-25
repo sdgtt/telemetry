@@ -21,18 +21,51 @@ class searches:
                    job_no = None,
                    artifact_info_type = None,
                 ):
-        """ Query artifacts data from elasticsearch """
-        # Returns a list of artifact information sorted by asc achive_date
+        """Query artifacts data from elasticsearch.
+
+        Args:
+            target_board: Filter by target board name (e.g., "zynq-zc706-adv7511")
+            job: Filter by Jenkins job name (e.g., "HW_tests/HW_test_multiconfig")
+            job_no: Filter by Jenkins build number (integer field in ES schema)
+            artifact_info_type: Filter by artifact type (e.g., "dmesg_error", "pytest_failure")
+
+        Returns:
+            List of artifact documents sorted by archive_date (descending)
+
+        Note on Elasticsearch field types and .keyword suffix:
+            The .keyword suffix is ONLY needed for fields mapped as "text" type that have
+            a multi-field "keyword" sub-field for exact matching.
+
+            For fields already mapped as "keyword" type, do NOT use .keyword suffix.
+            For fields mapped as "integer" type, do NOT use .keyword suffix.
+
+            In the artifacts index schema (based on actual ES mapping):
+            - target_board: keyword type -> do NOT use .keyword
+            - job: keyword type -> do NOT use .keyword
+            - job_no: integer type -> do NOT use .keyword
+            - artifact_info_type: keyword type -> do NOT use .keyword
+        """
         index = "artifacts" if not self.use_test_index else "dummy"
+
+        # Build list of match clauses for the bool query
         s = []
+
+        # target_board is a KEYWORD field in ES - do NOT use .keyword suffix
+        # keyword fields already store exact values without tokenization
         if target_board:
-            s.append({"match": {"target_board.keyword": target_board}})
+            s.append({"match": {"target_board": target_board}})
+
+        # job is a KEYWORD field in ES - do NOT use .keyword suffix
         if job:
-            s.append({"match": {"job.keyword": job}})
+            s.append({"match": {"job": job}})
+
+        # job_no is an INTEGER field in ES - do NOT use .keyword suffix
         if job_no:
-            s.append({"match": {"job_no.keyword": job_no}})
+            s.append({"match": {"job_no": job_no}})
+
+        # artifact_info_type is a KEYWORD field in ES - do NOT use .keyword suffix
         if artifact_info_type:
-            s.append({"match": {"artifact_info_type.keyword": artifact_info_type}})
+            s.append({"match": {"artifact_info_type": artifact_info_type}})
         # Create query
         if s:
             query = {
@@ -54,13 +87,36 @@ class searches:
                    jenkins_project_name=None,
                    jenkins_build_no = None,
                 ):
-        """ Query boot test results from elasticsearch """
+        """Query boot test results from elasticsearch.
+
+        Args:
+            boot_folder_name: Filter by boot folder/board name (e.g., "zynq-zc706-adv7511")
+            jenkins_project_name: Filter by Jenkins project name (e.g., "HW_tests/HW_test_multiconfig")
+            jenkins_build_no: Filter by Jenkins build number
+
+        Returns:
+            Dictionary mapping board names to their test result records,
+            sorted by jenkins_job_date (ascending)
+
+        Note on Elasticsearch field types:
+            All fields in boot_tests index that are queried here are text/keyword types,
+            so .keyword suffix is appropriate for exact matching.
+        """
         index = "boot_tests" if not self.use_test_index else "dummy"
+
+        # Build list of match clauses for the bool query
         s = []
+
+        # boot_folder_name is a text field - use .keyword for exact matching
         if boot_folder_name:
             s.append({"match": {"boot_folder_name.keyword": boot_folder_name}})
+
+        # jenkins_project_name is a text field - use .keyword for exact matching
         if jenkins_project_name:
             s.append({"match": {"jenkins_project_name.keyword": jenkins_project_name}})
+
+        # jenkins_build_number is stored as keyword type in boot_tests schema
+        # (different from job_no in artifacts which is integer)
         if jenkins_build_no:
             s.append({"match": {"jenkins_build_number.keyword": jenkins_build_no}})
         # Create query
